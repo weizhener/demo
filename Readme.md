@@ -1,12 +1,54 @@
+## 唯真直销系统
+
+​	全球唯一开源免费的直销系统(此系统仅限用学习研究，不得用于任何非法商业活动)
+
+**演示地址:**
+
+```
+用户：/Vip/User/Login 
+测试帐号可到后台管理添加
+
+后台管理：/System/Login
+admin admin
+
+网站：
+demo01.ctoin.top
+demo04b.ctoin.top
+demo05.ctoin.top
+demo11.ctoin.top
+demo14.ctoin.top
+demo15.ctoin.top
+demo18.ctoin.top
+demo25.ctoin.top
+demo26.ctoin.top
+demo27.ctoin.top
+demo28.ctoin.top
+demo29.ctoin.top
+demo30.ctoin.top
+demo31.ctoin.top
+demo32.ctoin.top
+demo33.ctoin.top
+demo36.ctoin.top
+demo38.ctoin.top
+demo39.ctoin.top
+demo40.ctoin.top
+demo42.ctoin.top
+demo43.ctoin.top
+demo45.ctoin.top
+demo47.ctoin.top
+```
+
+以上为演示地址，如果出现访问异常，请联系客服！
+
 #### 1.简介
 
-​	这里提供稳定、半开源的多套资产证券类直销系统,支持双轨制、五级三阶制、三轨制、太阳线、等各种制度的奖金结算系统
+​	这里提供稳定、开源的多套资产证券类直销系统,支持各种制度的奖金结算系统
 
 #### 2.环境配置
 
 ​	运行环境：windows系列 + IIS + Sql Server 2008 R2
 
-​	开发语言：C#
+​	开发语言：APS.NET
 
 #### 3.功能介绍
 
@@ -46,3 +88,8 @@
   - 二级密码：3.3
 
     ![img](./image/6.png)
+
+## 联系方式:
+
+- **QQ:**6287019
+
