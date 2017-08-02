@@ -1,0 +1,630 @@
+﻿@{
+    IEnumerable<T_Wallet> wallet = null;
+    int unreadMessageCount = 0;
+    IEnumerable<T_News> news = null;
+    IEnumerable<T_SysLog> log = null;
+    T_User user = null;
+   
+    using (ZXContext db = new ZXContext())
+    {
+        wallet = db.Wallet.Where(m => m.UserId == _User.Current.Id).ToList();
+        unreadMessageCount = db.Message.Count(m => (m.SenderId == _User.Current.Id || m.ReceiverId == _User.Current.Id) && m.LastModifyMemberId != _User.Current.Id && m.IsRead == false);
+        news = db.News.OrderByDescending(m => m.Type).ThenByDescending(m => m.LastModifyDate).Take(8).ToList();
+        log = db.SysLog.Where(m => m.MemberId == _User.Current.Id).OrderByDescending(m => m.Id).Take(2).ToList();
+        user = db.User.Find(_User.Current.Id);
+    }
+}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>@(Config.Instance.Single.UserHomeTitle)</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=0.35">
+    <link href="/Theme/Home/3/css/main.css" rel="stylesheet" />
+   @* <link rel="icon" href="Theme/home/3/images/35967.ico" mce_href="Theme/home/3/images/356789.ico" type="image/x-icon">*@
+    <link rel="shortcut icon" href="/35967.ico"/>
+    <link rel="bookmark" href="/35967.ico"/>
+    <title></title>
+    @*<link rel="Shortcut Icon" href="35967.ico"> *@
+    <link href="/Content/Site.css?timespan=@DateTime.Now.ToOADate()" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/bootstrap.min.css")" rel="stylesheet" />
+    <link href="/Content/alertify/alertify.core.css" rel="stylesheet" />
+    <link href="/Content/alertify/alertify.bootstrap.css" rel="stylesheet" />
+    <style type="text/css">
+        .span-self {
+            padding-right: 10px;
+        }
+    </style>
+    @RenderSection("head", false)
+</head>
+    
+<body>
+    <div class="con">
+        <div class="header">
+            <div style="padding-left: 50px; padding-top: 45px;">
+                <img src="/Theme/Home/3/images/top789.png"  style="height: 70px;"/>
+               @* @if (Request.Cookies["_culture"] == null || Request.Cookies["_culture"].Value == "zh-CN")
+                {
+                <img src="/Theme/Home/3/images/top5-2.png" class="img1" style="height: 35px;" />
+                }
+                else
+                {
+                    <img src="/Theme/Home/3/images/top5-3.png" class="img1" style="height: 35px;" />
+                }*@
+                <div style="width: 38px; height: 145px; float: right; margin-right: 3%; margin-left: 1%; padding-top: 25px;">
+                   <a href="/system/logout" style="color:#fff;font-size:5px"><img src="/Theme/Home/3/images/l8.png" style="float: right; cursor: pointer; width:40px" onclick="hd_cl()" /><br/>@("退出".ToLocal())</a> 
+                    <script>
+                        var pd_num = 0;
+                        function hd_cl() {
+                            sj_div
+                            pd_num++;
+                            if (pd_num % 2 == 0) {  
+                                document.getElementById("hd_cl_area").style.display = 'none';
+                            } else {
+                                document.getElementById("hd_cl_area").style.display = 'block';
+                            }
+                        }
+                    </script>
+                </div>
+                <div style="text-align: right; float: right; display: block; margin-top: -10px;">
+                    @*<a href="/system/SetCulture?culture=zh-CN&returnUrl=@Server.UrlEncode(Html.GenerateUrl())" style="color: #fff;">中</a> &nbsp 
+                <a href="/system/SetCulture?culture=en-US&returnUrl=@Server.UrlEncode(Html.GenerateUrl())" style="color: #fff;">En</a><br/> &nbsp <br/>*@
+                    <a href="#" style="color: #fff; ">@(user.NickName)<br />
+                    @("编号".ToLocal())：@(_User.Current.Code)<br/>@("级别".ToLocal())：@if(user.Titelid>0)
+                                                                                  {
+                                                                                      @(TitelHandler.Element(user.Titelid).Name)
+                                                                                  }
+                                                                                  else
+                                                                                  {
+                                                                                      @(LevelHandler.Element(user.CurrentLevelId).Name)
+                                                                                  }</a>
+                </div>
+                
+                <div id="hd_cl_area" style="display: none; width: 100px; height: 100px; border-radius: 20px; background-color: #ffbf00; position: absolute; right: 1%; margin-top: 20px; clear: right; float: right;">
+                    <div style="width: 0px; height: 0px; border-bottom: 20px solid #ffbf00; border-right: 20px solid transparent; border-left: 20px solid transparent; position: absolute; left: 30px; top: -20px;"></div>
+                    <a href="/system/logout" style="display: block; width: 80px; border-bottom: 1px solid #FF0; margin: auto; text-align: center; font-size: 14px; line-height: 40px; margin-top: 5px;" onmouseover="javascript:this.style.color='#f00'" onmouseout="javascript:this.style.color='#000'">安全退出</a>
+                    <a href="/vip/home/index" style="display: block; width: 80px; border-bottom: 1px solid #FF0; margin: auto; text-align: center; font-size: 14px; line-height: 40px;" onmouseover="javascript:this.style.color='#f00'" onmouseout="javascript:this.style.color='#000'">回到首页</a>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="fl"></div>
+
+        <div class="main">
+            <div class="lside">
+                <a href="/vip/home/index">
+                    <img src="/Theme/Home/3/images/l1.png" class="img1" width="38%" /></a>
+                <div class="left_nav_font">@("首页".ToLocal())</div>
+                <div class="main_01" />
+               @* <script type="text/javascript">
+                    function acc_cl(shownum, area_num) {
+                        if (shownum == 1) {
+                            document.getElementById("acc_cl_area_" + area_num).style.display = 'none';
+                        } else {
+                            document.getElementById("acc_cl_area_" + area_num).style.display = 'block';
+                        }
+
+                    }
+                </script>*@
+                <script type="text/javascript">
+                    function acc_cl(shownum, area_num) {
+                        if (shownum == 1) {
+                            document.getElementById("acc_cl_area_" + area_num).style.display = 'none';
+                        } else {
+                            for (var i = 1; i < 5; i++) {
+                                document.getElementById("acc_cl_area_" + i).style.display = 'none';
+                            }
+                            document.getElementById("acc_cl_area_" + area_num).style.display = 'block';
+                        }
+                    }
+                 </script>
+                @{
+                    var topId = Session[Navigation.TOP_KEY] == null ? Navigation.Instance.NavigationTopCollection().First().Id : Session[Navigation.TOP_KEY] as int?;
+                    var itemId = Session[Navigation.ITEM_KEY] == null ? null : Session[Navigation.ITEM_KEY] as int?;
+                    int i = 0;
+                }
+                  @foreach (var top in Navigation.Instance.NavigationTopCollection().Where(m => m.NavigationItemCollection().Any()))
+                  {
+                    <span onclick="acc_cl(0,@top.Id)" style="cursor: pointer;">
+                        <img src="@top.Img" width="65%" />
+                        <div id="acc_cl_area_@top.Id" class="acc_cl_area">
+                            <div class="acc_div" style="height: auto">
+                                @*<div class="sj_div"></div>*@
+                                @foreach (var item in top.NavigationItemCollection())
+                                {
+                                    var j = top.NavigationItemCollection().Last().Id.ToString();
+                                    <a href="@item.Url" class="acc_a" style="@(item.Id.ToString().Contains(j) ? "border-bottom:none" : "")" onmouseover="javascript:this.style.color='#f00'" onmouseout="javascript:this.style.color='#000'">@item.Name.ToLocal()</a>
+                                }
+                            </div>
+                        </div>
+                    </span>
+                    <div class="left_nav_font">@top.Name.ToLocal()</div>
+                  }
+
+                @*<a href="/system/logout">
+                    <img src="/Theme/Home/3/images/l8.png" class="img1" width="65%" /></a>
+                <div class="left_nav_font">Logout</div>
+                <div class="main_01" />*@
+                <span style="cursor: pointer;">
+                    <a href="/system/logout">
+                        <img src="/Theme/Home/3/images/l8.png" width="65%" /></a>
+                    <div id="acc_cl_area_7" class="acc_cl_area">
+                        <div class="acc_div">
+                            @*<div class="sj_div"></div>*@
+                        </div>
+                    </div>
+                </span>
+                <div class="left_nav_font">@("安全退出".ToLocal())</div>
+            </div>
+
+        </div>
+        <div style="float: right; width: @(Request.Url.AbsolutePath.ToLower().Contains("home") ? "90%" : "80%"); margin-top: @(Request.Url.AbsolutePath.ToLower().Contains("home") ? "30px" : "90px")">
+            <div id="sys_message">
+                @if (ViewContext.TempData[AlertEntity.ALERT_ENTITY] != null)
+                {
+                    var alertEntity = ViewContext.TempData[AlertEntity.ALERT_ENTITY] as AlertEntity;
+                    @Html.Partial("Alert", new AlertEntity(alertEntity.Message, alertEntity.Type, alertEntity.CanClose))
+                }
+            </div>
+            @RenderBody()
+        </div>
+        <div style="padding-bottom:1px;padding-top:1300px;margin:0 auto;padding-left:43%"><p style="color:#fff"> Copyright © 2016 REGALZ CAPITAL LIMITED ALL rights reserved.</p></div>
+    </div>
+
+    <!--引入bootstrap-->
+    <script type="text/javascript" src="/Scripts/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/Scripts/json2.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript" src="/Scripts/alertify/alertify.min.js"></script>
+    <script type="text/javascript" src="/Scripts/localization.js"></script>
+    <script type="text/javascript" src="/Scripts/common.js"></script>
+    @RenderSection("foot", false)
+</body>
+
+</html>
+<script type="text/javascript">
+    $(function () {
+
+    });
+</script>
+<div class="modal fade" id="AddMsg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="color-line"></div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="title2">@("留言信息".ToLocal())</h5>
+                <small class="font-bold"></small>
+            </div>
+            <div class="modal-body" style="height: 300px; overflow: auto">
+                <p>@("你可以与这位参与者消息联系".ToLocal())。</p>
+                <hr>
+                <div class="col-lg-12" id="msgRecord">
+                </div>
+                <hr>
+                <div class="col-lg-12">
+                    <input type="hidden" value="" id="msgId" />
+                    <textarea rows="3" style="overflow: auto; resize: none;" cols="100" id="msgContent"></textarea>
+                    <br>
+                    <input type="button" id="msgSubmit" value="@("发送消息".ToLocal())">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-default" data-dismiss="modal">@("关闭".ToLocal())</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="CreateBuy" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="color-line"></div>
+            <div class="modal-header">
+                <h4 class="modal-title">@("提供帮助".ToLocal())</h4>
+                <p class="text-warning">@("申请完成后，请等待系统随机分配受善需求".ToLocal())</p>
+            </div>
+            @using (Html.BeginForm("CreateBuyTrade", "Trade", FormMethod.Post, new { @id = "provide_help" }))
+            {
+                <div class="modal-body" style="text-align: center">
+                    <div class="form-group">
+                        <label class="col-sm-12 control-label">@("提供帮助金额".ToLocal())</label>
+                        <div class="col-sm-12">
+                            <input class="form-control m-b" type="text" name="Total" value="@(Config.Instance.Single.TradeLimit.BuyMultiple)" />
+                            @*<p>@("您本次的挂单金额为".ToLocal())@(MinAmount)@("至".ToLocal())@(MaxAmount)</p>*@
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-12 control-label">@("交易密码".ToLocal())</label>
+                        <div class="col-sm-12">
+                            <input class="form-control m-b" type="text" name="L2Pwd" value="" />
+                        </div>
+                    </div>
+                   @* <div class="icheckbox_square-green checked" style="position: relative;">
+                        <input type="checkbox" class="i-checks" name="i-checks" checked="" required="" style="position: absolute; opacity: 0;">
+                        <ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background-color: rgb(255, 255, 255); border: 0px; opacity: 0; background-position: initial initial; background-repeat: initial initial;"></ins>
+                    </div>*@
+                    @("重要提示，我已经完全了解所有风险，我决定参与".ToLocal())@(Config.Instance.Single.UserHomeTitle)，@("并且遵守".ToLocal())@(Config.Instance.Single.UserHomeTitle)@("的规则和规章制度".ToLocal())。
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@("取消".ToLocal())</button>
+                    <button type="button" class="btn_next btn-warning btn-sm" id="confirmBuy">@("提交".ToLocal())</button>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="CreateSell" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="color-line"></div>
+            <div class="modal-header">
+                <h4 class="modal-title">@("接受帮助".ToLocal())</h4>
+                <p class="text-warning"></p>
+            </div>
+            @using (Html.BeginForm("CreateSellTrade", "Trade", FormMethod.Post, new { @id = "get_help" }))
+            {
+                <div class="modal-body" style="text-align: center">
+                    <div class="form-group">
+                        <label class="col-sm-12 control-label">@("支付货币".ToLocal())</label>
+                        <div class="col-sm-12">
+                            @(Html.DropDownList("CurrencyId", CurrencyHandler.Collection.Where(m => m.Id != 3).Select(m => new SelectListItem
+                        {
+                            Text = m.Name,
+                            Value = m.Id.ToString()
+                        }), htmlAttributes: new { @class = "form-control m-b" }))
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-12 control-label">@("接受帮助金额".ToLocal())</label>
+                        <div class="col-sm-12">
+                            <input type="text" name="Total" class="form-control sell" value="@(Config.Instance.Single.TradeLimit.SellMultiple)">
+                            @*<p>@("您本次的挂单金额为".ToLocal())@(Config.Instance.Single.TradeLimit.se)@("至".ToLocal())@(Config.Instance.Single.TradeLimit.SellMax)</p>*@
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-12 control-label">@("二级密码".ToLocal())</label>
+                        <div class="col-sm-12">
+                            <input class="form-control m-b" type="text" name="L2Pwd" value="" />
+                        </div>
+                    </div>
+                    @("重要提示，我已经完全了解所有风险，我决定参与".ToLocal())@(Config.Instance.Single.UserHomeTitle)，@("并且遵守".ToLocal())@(Config.Instance.Single.UserHomeTitle)@("的规则和规章制度".ToLocal())。
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@("取消".ToLocal())</button>
+                    <button type="button" class="btn_next btn-warning btn-sm" id="confirmSell">@("提交".ToLocal())</button>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="BuyerPayment" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="color-line"></div>
+            <div class="modal-header">
+                <h5 class="modal-title">@("请完成操作".ToLocal())</h5>
+                <small class="font-bold"></small>
+            </div>
+            @using (Html.BeginForm("BuyerPayment", "trade", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+            {
+                <div class="modal-body" style="height: 350px;">
+                    <p>@("上传打款图片".ToLocal())</p>
+                    <p>
+                        <input type="file" name="imageUrl">
+                        <input type="hidden" name="tradeUserId" />
+                    </p>
+                    <span style="color: red">@("图片限制大小为2M".ToLocal())</span>
+                    <p></p>
+                    <p>@("留言")</p>
+                    <textarea rows="2" class="form-control" name="context" style="width: 100%;"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@("关闭".ToLocal())</button>
+                   @* <button type="button" class="btn-primary" id="confirmPayment">@("确认".ToLocal())</button>*@
+                     <button type="button" class="btn-primary" id="confirmPayment" style="    width: 70px;
+    height: 31px;">@("确认".ToLocal())</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="SellerConfirm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="color-line"></div>
+            <div class="modal-header">
+                <h5 class="modal-title">@("确认收款".ToLocal())</h5>
+                <small class="font-bold"></small>
+            </div>
+            @using (Html.BeginForm("SellerConfirm", "Trade", FormMethod.Post))
+            {
+                <div class="modal-body" style="height: 300px;">
+                    <input type="hidden" name="tradeUserId" />
+                    @*<p><b>@("给买家评价".ToLocal())</b></p>
+                    @if (Config.Instance.Single.Pingjia.Any(m => m.JF > 0 && m.Type == PingjiaType.type1))
+                    {
+                        <p>
+                            @foreach (PingjiaType pingjia in Enum.GetValues(typeof(PingjiaType)))
+                            {
+                                if (pingjia == PingjiaType.type0)
+                                {
+                                    continue;
+                                }
+                                <label>
+                                    <input type="radio" name="type" value="@(pingjia)" @(pingjia == PingjiaType.type1 ? "checked='checked'" : "") />
+                                    @(pingjia.EnumMetadataDisplay())
+                                </label>
+                            }
+                        </p>
+                    }*@
+                    <p></p>
+                    <p>@("留言".ToLocal())</p>
+                    <textarea rows="2" class="form-control" name="context" style="width: 100%;"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@("关闭".ToLocal())</button>
+                    <button type="button" class="btn-primary" id="confirmShoukuan" style="    width: 70px;
+    height: 31px;">@("确认".ToLocal())</button>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="TradeLock" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="color-line"></div>
+            <div class="modal-header">
+                <h5 class="modal-title">@("我要投诉".ToLocal())</h5>
+                <small class="font-bold"></small>
+            </div>
+            @using (Html.BeginForm("TradeLock", "Trade", FormMethod.Post))
+            {
+                <div class="modal-body" style="height: 300px;">
+                    <input type="hidden" name="tradeUserId" />
+                    <p>@("申请投诉后,交易将被锁定,并由管理员介入处理,请谨慎操作!".ToLocal())</p>
+                    <p>@("留言".ToLocal())</p>
+                    <textarea rows="2" class="form-control" name="content" style="width: 100%;"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@("关闭".ToLocal())</button>
+                    <button type="button" class="btn-primary" id="confirmTradeLock">@("确认".ToLocal())</button>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="TradeInfo" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="color-line"></div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="title">@("订单详情".ToLocal())</h5>
+                <small class="font-bold"></small>
+            </div>
+            <div class="modal-body" style="height: 300px; overflow: auto">
+                <p><strong>@("流水号".ToLocal()):<span class="tradeInfo_SerialNumber"></span></strong></p>
+
+                <p>@(Config.Instance.Single.UserHomeTitleSimple)@("会员请求援助总金额为".ToLocal()):<font class="tradeInfo_Total" color="#FF0000"></font>RMB</p>
+                @*<p><strong>你必须在<font id="tradeInfo_Daojishi"></font>之前根据银行提供进一步的细节：</strong></p>*@
+                <div style="border: 1px solid #009">
+                    <p>@("输入完整的受益人银行资料如下".ToLocal())：</p>
+                    <p><strong>@("收款人帐号".ToLocal()):<font class="tradeInfo_SellUserCode"></font></strong></p>
+                    <p><strong>@("收款人真实姓名".ToLocal()):<font class="tradeInfo_SellNickName"></font></strong></p>
+                    <p><strong>@("收款人银行帐号".ToLocal()):<font class="tradeInfo_BankInfo"></font></strong></p>
+                    <p><strong>@("收款人支付宝".ToLocal()):<font class="tradeInfo_AlipayInfo"></font></strong></p>
+                    <p><strong>@("收款人微信".ToLocal()):<font class="tradeInfo_WeixinInfo"></font></strong></p>
+
+                    @*<p>发送者的附加信息：为了更快速的确认，请在转账后发送<font class="receiver_phone" color="#0000FF"></font></p>*@
+
+                    <p>---------------------</p>
+
+               @* <p>@("在提供帮助后，请按“我提供的帮助”按钮并附上付款确认文件(支票扫描、收据扫描或网上交易操作屏幕截图)放在一个新窗口上".ToLocal())</p>
+
+                <p>@("在收到资金之前不要确认支付，因为确认了就不能撤销了，系统会默认你已经收到钱了".ToLocal())</p>*@
+                </div>
+                <p><font color="#FF0000">@("温馨提示".ToLocal())!</font>@("请核实双方信息,尽快完成订单,以免超时".ToLocal())</p>
+
+                <p><strong>@("收款人".ToLocal()):<font class="tradeInfo_SellNickName"></font>, @("电话".ToLocal()):<font class="tradeInfo_SellMobile"></font></strong></p>
+                <p><strong>@("收款人推荐人".ToLocal()):<font class="tradeInfo_SellTJNickName"></font>,@("电话".ToLocal()):<font class="tradeInfo_SellTJMobile"></font></strong></p>
+                <p style="display: none"><strong>@("接收者二级推荐人".ToLocal()):<font class="tradeInfo_SellTJNickName2"></font>,@("电话".ToLocal()):<font class="tradeInfo_SellTJMobile2"></font></strong></p>
+                <p><strong>@("打款人".ToLocal()):<font class="tradeInfo_BuyNickName"></font>, @("电话".ToLocal()):<font class="tradeInfo_BuyMobile"></font></strong></p>
+                <p><strong>@("打款人推荐人".ToLocal()):<font class="tradeInfo_BuyTJNickName"></font>,@("电话".ToLocal()):<font class="tradeInfo_BuyTJMobile"></font></strong></p>
+                <p style="display: none"><strong>@("发送者二级推荐人".ToLocal()):<font class="tradeInfo_BuyTJNickName2"></font>,@("电话".ToLocal()):<font class="tradeInfo_BuyTJMobile2"></font></strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-default" data-dismiss="modal">@("关闭".ToLocal())</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        @if (TempData[AlertEntity.ALERT_ENTITY] != null)
+        {
+        <text>
+        alert("@((TempData[AlertEntity.ALERT_ENTITY] as AlertEntity).Message)");
+        </text>
+        }
+        $("#headmenu123").click(function (event) {
+            event.stopPropagation();
+            $(".head_menua").show();
+        });
+        $("body").click(function () {
+            $(".head_menua").hide();
+        });
+
+        $(".menu123").trigger("click");
+        $(".menu123").click(function () {
+            $(".submenu123").hide();
+            $(".menu123").removeClass("menubg11").addClass("menubg22");
+            $(this).removeClass("menubg22").addClass("menubg11");
+
+            $(this).next().show();
+        });
+
+        $(".maxWidth").css("width", document.body.scrollWidth);
+        //$(".main").css("width", document.body.scrollWidth - 240);
+
+        window.onresize = function () {
+            $(".maxWidth").css("width",document.body.scrollWidth);
+            //$(".main").css("width", document.body.scrollWidth - 240);
+        };
+
+
+
+        //挂买单
+        $("#confirmBuy").click(function () {
+            if (confirm("@("确认提交".ToLocal())?")) {
+                $("#confirmBuy").attr({ "disabled": "disabled" });
+                $("#confirmBuy").parents("form").submit();
+            }
+        });
+        //挂卖单
+        $("#confirmSell").click(function () {
+            if (confirm("@("确认提交".ToLocal())?")) {
+                $("#confirmSell").attr({ "disabled": "disabled" });
+                $("#confirmSell").parents("form").submit();
+            }
+        });
+        //构造聊天信息
+        $(".addmsg").click(function () {
+            $("#msgContent").val("");
+            $("#msgRecord").html("");
+            $("#msgId").val($(this).val());
+            $.ajaxSetup({ async: false });
+            $.post("/vip/trade/GetMessage", { tradeUserId: $(this).val() }, function (result) {
+                var record = "";
+                for (var i = 0; i < result.length; i++) {
+                    record += "<p>[" + result[i].CreateDate + "]" + result[i].UserName + " : " + result[i].Content + "<p><hr/>";
+                }
+                $("#msgRecord").html(record);
+            });
+            $("#AddMsg").modal("toggle");
+        });
+        //发送聊天信息
+        $("#msgSubmit").click(function () {
+            if ($("#msgContent").val() == "") {
+                alert("@("请输入信息".ToLocal())!");
+                return;
+            }
+            $.ajaxSetup({ async: false });
+            $.post("/vip/trade/AddMessage", { tradeUserId: $("#msgId").val(), content: $("#msgContent").val() }, function () {
+
+            });
+            alert("@("发送成功".ToLocal())!");
+            $("#AddMsg").modal("toggle");
+        });
+        //买家打款
+        $(".BuyerPayment").click(function () {
+            $("#BuyerPayment textarea").val("");
+            $("#BuyerPayment input[type=hidden]").val($(this).val());
+            $("#BuyerPayment").modal("toggle");
+        });
+        //买家打款提交
+        $("#confirmPayment").click(function () {
+            if (confirm("@("确认提交".ToLocal())?")) {
+                $(this).attr({ "disabled": "disabled" });
+                $(this).parents("form").submit();
+            }
+        });
+        //卖家确认收款
+        $(".SellerConfirm").click(function () {
+            $("#SellerConfirm textarea").val("");
+            $("#SellerConfirm input[type=hidden]").val($(this).val());
+            $("#SellerConfirm").modal("toggle");
+        });
+        //卖家确认收款提交
+        $("#confirmShoukuan").click(function () {
+            if (confirm("@("确认提交".ToLocal())?")) {
+                $(this).attr({ "disabled": "disabled" });
+                $(this).parents("form").submit();
+            }
+        });
+        //投诉
+        $(".TradeLock").click(function () {
+            $("#TradeLock textarea").val("");
+            $("#TradeLock input[type=hidden]").val($(this).val());
+            $("#TradeLock").modal("toggle");
+        });
+        //确认投诉
+        $("#confirmTradeLock").click(function () {
+            if (confirm("@("确认提交".ToLocal())?")) {
+                $(this).attr({ "disabled": "disabled" });
+                $(this).parents("form").submit();
+            }
+        });
+
+        //缴纳诚信金
+        $(".PaymentCXJ").click(function () {
+            $("#PaymentCXJ input[type=hidden]").val($(this).val());
+            $("#PaymentCXJ").modal("toggle");
+        });
+        //确认缴纳
+        $("#confirmPaymentCXJ").click(function () {
+            if (confirm("@("确认".ToLocal())?")) {
+                $(this).attr({ "disabled": "disabled" });
+                $(this).parents("form").submit();
+            }
+        });
+
+        $(".TradeInfo").click(function () {
+            $.ajaxSetup({ async: false });
+            $.post("/vip/trade/GetTradeInfo", { tradeUserId: $(this).val() }, function (result) {
+                $(".tradeInfo_SerialNumber").html(result.SerialNumber);
+                $(".tradeInfo_Total").html(result.Total);
+                $(".tradeInfo_SellUserCode").html(result.SellUserCode);
+                $(".tradeInfo_SellNickName").html(result.SellNickName);
+                $(".tradeInfo_BankInfo").html(result.BankName + "-" + result.BankAddress + "-" + result.BankUserName + "-" + result.BankCode);
+                $(".tradeInfo_AlipayInfo").html(result.AlipayUserName + "-" + result.AlipayCode);
+                $(".tradeInfo_WeixinInfo").html(result.WeixinCode);
+
+                $(".tradeInfo_SellNickName").html(result.SellNickName);
+                $(".tradeInfo_SellMobile").html(result.SellMobile);
+                $(".tradeInfo_SellTJNickName").html(result.SellTJNickName);
+                $(".tradeInfo_SellTJNickName2").html(result.SellTJNickName2);
+
+                $(".tradeInfo_SellTJMobile").html(result.SellTJMobile);
+                $(".tradeInfo_SellTJMobile2").html(result.SellTJMobile2);
+
+                $(".tradeInfo_BuyNickName").html(result.BuyNickName);
+                $(".tradeInfo_BuyMobile").html(result.BuyMobile);
+                $(".tradeInfo_BuyTJNickName").html(result.BuyTJNickName);
+                $(".tradeInfo_BuyTJNickName2").html(result.BuyTJNickName2);
+                $(".tradeInfo_BuyTJMobile").html(result.BuyTJMobile);
+                $(".tradeInfo_BuyTJMobile2").html(result.BuyTJMobile2);
+            });
+            $("#TradeInfo").modal("toggle");
+        });
+
+        function Countdown123() {
+            $(".time_countdown").each(function () {
+                var EndTime = new Date($(this).attr("data-time"));
+                var NowTime = new Date();
+                console.log("开始时间");
+                console.log(EndTime);
+                console.log("结束时间");
+                console.log(NowTime);
+                var t = EndTime.getTime() - NowTime.getTime();
+                var d = Math.floor(t / 1000 / 60 / 60 / 24);
+                var h = Math.floor(t / 1000 / 60 / 60 % 24);
+                var m = Math.floor(t / 1000 / 60 % 60);
+                var s = Math.floor(t / 1000 % 60);
+                $(this).html(d + " @("天".ToLocal())" + h + " @("小时".ToLocal())" + m + "@("分".ToLocal())" + s + "@("秒".ToLocal())");
+            });
+        }
+        setInterval(Countdown123, 1000);
+
+        $("#CurrencyId").trigger("change");
+
+    });
+</script>

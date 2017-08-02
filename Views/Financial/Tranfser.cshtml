@@ -1,0 +1,22 @@
+﻿@model Pager<T_Transfer>
+@{
+    ViewBag.Title = "转出记录";
+}
+
+@using (Html.Search())
+{
+    Html.Group("转账会员", Html.TextBox("fromUserCode", Request.QueryString["fromUserCode"]));
+    Html.Group("收款会员", Html.TextBox("toUserCode", Request.QueryString["toUserCode"]));
+}
+
+@(Grid.Create<T_Transfer>().SetDataSource(Model.Data)
+.Column(m => m.FromUserCode).Name("转账会员").End()
+.Column(m => m.ToUserCode).Name("收款会员").End()
+.Column(m => m.CurrencyId).Name("货币类型").Value(m => CurrencyHandler.Element(m.CurrencyId).Name).End()
+.Column(m => m.Total).Name("总额").End()
+.Column(m => m.ServiceFee).Name("手续费").End()
+.Column(m => m.Amount).Name("实际到帐金额").End()
+.Column(m => m.CreateDate).Name("日期").End()
+.Render())
+
+@Html.Page(Model)

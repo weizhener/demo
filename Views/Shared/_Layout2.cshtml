@@ -1,0 +1,234 @@
+﻿@{
+    PlatformIndexData model = new PlatformIndexData();
+    using (ZXContext db = new ZXContext())
+    {
+        model.MenuCollection = db.Menu.ToList();
+        model.MenuTypeCollection = db.MenuType.ToList();
+        model.AdminMenuCollection = db.Menu.Where(m => db.AdminRoleLink.Where(n => n.AdminId == _User.Current.Id)
+                                                            .Join(db.Authorize, n => n.RoleId, n => n.RoleId, (t, k) => new { AdminRoleLink = t, Authorize = k })
+                                                            .Join(db.MenuAction, n => n.Authorize.MenuActionId, n => n.Id, (t, k) => new { t.AdminRoleLink, t.Authorize, MenuAction = k })
+                                                            .Any(n => n.MenuAction.MenuId == m.Id)).ToList();
+    }
+
+    IEnumerable<T_Menu> menuDataSource = null;
+    if (_User.Current.RightType == RightType.System)
+    {
+        menuDataSource = model.AdminMenuCollection;
+    }
+    else if (_User.Current.RightType == RightType.Admin)
+    {
+        menuDataSource = model.MenuCollection.Where(m => model.MenuTypeCollection.Any(n => (n.Id == m.MenuTypeId) && (n.IsSystem || n.IsLock)) == false);
+    }
+    else
+    {
+        menuDataSource = model.MenuCollection.Where(m => model.MenuTypeCollection.Any(n => n.Id == m.MenuTypeId && n.IsLock) == false);
+    }
+    string topId = "", itemId = "";
+    if (menuDataSource.Any(l => l.MenuUrl.ToLower().Contains(Request.Url.AbsolutePath.ToLower())))
+    {
+        Session[Navigation.TOP_KEY] = menuDataSource.Last(l => l.MenuUrl.ToLower().Contains(Request.Url.AbsolutePath.ToLower())).MenuTypeId.ToString();
+        Session[Navigation.ITEM_KEY] = menuDataSource.Last(l => l.MenuUrl.ToLower().Contains(Request.Url.AbsolutePath.ToLower())).Id.ToString();
+    }
+    if (Session[Navigation.TOP_KEY] != null)
+    {
+        topId = Session[Navigation.TOP_KEY] as string;
+    }
+    if (Session[Navigation.ITEM_KEY] != null)
+    {
+        itemId = Session[Navigation.ITEM_KEY] as string;
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="/Theme/Login/System2/css/style.css?timespan=@DateTime.Now.ToOADate()" type="text/css" rel="stylesheet" />
+    <!-- bootstrap -->
+    <link href="@Url.Content("~/Content/bootstrap.min.css")" rel="stylesheet" />
+    <!-- WARNING: Respond.js doesn't work if you view the page via  -->
+    <!--[if lt IE 9]>
+      <script src="@Url.Content("~/Scripts/html5shiv.min.js")"></script>
+      <script src="@Url.Content("~/Scripts/respond.min.js")"></script>
+    <![endif]-->
+    <!-- alertify -->
+    <link href="/Content/alertify/alertify.core.css" rel="stylesheet" />
+    <link href="/Content/alertify/alertify.bootstrap.css" rel="stylesheet" />
+    <style type="text/css">
+        body {
+            padding: 0px;
+            margin: 0;
+            font-family: 'Microsoft YaHei';
+            font-size: 14px;
+        }
+
+        table {
+            word-break: break-all;
+            word-wrap: break-word;
+        }
+
+        #page-operating {
+            border-bottom: solid 1px #ccc;
+            padding: 10px 60px 0px 20px;
+            box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px;
+            background-color: #fff;
+            height: 50px;
+            /*position: fixed;*/
+            width: 100%;
+            z-index: 100;
+        }
+
+        .form-control {
+            border: 1px #139667 solid !important;
+            padding: 5px !important;
+            border-radius: 0px !important;
+        }
+
+        select, input {
+            height: 34px !important;
+            padding: 5px !important;
+            margin-left: 5px !important;
+            margin-right: 5px !important;
+            font-size: 14px !important;
+            line-height: 1.42857143 !important;
+            color: #555 !important;
+            background-color: #fff !important;
+            background-image: none !important;
+            border: 1px #139667 solid !important;
+            border-radius: 0px !important;
+            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075) !important;
+            box-shadow: inset 0 1px 1px rgba(0,0,0,.075) !important;
+            -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s !important;
+            -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s !important;
+            transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s !important;
+        }
+
+        .btn-default {
+            color: #333 !important;
+            background-color: #f8f8f8 !important;
+            border: 1px #19a97b solid !important;
+        }
+
+        .btn-primary {
+            border: 1px #139667 solid !important;
+            background: #19a97b !important;
+            color: white !important;
+        }
+
+
+        .alert {
+            margin-bottom: 10px !important;
+        }
+    </style>
+    @RenderSection("head", false)
+</head>
+
+<body>
+    <!--header-->
+    <header>
+        <h1>
+            <img src="/Theme/Login/System2/images/admin_logo.png" />
+        </h1>
+        <ul class="rt_nav">
+            <li><a href="/system/welcome" class="website_icon">站点首页</a></li>
+            @*     <li><a href="#" class="admin_icon">DeathGhost</a></li>
+                <li><a href="#" class="set_icon">账号设置</a></li>*@
+            <li><a href="/system/logout" onclick="return confirm('确认退出?')" class="quit_icon">安全退出</a></li>
+        </ul>
+    </header>
+    <!--aside nav-->
+    <aside class="lt_aside_nav">
+        <ul>
+            @helper RenderMenu(IEnumerable<T_Menu> menuDataSource, PlatformIndexData model)
+{
+                foreach (var item in model.MenuTypeCollection.Where(m => menuDataSource.Any(n => n.MenuTypeId == m.Id)).OrderBy(m => m.IsSystem).ThenBy(m => m.MenuTypeSequenceNum))
+                {
+                <li>
+                    <dl>
+                        <dt id="@(item.Id)">@(item.MenuTypeName)</dt>
+                        @foreach (var menuItem in menuDataSource.Where(m => m.MenuTypeId == item.Id).OrderBy(n => n.MenuSequenceNum))
+                        {
+                            <dd id="@(menuItem.Id)"><a href="@menuItem.MenuUrl">@(menuItem.MenuName)</a></dd>
+                        }
+                    </dl>
+                </li>
+                }
+            }
+
+            @RenderMenu(menuDataSource, model)
+
+            @if (_User.Current.RightType == RightType.Developer)
+            {
+
+                <li>
+                    <dl>
+                        <dt id="@(PF.Key())">未分组</dt>
+                        @foreach (var menuItem in model.MenuCollection.Where(m => m.MenuTypeId.HasValue == false).OrderBy(n => n.MenuSequenceNum))
+                        {
+                            <dd id="@(menuItem.Id)"><a href="@menuItem.MenuUrl">@(menuItem.MenuName)</a></dd>
+                        }
+                    </dl>
+                </li>
+            }
+            <li>
+                @*<p class="btm_infor"></p>*@
+            </li>
+        </ul>
+    </aside>
+
+    <section class="rt_wrap">
+        @if (!Request.Url.AbsoluteUri.ToLower().Contains("/system/welcome".ToLocal()))
+        {
+            <div id="page-operating">
+                <div class="pull-left">
+                    <span style="font-size: 14px; padding-right: 20px;">
+                        <span class="glyphicon glyphicon-info-sign"></span>
+                        @ViewBag.Title
+                    </span>
+                </div>
+                <div class="pull-right">
+                    @RenderSection("buttonGroup", false)
+                    <a href="@Html.GenerateUrl()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-refresh"></span>刷新</a>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        }
+        <div class="rt_content">
+            <div id="sys_message" style="overflow: auto;">
+                @if (ViewContext.TempData[AlertEntity.ALERT_ENTITY] != null)
+                {
+                    var alertEntity = ViewContext.TempData[AlertEntity.ALERT_ENTITY] as AlertEntity;
+                    @Html.Partial("Alert", new AlertEntity(alertEntity.Message, alertEntity.Type, alertEntity.CanClose))
+                }
+            </div>
+            @RenderBody()
+        </div>
+    </section>
+    <!--引入bootstrap-->
+    <script type="text/javascript" src="/Scripts/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/Scripts/json2.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript" src="/Scripts/alertify/alertify.min.js"></script>
+    <script type="text/javascript" src="/Scripts/localization.js"></script>
+    <script type="text/javascript" src="/Scripts/common.js"></script>
+    @*<script src="/Theme/Login/System2/js/jquery.mCustomScrollbar.concat.min.js"></script>*@
+    @RenderSection("foot", false)
+</body>
+</html>
+<script>
+    $(function () {
+        $(".lt_aside_nav dt").click(function () {
+            $(".lt_aside_nav dd").hide();
+            $(this).parents("dl").find("dd").slideDown();
+        });
+        $("#@(topId)").parents("dl").find("dd").show();
+        $("#@(itemId)").find("a").addClass("active");
+
+        $(".rt_content").css("height", document.body.offsetHeight - 140);
+        window.onresize = function () {
+            $(".rt_content").css("height", document.body.offsetHeight - 140);
+        }
+    });
+</script>

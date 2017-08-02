@@ -1,0 +1,127 @@
+﻿@model ChargeData
+@{
+    ViewBag.Title = "充值扣款";
+}
+
+@Html.Tab(new ListItem { Text = "充值扣款", Value = "/financial/Charge", Selected = true },
+new ListItem { Text = "充值扣款记录", Value = "/financial/ChargeRecord" })
+
+
+@using (Html.Form())
+{
+  @Html.RowForEdit(m => m.UserCode, true)
+    @Html.RowForEdit(m => m.CurrencyId)
+    @Html.RowForEdit(m => m.Amount)
+    @Html.RowForEdit(m => m.Description)
+    @Html.Row(null, m => Html.Submit())
+}
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            //推荐人真实姓名
+            $("#UserCode").change(function () {
+                if (common.isNull($(this).val())) { return; }
+                $.get("/user/GetNickName", { userCode: $(this).val() }, function (result) {
+                    if (result.IsSuccess) {
+                        $("#UserCode___extension__").text(result.Data);
+                    }
+                    else {
+                        $("#UserCode___extension__").text("");
+                        if (result.Error) {
+                            alert(result.Error);
+                        }
+                    }
+                });
+            });
+
+            //验证接点人编号并获取接点人真实姓名
+            $("#JDUserCode").change(function () {
+                if (common.isNull($("#JDUserCode").val())) { return; }
+                //获取真实姓名
+                $.get("/user/GetNickName", { userCode: $(this).val() }, function (result) {
+                    if (result.IsSuccess) {
+                        $("#JDUserCode___extension__").text(result.Data);
+                    }
+                    else {
+                        $("#JDUserCode___extension__").text("");
+                        if (result.Error) {
+                            alert(result.Error);
+                        }
+                    }
+                });
+                //验证接点人
+                $.post("/user/validJD", { jdUserCode: $(this).val(), position: $("#JDPosition").val() }, function (result) {
+                    if (!result.IsSuccess) {
+                        alert(result.Error);
+                    }
+
+                    if (result.Data) {
+                        //重置市场
+                        $("#JDPosition").val(result.Data);
+                    }
+                });
+            });
+
+            //验证市场
+            $("#JDPosition").change(function () {
+                $.post("/user/validJD", { jdUserCode: $("#JDUserCode").val(), position: $(this).val() }, function (result) {
+                    if (!result.IsSuccess) {
+                        alert(result.Error);
+                    }
+
+                    if (result.Data) {
+                        //重置市场
+                        $("#JDPosition").val(result.Data);
+                    }
+                });
+            });
+
+            //服务中心真实姓名
+            $("#ReportCenterUserCode").change(function () {
+                if (common.isNull($(this).val())) { return; }
+                $.get("/user/GetNickName", { userCode: $(this).val() }, function (result) {
+                    if (result.IsSuccess) {
+                        $("#ReportCenterUserCode___extension__").text(result.Data);
+                    }
+                    else {
+                        $("#ReportCenterUserCode___extension__").text("");
+                        if (result.Error) {
+                            alert(result.Error);
+                        }
+                    }
+                });
+
+                $.get("/user/ValidReportCenter", { reportCenterUserCode: $(this).val() }, function (result) {
+                    if (!result.IsSuccess) {
+                        alert(result.Error);
+                    }
+                });
+            });
+
+            //省市地区级联
+            $("#ProvinceId").change(function () {
+                $.get("/system/pcc", { parentId: $(this).val() }, function (cityCollection) {
+                    var citySel = $("#CityId").empty();
+                    $(cityCollection).each(function () {
+                        citySel.append($("<option value='" + this.Id + "'>" + this.Name + "</option>"));
+                    });
+
+                    $.get("/system/pcc", { parentId: cityCollection[0].Id }, function (countyCollection) {
+                        var countySel = $("#CountyId").empty();
+                        $(countyCollection).each(function () {
+                            countySel.append($("<option value='" + this.Id + "'>" + this.Name + "</option>"));
+                        });
+                    });
+                });
+            });
+            $("#CityId").change(function () {
+                $.get("/system/pcc", { parentId: $(this).val() }, function (countyCollection) {
+                    var countySel = $("#CountyId").empty();
+                    $(countyCollection).each(function () {
+                        countySel.append($("<option value='" + this.Id + "'>" + this.Name + "</option>"));
+                    });
+                });
+            });
+        });
+    </script>
+}

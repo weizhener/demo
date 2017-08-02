@@ -1,0 +1,11 @@
+﻿@model ImportLocaleStringResourceData
+@{
+    ViewBag.Title = "导入";
+}
+
+@using (Html.Form(true))
+{
+    @Html.RowForEdit(m => m.Type)
+    @Html.Row("资源文件", @<input type="file" name="localeStringResourceData" />)
+    @Html.Row("",m=>Html.Submit())
+}

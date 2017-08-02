@@ -1,0 +1,813 @@
+﻿@using ZMZ.ZX.Core
+@{
+    T_User user = null;
+    int tjCount = 0;
+    int ztCount = 0;
+    T_User tjUser = null;
+    List<T_Wallet> wallets = new List<T_Wallet>();
+    int JihuoCodeCount = 0;
+    decimal LockPrize = 0;
+    string url = "http://{0}{1}/vip/user/register?tj={2}".FormatString(Request.Url.Host, (Request.Url.Port != 80 ? ":" + Request.Url.Port.ToString() : ""), _User.Current.Code);
+    var news = new List<T_News>();
+    decimal MinAmount = Config.Instance.Single.TradeLimit.BuyMin;
+    decimal MaxAmount = Config.Instance.Single.TradeLimit.BuyMax;
+    using (ZXContext db = new ZXContext())
+    {
+        user = db.User.Find(_User.Current.Id);
+        tjUser = user.TJUser;
+        wallets = db.Wallet.Where(m => m.UserId == _User.Current.Id).OrderBy(n => n.CurrencyId).ToList();
+
+        tjCount = db.User.Count(m => m.TJLeftValue > user.TJLeftValue && m.TJRightValue < user.TJRightValue);
+        JihuoCodeCount = db.JihuoCode.Count(m => m.BuyId == user.Id && m.UseId == null);
+        ztCount = user.TJChildren.Count;
+        news = db.News.OrderByDescending(m => m.CreateDate).Take(10).ToList();
+        LockPrize += db.PrizeDetail.Where(m => m.UserId == user.Id && m.IsDeal == false).Select(m => m.Total).DefaultIfEmpty(0).Sum();
+    }
+    
+    if (Navigation.Instance.NavigationTopCollection().Any(m => m.NavigationItemCollection().Any(l => (Request.Url.AbsolutePath.Contains(l.Url)) || l.Url.Contains(Request.Url.AbsolutePath))))
+    {
+        Session["menuId"] = Navigation.Instance.NavigationTopCollection().FirstOrDefault(m => m.NavigationItemCollection().Any(l => (Request.Url.AbsolutePath.Contains(l.Url)) || l.Url.Contains(Request.Url.AbsolutePath))).Id.ToString();
+        Session["subId"] = Request.Url.AbsolutePath;
+    }
+}
+
+<!DOCTYPE html>
+<!--[if IE 8]> <html lang="en" class="ie8 no-js"> <![endif]-->
+<!--[if IE 9]> <html lang="en" class="ie9 no-js"> <![endif]-->
+<!--[if !IE]><!-->
+<html lang="en" class="no-js">
+<!--<![endif]-->
+<!-- BEGIN HEAD -->
+<head>
+    <meta charset="utf-8" />
+    <title>@ViewBag.Title</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta content="width=device-width, initial-scale=1" name="viewport" />
+    <meta content="" name="description" />
+    <meta content="" name="author" />
+    <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <link href="/areas/vip/assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+    <link href="/areas/vip/assets/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="/areas/vip/assets/plugins/uniform/css/uniform.default.css" rel="stylesheet" type="text/css" />
+    <!-- END GLOBAL MANDATORY STYLES -->
+    <!-- BEGIN PAGE LEVEL PLUGIN STYLES -->
+    <link href="/areas/vip/assets/plugins/gritter/css/jquery.gritter.css" rel="stylesheet" type="text/css" />
+    <link href="/areas/vip/assets/plugins/bootstrap-daterangepicker/daterangepicker-bs3.css" rel="stylesheet" type="text/css" />
+    <link href="/areas/vip/assets/plugins/fullcalendar/fullcalendar/fullcalendar.css" rel="stylesheet" type="text/css" />
+    <link href="/areas/vip/assets/plugins/jqvmap/jqvmap/jqvmap.css" rel="stylesheet" type="text/css" />
+    <link href="/areas/vip/assets/plugins/jquery-easy-pie-chart/jquery.easy-pie-chart.css" rel="stylesheet" type="text/css" />
+    <!-- END PAGE LEVEL PLUGIN STYLES -->
+    <!-- BEGIN THEME STYLES -->
+    <link href="/areas/vip/assets/css/style-metronic.css" rel="stylesheet" type="text/css" />
+    <link href="/areas/vip/assets/css/style.css" rel="stylesheet" type="text/css" />
+    <link href="/areas/vip/assets/css/style-responsive.css" rel="stylesheet" type="text/css" />
+    <link href="/areas/vip/assets/css/plugins.css" rel="stylesheet" type="text/css" />
+    <link href="/areas/vip/assets/css/pages/tasks.css" rel="stylesheet" type="text/css" />
+    <link href="/areas/vip/assets/css/themes/default.css" rel="stylesheet" type="text/css" id="style_color" />
+    <link href="/areas/vip/assets/css/print.css" rel="stylesheet" type="text/css" media="print" />
+    <link href="/areas/vip/assets/css/custom.css" rel="stylesheet" type="text/css" />
+    <!-- END THEME STYLES -->
+    <link rel="shortcut icon" href="favicon.ico" />
+    <link href="/Content/alertify-themes/alertify.core.css" rel="stylesheet" />
+    <link href="/Content/alertify-themes/alertify.bootstrap.css" rel="stylesheet" />
+    <script src="/Scripts/alertify.min.js"></script>
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    <link href="@Url.Content("~/Content/page.css")" rel="stylesheet" type="text/css" />
+    <!-- Bootstrap -->
+    <link href="@Url.Content("~/Content/bootstrap.min.css")" rel="stylesheet" />
+    <!-- Bootstrap Admin Theme -->
+    <link href="@Url.Content("~/Content/bootstrap-site-theme.css")" rel="stylesheet" />
+
+    <!-- alertify -->
+    <link href="/Content/alertify/alertify.core.css" rel="stylesheet" />
+    <link href="/Content/alertify/alertify.bootstrap.css" rel="stylesheet" />
+
+    <script type="text/javascript" src="/Scripts/jquery-1.9.1.min.js"></script>
+    @RenderSection("head", false)
+</head>
+<!-- END HEAD -->
+<!-- BEGIN BODY -->
+<body class="page-header-fixed">
+    <!-- BEGIN HEADER -->
+    <div class="header navbar navbar-fixed-top">
+        <!-- BEGIN TOP NAVIGATION BAR -->
+        <div class="header-inner">
+            <!-- BEGIN LOGO -->
+            <a class="navbar-brand" href="/vip/home/index">
+                @*<img src="/areas/vip/assets/img/logo.png" alt="logo" class="img-responsive" />*@
+            </a>
+            <!-- END LOGO -->
+            <!-- BEGIN RESPONSIVE MENU TOGGLER -->
+            <a href="javascript:;" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <img src="/areas/vip/assets/img/menu-toggler.png" alt="" />
+            </a>
+            <!-- END RESPONSIVE MENU TOGGLER -->
+            <!-- BEGIN TOP NAVIGATION MENU -->
+            <ul class="nav navbar-nav pull-right">
+
+                <!-- BEGIN LANGUAGE DROPDOWN -->
+               @* <li class="dropdown user">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                        <span class="username">@("语言切换".ToLocal() )
+                             </span>
+                        <i class="fa fa-angle-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li></li>
+                        <li>
+                            <a href="/system/SetCulture?culture=zh-CN&returnUrl=@Server.UrlEncode(Html.GenerateUrl())">
+                                <img alt="" src="/areas/vip/assets/img/flags/cn.png" /> @("简体中文".ToLocal())
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/system/SetCulture?culture=en-US&returnUrl=@Server.UrlEncode(Html.GenerateUrl())">
+                                <img alt="" src="/areas/vip/assets/img/flags/gb.png" /> @("English".ToLocal())
+                            </a>
+                        </li>
+                    </ul>
+                </li>*@
+                <!-- END LANGUAGE DROPDOWN -->
+                <!-- BEGIN USER LOGIN DROPDOWN -->
+                <li class="dropdown user">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+                        <img alt="" src="/areas/vip/assets/img/avatar1_small.jpg" />
+                        <span class="username">@_User.Current.Code
+                           @* @if(user.Jodid != (int) JobLevel.level0)
+                            {
+                                <span>【@(user.Jodid.ToEnum<JobLevel>().EnumMetadataDisplay())】</span>
+                            }*@
+                             </span>
+                        <i class="fa fa-angle-down"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li></li>
+                        <li>
+                            <a href="javascript:;" id="trigger_fullscreen">
+                                <i class="fa fa-arrows"></i>@("全屏模式".ToLocal())
+                            </a>
+                        </li>
+                        <li>
+                            <a href="/system/logout" onclick="return confirm('确认退出?')">
+                                <i class="fa fa-key"></i>@("安全退出".ToLocal())
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- END USER LOGIN DROPDOWN -->
+            </ul>
+            <!-- END TOP NAVIGATION MENU -->
+        </div>
+        <!-- END TOP NAVIGATION BAR -->
+    </div>
+    <!-- END HEADER -->
+    <div class="clearfix">
+    </div>
+    <!-- BEGIN CONTAINER -->
+    <div class="page-container">
+        <!-- BEGIN SIDEBAR -->
+        <div class="page-sidebar-wrapper">
+            <div class="page-sidebar navbar-collapse collapse">
+                <!-- add "navbar-no-scroll" class to disable the scrolling of the sidebar menu -->
+                <!-- BEGIN SIDEBAR MENU -->
+                <ul class="page-sidebar-menu" data-auto-scroll="true" data-slide-speed="200">
+                    <li class="sidebar-toggler-wrapper">
+                        <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+                        <div class="sidebar-toggler hidden-phone">
+                        </div>
+                        <!-- BEGIN SIDEBAR TOGGLER BUTTON -->
+                    </li>
+                    <li class="sidebar-search-wrapper"></li>
+                    <li class="start  @(Session["menuId"] == null ? "active" : "")" id="0">
+                        <a href="/vip/home/Index">
+                            <i class="fa fa-home"></i>
+                            <span class="title">
+                                @("首页".ToLocal())
+                            </span>
+                            <span class="selected"></span>
+                        </a>
+                    </li>
+                    @{
+                        var titleClass = "";
+                    }
+                    @for (int i = 0; i < Navigation.Instance.NavigationTopCollection().Count(); i++)
+                    {
+                        switch ((int)Navigation.Instance.NavigationTopCollection().ToList()[i].Id)
+                        {
+                            case 1:
+                                titleClass = "fa fa-table";
+                                break;
+                            case 2:
+                                titleClass = "fa fa-sitemap";
+                                break;
+                            case 3:
+                                titleClass = "fa fa-briefcase";
+                                break;
+                            case 4:
+                                titleClass = "fa fa-coffee";
+                                break;
+                            case 5:
+                                titleClass = "fa fa-glass";
+                                break;
+                            case 6:
+                                titleClass = "fa fa-barcode";
+                                break;
+                            case 7:
+                                titleClass = "fa fa-medkit";
+                                break;
+                            default: break;
+                        }
+                        //if (i == 2 && Config.Instance.Single.LockJDNet == true && Config.Instance.Single.LockTJNet == true)
+                        //{
+                        //    continue;
+                        //}
+                        <li class="@(Session["menuId"] != null && Session["menuId"] as string == Navigation.Instance.NavigationTopCollection().ToList()[i].Id.ToString() ? "active" : "")" id="@(i)" title="menu">
+                            <a href="javascript:;">
+                                <i class="@titleClass"></i><span class="title">@Navigation.Instance.NavigationTopCollection().ToList()[i].Name.ToLocal()</span><span class="arrow "></span>
+                            </a>
+                            <ul class="sub-menu">
+                                @for (int j = 0; j < Navigation.Instance.NavigationTopCollection().ToList()[i].NavigationItemCollection().Count(); j++)
+                                {
+                                    //if (i == 2 && Config.Instance.Single.LockTJNet == true && j == 1)
+                                    //{
+                                    //    continue;
+                                    //}
+
+                                    //if (i == 2 && Config.Instance.Single.LockJDNet == true && j == 0)
+                                    //{
+                                    //    continue;
+                                    //}
+                                   
+                                    <li class="tooltips @((Session["subId"] != null &&
+                                    Navigation.Instance.NavigationTopCollection().ToList()[i]
+                                                        .NavigationItemCollection().ToList()[j]
+                                                        .Url.Contains(Session["subId"] as string)) ? "active" : "")" data-container="body" data-placement="right" data-html="true">
+                                        <a href="@Url.Content("~" + Navigation.Instance.NavigationTopCollection().ToList()[i].NavigationItemCollection().ToList()[j].Url)" target="_self" >
+                                            <span class="title">
+                                                @Navigation.Instance.NavigationTopCollection().ToList()[i].NavigationItemCollection().ToList()[j].Name.ToLocal()
+                                            </span>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </li>
+                    }
+                    <li class="last "><a href="/system/logout" onclick="return confirm('确认退出?')"><i class="fa fa-cogs"></i><span class="title">@("安全退出".ToLocal())</span></a></li>
+                </ul>
+                <!-- END SIDEBAR MENU -->
+            </div>
+        </div>
+        <!-- END SIDEBAR -->
+        <!-- BEGIN CONTENT -->
+        <div class="page-content-wrapper">
+            <div class="page-content">
+                <!-- BEGIN PAGE HEADER-->
+                <div class="row">
+                    <div class="col-md-12">
+                        <!-- BEGIN PAGE TITLE & BREADCRUMB-->
+                        <ul class="page-breadcrumb breadcrumb">
+                            <li>
+                                <i class="fa fa-home"></i>
+                                <a href="/vip/home_2/index">
+                                    @("首页".ToLocal())
+                                </a>
+                                <i class="fa fa-angle-right"></i>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    @ViewBag.Title
+                                </a>
+                            </li>
+
+                        </ul>
+                        <!-- END PAGE TITLE & BREADCRUMB-->
+                    </div>
+                    <div class="ui-page-fr" id="toolbar">
+                        @RenderSection("toolbar", false)
+                    </div>
+                </div>
+
+                <!-- END PAGE HEADER-->
+                <div class="row ">
+                    <div id="sys_message" style="padding-left: 15px; padding-bottom: 15px; font-size: 16px; color: red; font-family: '微软雅黑';">
+                        @if (ViewContext.TempData[AlertEntity.ALERT_ENTITY] != null)
+                        {
+                            var alertEntity = ViewContext.TempData[AlertEntity.ALERT_ENTITY] as AlertEntity;
+                            @Html.Partial("Alert", new AlertEntity(alertEntity.Message, alertEntity.Type, alertEntity.CanClose))
+                        }
+                    </div>
+                    @RenderBody()
+
+                </div>
+            </div>
+        </div>
+        <!-- END CONTENT -->
+    </div>
+    <!-- END CONTAINER -->
+    <!-- BEGIN FOOTER -->
+    <div class="footer">
+        <div class="footer-inner">
+            2016 &copy;
+        </div>
+        <div class="footer-tools">
+            <span class="go-top">
+                <i class="fa fa-angle-up"></i>
+            </span>
+        </div>
+    </div>
+
+    <!-- END FOOTER -->
+    <!-- BEGIN JAVASCRIPTS(Load javascripts at bottom, this will reduce page load time) -->
+    <!-- BEGIN CORE PLUGINS -->
+    <!--[if lt IE 9]>
+<script src="/areas/vip/assets/plugins/respond.min.js"></script>
+<script src="/areas/vip/assets/plugins/excanvas.min.js"></script> 
+<![endif]-->
+    <script type="text/javascript" src="/Scripts/jquery-1.9.1.min.js"></script>
+    <script src="/areas/vip/assets/plugins/jquery-1.10.2.min.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/jquery-migrate-1.2.1.min.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/jquery-ui/jquery-ui-1.10.3.custom.min.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/jquery-slimscroll/jquery.slimscroll.min.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/jquery.blockui.min.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/jquery.cokie.min.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/uniform/jquery.uniform.min.js" type="text/javascript"></script>
+    <!-- END CORE PLUGINS -->
+    <!-- BEGIN PAGE LEVEL PLUGINS -->
+    <script src="/areas/vip/assets/plugins/jqvmap/jqvmap/jquery.vmap.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/jqvmap/jqvmap/maps/jquery.vmap.russia.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/jqvmap/jqvmap/maps/jquery.vmap.world.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/jqvmap/jqvmap/maps/jquery.vmap.europe.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/jqvmap/jqvmap/maps/jquery.vmap.germany.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/jqvmap/jqvmap/maps/jquery.vmap.usa.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/jqvmap/jqvmap/data/jquery.vmap.sampledata.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/flot/jquery.flot.min.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/flot/jquery.flot.resize.min.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/flot/jquery.flot.categories.min.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/jquery.pulsate.min.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/bootstrap-daterangepicker/moment.min.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/bootstrap-daterangepicker/daterangepicker.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/gritter/js/jquery.gritter.js" type="text/javascript"></script>
+    <!-- IMPORTANT! fullcalendar depends on jquery-ui-1.10.3.custom.min.js for drag & drop support -->
+    <script src="/areas/vip/assets/plugins/fullcalendar/fullcalendar/fullcalendar.min.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/jquery-easy-pie-chart/jquery.easy-pie-chart.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/plugins/jquery.sparkline.min.js" type="text/javascript"></script>
+    <!-- END PAGE LEVEL PLUGINS -->
+    <!-- BEGIN PAGE LEVEL SCRIPTS -->
+    <script src="/areas/vip/assets/scripts/core/app.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/scripts/custom/index.js" type="text/javascript"></script>
+    <script src="/areas/vip/assets/scripts/custom/tasks.js" type="text/javascript"></script>
+    <script src="/Scripts/Common.js"></script>
+
+    <!-- END JAVASCRIPTS -->
+    @RenderSection("foot", false)
+    <!-- END PAGE LEVEL SCRIPTS -->
+    <script>
+        jQuery(document).ready(function () {
+            App.init();
+        });
+    </script>
+</body>
+<!-- END BODY -->
+</html>
+
+<script type="text/javascript">
+    $(function () {
+
+    });
+</script>
+<div class="modal fade" id="AddMsg" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="color-line"></div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="title2">@("留言信息".ToLocal())</h5>
+                <small class="font-bold"></small>
+            </div>
+            <div class="modal-body" style="height: 300px; overflow: auto">
+                <p>@("你可以与这位参与者消息联系".ToLocal())。</p>
+                <hr>
+                <div class="col-lg-12" id="msgRecord">
+                </div>
+                <hr>
+                <div class="col-lg-12">
+                    <input type="hidden" value="" id="msgId" />
+                    <textarea rows="3" style="overflow: auto; resize: none;" cols="100" id="msgContent"></textarea>
+                    <br>
+                    <input type="button" id="msgSubmit" value="@("发送消息".ToLocal())">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-default" data-dismiss="modal">@("关闭".ToLocal())</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="CreateBuy" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="color-line"></div>
+            <div class="modal-header">
+                <h4 class="modal-title">@("提供帮助".ToLocal())</h4>
+                <p class="text-warning">@("申请完成后，请等待系统随机分配受善需求".ToLocal())</p>
+            </div>
+            @using (Html.BeginForm("CreateBuyTrade", "Trade", FormMethod.Post, new { @id = "provide_help" }))
+            {
+                <div class="modal-body" style="text-align: center">
+                    <div class="form-group">
+                        <label class="col-sm-12 control-label">@("提供帮助金额".ToLocal())</label>
+                        <div class="col-sm-12">
+                            <input class="form-control m-b" type="text" name="Total" value="@(MinAmount)" />
+                            <p>@("您本次的挂单金额为".ToLocal())@(MinAmount)@("至".ToLocal())@(MaxAmount)</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-12 control-label">@("交易密码".ToLocal())</label>
+                        <div class="col-sm-12">
+                            <input class="form-control m-b" type="text" name="L2Pwd" value="" />
+                        </div>
+                    </div>
+                   @* <div class="icheckbox_square-green checked" style="position: relative;">
+                        <input type="checkbox" class="i-checks" name="i-checks" checked="" required="" style="position: absolute; opacity: 0;">
+                        <ins class="iCheck-helper" style="position: absolute; top: 0%; left: 0%; display: block; width: 100%; height: 100%; margin: 0px; padding: 0px; background-color: rgb(255, 255, 255); border: 0px; opacity: 0; background-position: initial initial; background-repeat: initial initial;"></ins>
+                    </div>*@
+                    @("重要提示，我已经完全了解所有风险，我决定参与".ToLocal())@(Config.Instance.Single.UserHomeTitle)，@("并且遵守".ToLocal())@(Config.Instance.Single.UserHomeTitle)@("的规则和规章制度".ToLocal())。
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@("取消".ToLocal())</button>
+                    <button type="button" class="btn_next btn-warning btn-sm" id="confirmBuy">@("提交".ToLocal())</button>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="CreateSell" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="color-line"></div>
+            <div class="modal-header">
+                <h4 class="modal-title">@("接受帮助".ToLocal())</h4>
+                <p class="text-warning"></p>
+            </div>
+            @using (Html.BeginForm("CreateSellTrade", "Trade", FormMethod.Post, new { @id = "get_help" }))
+            {
+                <div class="modal-body" style="text-align: center">
+                    <div class="form-group">
+                        <label class="col-sm-12 control-label">@("支付货币".ToLocal())</label>
+                        <div class="col-sm-12">
+                            @(Html.DropDownList("CurrencyId", CurrencyHandler.Collection.Where(m=>m.Id!=3).Select(m => new SelectListItem
+                        {
+                            Text = m.Name,
+                            Value = m.Id.ToString()
+                        }), htmlAttributes: new { @class = "form-control m-b" }))
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-12 control-label">@("接受帮助金额".ToLocal())</label>
+                        <div class="col-sm-12">
+                            <input type="text" name="Total" class="form-control sell" value="@(Config.Instance.Single.TradeLimit.SellMin)">
+                            <p>@("您本次的挂单金额为".ToLocal())@(Config.Instance.Single.TradeLimit.SellMin)@("至".ToLocal())@(Config.Instance.Single.TradeLimit.SellMax)</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-12 control-label">@("二级密码".ToLocal())</label>
+                        <div class="col-sm-12">
+                            <input class="form-control m-b" type="text" name="L2Pwd" value="" />
+                        </div>
+                    </div>
+                    @("重要提示，我已经完全了解所有风险，我决定参与".ToLocal())@(Config.Instance.Single.UserHomeTitle)，@("并且遵守".ToLocal())@(Config.Instance.Single.UserHomeTitle)@("的规则和规章制度".ToLocal())。
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@("取消".ToLocal())</button>
+                    <button type="button" class="btn_next btn-warning btn-sm" id="confirmSell">@("提交".ToLocal())</button>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="BuyerPayment" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="color-line"></div>
+            <div class="modal-header">
+                <h5 class="modal-title">@("请完成操作".ToLocal())</h5>
+                <small class="font-bold"></small>
+            </div>
+            @using (Html.BeginForm("BuyerPayment", "trade", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+            {
+                <div class="modal-body" style="height: 350px;">
+                    <p>@("上传打款图片".ToLocal())</p>
+                    <p>
+                        <input type="file" name="imageUrl">
+                        <input type="hidden" name="tradeUserId" />
+                    </p>
+                    <span style="color: red">@("图片限制大小为2M".ToLocal())</span>
+                    <p></p>
+                    <p>@("留言")</p>
+                    <textarea rows="2" class="form-control" name="context" style="width: 100%;"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@("关闭".ToLocal())</button>
+                    <button type="button" class="btn-primary" id="confirmPayment">@("确认".ToLocal())</button>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="SellerConfirm" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="color-line"></div>
+            <div class="modal-header">
+                <h5 class="modal-title">@("确认收款".ToLocal())</h5>
+                <small class="font-bold"></small>
+            </div>
+            @using (Html.BeginForm("SellerConfirm", "Trade", FormMethod.Post))
+            {
+                <div class="modal-body" style="height: 300px;">
+                    <input type="hidden" name="tradeUserId" />
+                    @*<p><b>@("给买家评价".ToLocal())</b></p>
+                    @if (Config.Instance.Single.Pingjia.Any(m => m.JF > 0 && m.Type == PingjiaType.type1))
+                    {
+                        <p>
+                            @foreach (PingjiaType pingjia in Enum.GetValues(typeof(PingjiaType)))
+                            {
+                                if (pingjia == PingjiaType.type0)
+                                {
+                                    continue;
+                                }
+                                <label>
+                                    <input type="radio" name="type" value="@(pingjia)" @(pingjia == PingjiaType.type1 ? "checked='checked'" : "") />
+                                    @(pingjia.EnumMetadataDisplay())
+                                </label>
+                            }
+                        </p>
+                    }*@
+                    <p></p>
+                    <p>@("留言".ToLocal())</p>
+                    <textarea rows="2" class="form-control" name="context" style="width: 100%;"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@("关闭".ToLocal())</button>
+                    <button type="button" class="btn-primary" id="confirmShoukuan">@("确认".ToLocal())</button>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="TradeLock" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="color-line"></div>
+            <div class="modal-header">
+                <h5 class="modal-title">@("我要投诉".ToLocal())</h5>
+                <small class="font-bold"></small>
+            </div>
+            @using (Html.BeginForm("TradeLock", "Trade", FormMethod.Post))
+            {
+                <div class="modal-body" style="height: 300px;">
+                    <input type="hidden" name="tradeUserId" />
+                    <p>@("申请投诉后,交易将被锁定,并由管理员介入处理,请谨慎操作!".ToLocal())</p>
+                    <p>@("留言".ToLocal())</p>
+                    <textarea rows="2" class="form-control" name="content" style="width: 100%;"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">@("关闭".ToLocal())</button>
+                    <button type="button" class="btn-primary" id="confirmTradeLock">@("确认".ToLocal())</button>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="TradeInfo" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="color-line"></div>
+            <div class="modal-header">
+                <h5 class="modal-title" id="title">@("订单详情".ToLocal())</h5>
+                <small class="font-bold"></small>
+            </div>
+            <div class="modal-body" style="height: 300px; overflow: auto">
+                <p><strong>@("流水号".ToLocal()):<span class="tradeInfo_SerialNumber"></span></strong></p>
+
+                <p>@(Config.Instance.Single.UserHomeTitleSimple)@("会员请求援助总金额为".ToLocal()):<font class="tradeInfo_Total" color="#FF0000"></font>RMB</p>
+                @*<p><strong>你必须在<font id="tradeInfo_Daojishi"></font>之前根据银行提供进一步的细节：</strong></p>*@
+                <div style="border: 1px solid #009">
+                    <p>@("输入完整的受益人银行资料如下".ToLocal())：</p>
+                    <p><strong>@("受益人帐号".ToLocal()):<font class="tradeInfo_SellUserCode"></font></strong></p>
+                    <p><strong>@("受益人真实姓名".ToLocal()):<font class="tradeInfo_SellNickName"></font></strong></p>
+                    <p><strong>@("受益人银行帐号".ToLocal()):<font class="tradeInfo_BankInfo"></font></strong></p>
+                    <p><strong>@("受益人支付宝".ToLocal()):<font class="tradeInfo_AlipayInfo"></font></strong></p>
+                    <p><strong>@("受益人微信".ToLocal()):<font class="tradeInfo_WeixinInfo"></font></strong></p>
+
+                    @*<p>发送者的附加信息：为了更快速的确认，请在转账后发送<font class="receiver_phone" color="#0000FF"></font></p>*@
+
+                    <p>---------------------</p>
+
+                    <p><font color="#FF0000">@("警告".ToLocal())!</font>@("当转账时，请注意付款的用途，有的银行在转账时是要求指定的账号或者用户卡的。这是由于这笔货币会先转到代理银行中，之后再转到客户账户上。这种情况，你不可以人工翻译！请注意收件人的建议!".ToLocal())</p>
+                </div>
+                <p>@("在提供帮助后，请按“我提供的帮助”按钮并附上付款确认文件(支票扫描、收据扫描或网上交易操作屏幕截图)放在一个新窗口上".ToLocal())</p>
+
+                <p>@("在收到资金之前不要确认支付，因为确认了就不能撤销了，系统会默认你已经收到钱了".ToLocal())</p>
+
+                <p><strong>@("接收者".ToLocal()):<font class="tradeInfo_SellNickName"></font>, @("电话".ToLocal()):<font class="tradeInfo_SellMobile"></font></strong></p>
+                <p><strong>@("接收者推荐人".ToLocal()):<font class="tradeInfo_SellTJNickName"></font>,@("电话".ToLocal()):<font class="tradeInfo_SellTJMobile"></font></strong></p>
+                <p style="display: none"><strong>@("接收者二级推荐人".ToLocal()):<font class="tradeInfo_SellTJNickName2"></font>,@("电话".ToLocal()):<font class="tradeInfo_SellTJMobile2"></font></strong></p>
+                <p><strong>@("发送者".ToLocal()):<font class="tradeInfo_BuyNickName"></font>, @("电话".ToLocal()):<font class="tradeInfo_BuyMobile"></font></strong></p>
+                <p><strong>@("发送者推荐人".ToLocal()):<font class="tradeInfo_BuyTJNickName"></font>,@("电话".ToLocal()):<font class="tradeInfo_BuyTJMobile"></font></strong></p>
+                <p style="display: none"><strong>@("发送者二级推荐人".ToLocal()):<font class="tradeInfo_BuyTJNickName2"></font>,@("电话".ToLocal()):<font class="tradeInfo_BuyTJMobile2"></font></strong></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-default" data-dismiss="modal">@("关闭".ToLocal())</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function () {
+        @if (TempData[AlertEntity.ALERT_ENTITY] != null)
+        {
+        <text>
+        alert("@((TempData[AlertEntity.ALERT_ENTITY] as AlertEntity).Message)");
+        </text>
+        }
+        $("#headmenu123").click(function (event) {
+            event.stopPropagation();
+            $(".head_menua").show();
+        });
+        $("body").click(function () {
+            $(".head_menua").hide();
+        });
+
+        $(".menu123").trigger("click");
+        $(".menu123").click(function () {
+            $(".submenu123").hide();
+            $(".menu123").removeClass("menubg11").addClass("menubg22");
+            $(this).removeClass("menubg22").addClass("menubg11");
+
+            $(this).next().show();
+        });
+
+        $(".maxWidth").css("width", document.body.scrollWidth);
+        $(".main").css("width", document.body.scrollWidth - 240);
+
+        window.onresize = function () {
+            $(".maxWidth").css("width", document.body.scrollWidth);
+            $(".main").css("width", document.body.scrollWidth - 240);
+        };
+
+
+
+        //挂买单
+        $("#confirmBuy").click(function () {
+            if (confirm("@("确认提交".ToLocal())?")) {
+                $("#confirmBuy").attr({ "disabled": "disabled" });
+                $("#confirmBuy").parents("form").submit();
+            }
+        });
+        //挂卖单
+        $("#confirmSell").click(function () {
+            if (confirm("@("确认提交".ToLocal())?")) {
+                $("#confirmSell").attr({ "disabled": "disabled" });
+                $("#confirmSell").parents("form").submit();
+            }
+        });
+        //构造聊天信息
+        $(".addmsg").click(function () {
+            $("#msgContent").val("");
+            $("#msgRecord").html("");
+            $("#msgId").val($(this).val());
+            $.ajaxSetup({ async: false });
+            $.post("/vip/trade/GetMessage", { tradeUserId: $(this).val() }, function (result) {
+                var record = "";
+                for (var i = 0; i < result.length; i++) {
+                    record += "<p>[" + result[i].CreateDate + "]" + result[i].UserName + " : " + result[i].Content + "<p><hr/>";
+                }
+                $("#msgRecord").html(record);
+            });
+            $("#AddMsg").modal("toggle");
+        });
+        //发送聊天信息
+        $("#msgSubmit").click(function () {
+            if ($("#msgContent").val() == "") {
+                alert("@("请输入信息".ToLocal())!");
+                return;
+            }
+            $.ajaxSetup({ async: false });
+            $.post("/vip/trade/AddMessage", { tradeUserId: $("#msgId").val(), content: $("#msgContent").val() }, function () {
+
+            });
+            alert("@("发送成功".ToLocal())!");
+            $("#AddMsg").modal("toggle");
+        });
+        //买家打款
+        $(".BuyerPayment").click(function () {
+            $("#BuyerPayment textarea").val("");
+            $("#BuyerPayment input[type=hidden]").val($(this).val());
+            $("#BuyerPayment").modal("toggle");
+        });
+        //买家打款提交
+        $("#confirmPayment").click(function () {
+            if (confirm("@("确认提交".ToLocal())?")) {
+                $(this).attr({ "disabled": "disabled" });
+                $(this).parents("form").submit();
+            }
+        });
+        //卖家确认收款
+        $(".SellerConfirm").click(function () {
+            $("#SellerConfirm textarea").val("");
+            $("#SellerConfirm input[type=hidden]").val($(this).val());
+            $("#SellerConfirm").modal("toggle");
+        });
+        //卖家确认收款提交
+        $("#confirmShoukuan").click(function () {
+            if (confirm("@("确认提交".ToLocal())?")) {
+                $(this).attr({ "disabled": "disabled" });
+                $(this).parents("form").submit();
+            }
+        });
+        //投诉
+        $(".TradeLock").click(function () {
+            $("#TradeLock textarea").val("");
+            $("#TradeLock input[type=hidden]").val($(this).val());
+            $("#TradeLock").modal("toggle");
+        });
+        //确认投诉
+        $("#confirmTradeLock").click(function () {
+            if (confirm("@("确认提交".ToLocal())?")) {
+                $(this).attr({ "disabled": "disabled" });
+                $(this).parents("form").submit();
+            }
+        });
+
+        //缴纳诚信金
+        $(".PaymentCXJ").click(function () {
+            $("#PaymentCXJ input[type=hidden]").val($(this).val());
+            $("#PaymentCXJ").modal("toggle");
+        });
+        //确认缴纳
+        $("#confirmPaymentCXJ").click(function () {
+            if (confirm("@("确认".ToLocal())?")) {
+                $(this).attr({ "disabled": "disabled" });
+                $(this).parents("form").submit();
+            }
+        });
+
+        $(".TradeInfo").click(function () {
+            $.ajaxSetup({ async: false });
+            $.post("/vip/trade/GetTradeInfo", { tradeUserId: $(this).val() }, function (result) {
+                $(".tradeInfo_SerialNumber").html(result.SerialNumber);
+                $(".tradeInfo_Total").html(result.Total);
+                $(".tradeInfo_SellUserCode").html(result.SellUserCode);
+                $(".tradeInfo_SellNickName").html(result.SellNickName);
+                $(".tradeInfo_BankInfo").html(result.BankName + "-" + result.BankAddress + "-" + result.BankUserName + "-" + result.BankCode);
+                $(".tradeInfo_AlipayInfo").html(result.AlipayUserName + "-" + result.AlipayCode);
+                $(".tradeInfo_WeixinInfo").html(result.WeixinCode);
+
+                $(".tradeInfo_SellNickName").html(result.SellNickName);
+                $(".tradeInfo_SellMobile").html(result.SellMobile);
+                $(".tradeInfo_SellTJNickName").html(result.SellTJNickName);
+                $(".tradeInfo_SellTJNickName2").html(result.SellTJNickName2);
+
+                $(".tradeInfo_SellTJMobile").html(result.SellTJMobile);
+                $(".tradeInfo_SellTJMobile2").html(result.SellTJMobile2);
+
+                $(".tradeInfo_BuyNickName").html(result.BuyNickName);
+                $(".tradeInfo_BuyMobile").html(result.BuyMobile);
+                $(".tradeInfo_BuyTJNickName").html(result.BuyTJNickName);
+                $(".tradeInfo_BuyTJNickName2").html(result.BuyTJNickName2);
+                $(".tradeInfo_BuyTJMobile").html(result.BuyTJMobile);
+                $(".tradeInfo_BuyTJMobile2").html(result.BuyTJMobile2);
+            });
+            $("#TradeInfo").modal("toggle");
+        });
+
+        function Countdown123() {
+            $(".time_countdown").each(function () {
+                var EndTime = new Date($(this).attr("data-time"));
+                var NowTime = new Date();
+                console.log("开始时间");
+                console.log(EndTime);
+                console.log("结束时间");
+                console.log(NowTime);
+                var t = EndTime.getTime() - NowTime.getTime();
+                var d = Math.floor(t / 1000 / 60 / 60 / 24);
+                var h = Math.floor(t / 1000 / 60 / 60 % 24);
+                var m = Math.floor(t / 1000 / 60 % 60);
+                var s = Math.floor(t / 1000 % 60);
+                $(this).html(d + " @("天".ToLocal())" + h + " @("小时".ToLocal())" + m + "@("分".ToLocal())" + s + "@("秒".ToLocal())");
+            });
+        }
+        setInterval(Countdown123, 1000);
+
+        $("#CurrencyId").trigger("change");
+
+    });
+</script>

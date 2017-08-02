@@ -1,0 +1,38 @@
+﻿@model CreateIPSData
+@{
+    ViewBag.Title = "在线充值";
+}
+
+@Html.Tab(new ListItem { Text = "在线充值".ToLocal(), Value = "/vip/IPSChargeOnline/Create", Selected = true },
+new ListItem { Text = "充值记录".ToLocal(), Value = "/vip/IPSChargeOnline/List" })
+
+@using (Html.Form("Create", "IPSChargeOnline", FormMethod.Post, new Dictionary<string, object> { { "target", "_blank" } }))
+{
+    @(Html.RowForEdit(m => m.Total))
+    @(Html.Row(null, @<input type="button" id="ok" value="提交" class="btn btn-default" />))
+}
+<div style="width: 400px; border: solid 1px #001c2a; position: absolute; left: 300px; top: 130px; display: none;" id="tips">
+    <div style="width: 100%; height: 30px; background: #001c2a; line-height: 30px;">
+        <div style="float: left; color: #fff; padding-left: 5px;">提示</div>
+        <div style="float: right; color: #fff; padding-right: 5px; cursor: pointer;"><i class="glyphicon glyphicon-remove"></i></div>
+    </div>
+    <div style="width: 100%; text-align: center; padding: 10px 0; background: #FFF;">
+        <p style="font-size: 18px;">请在新打开的页面上完成付款</p>
+        <p style="font-size: 12px;">付款完成前请不要关闭此窗口。</p>
+    </div>
+</div>
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            $("#ok").click(function () {
+                $(this).attr({ "disabled": "disabled" });
+                $(this).parents("form").submit();
+                $("#tips").show();
+            });
+
+            $(".glyphicon-remove").click(function () {
+                $("#tips").hide();
+            });
+        });
+    </script>
+}

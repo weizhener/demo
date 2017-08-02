@@ -1,0 +1,12 @@
+﻿@model ChangeL2PwdData
+@{
+    ViewBag.Title = "修改二级密码";
+}
+
+@Html.Tab(new ListItem {  Text="修改一级密码",Value="/system/ChangeL1Pwd"},
+new ListItem {  Text="修改二级密码",Value="/system/ChangeL2Pwd",Selected=true})
+
+@using (Html.Form())
+{
+    @Html.EditorForModel()
+}

@@ -1,0 +1,11 @@
+﻿@{
+    ViewBag.Title = "后台打款";
+}
+@using (Html.Form())
+{
+    @(Html.Hidden("tradeUserId", Request["tradeUserId"])) 
+    @(Html.Row("打款凭证", @<input type="file" name="imageUrl" />))
+    @(Html.Row("留言人", @<input type="text" name="userName" />))
+    @(Html.Row("留言内容", @<textarea name="context"></textarea>))
+    @(Html.Row(null, m => Html.Submit()))
+}

@@ -1,0 +1,25 @@
+﻿@model DetailForAdminData
+@{
+    ViewBag.Title = "会员详情";
+}
+
+@using (Html.Form())
+{
+    @Html.RowForDisplay(m => m.UserCode)
+    @Html.RowForDisplay(m => m.NickName)
+    @Html.RowForDisplay(m => m.L1Pwd)
+    @Html.RowForDisplay(m => m.L2Pwd)
+    @Html.RowForDisplay(m => m.LevelName)
+    @Html.RowForDisplay(m => m.Mobile)
+    @Html.RowForDisplay(m => m.Email)
+    @Html.RowForDisplay(m => m.BankName)
+    @Html.RowForDisplay(m => m.BankAddress)
+    @Html.RowForDisplay(m => m.BankUserName)
+    @Html.RowForDisplay(m => m.WeiXinCode)
+    @Html.RowForDisplay(m => m.AlipyUserName)
+    @Html.RowForDisplay(m => m.AlipyCode)
+    foreach (var wallet in Model.Wallet)
+    {
+    @Html.Row(CurrencyHandler.Element(wallet.CurrencyId).Name, @<p class="form-control-static">@wallet.Amount</p>)    
+    }
+}

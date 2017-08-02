@@ -1,0 +1,74 @@
+﻿@model AdminLoginData
+@{
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>后台登录</title>
+    <link rel="stylesheet" type="text/css" href="/Theme/Login/System2/css/style.css" />
+    <style>
+        body {
+            height: 100%;
+            background: #16a085;
+            overflow: hidden;
+        }
+
+        canvas {
+            z-index: -1;
+            position: absolute;
+        }
+    </style>
+    <script>
+    </script>
+</head>
+<body>
+    <form method="post" action='/system/login' class='form-signin' role='form'>
+        <dl class="admin_login">
+            <dt>
+                <strong>后台管理系统</strong>
+                <em>Management System</em>
+            </dt>
+            <dd class="user_icon">
+                @Html.TextBoxFor(m => m.AdminCode, new { @class = "login_txtbx", placeholder = "账号" })
+            </dd>
+            <dd class="pwd_icon">
+                @Html.PasswordFor(m => m.Password, new { @class = "login_txtbx", placeholder = "密码" })
+            </dd>
+            <dd class="val_icon">
+                <div class="checkcode">
+                    @(Html.TextBoxFor(m => m.Captcha, new { @class = "login_txtbx", placeholder = "验证码" }))
+                </div>
+                <img src="/system/Captcha?timeStamp=@DateTime.Now.ToFileTime()" class="ver_btn" id="__captcha" />
+            </dd>
+            <dd>
+                <input type="submit" value="立即登陆" class="submit_btn" />
+            </dd>
+            @*<dd>
+                <p>© 2015-2016 ZMZ 版权所有</p>
+                <p>陕B2-20080224-1</p>
+            </dd>*@
+        </dl>
+    </form>
+</body>
+</html>
+
+<script src="/Scripts/jquery-1.9.1.min.js"></script>
+<script src="/Theme/Login/System2/js/Particleground.js"></script>
+<script type="text/javascript">
+        @if (TempData[AlertEntity.ALERT_ENTITY] != null)
+        {
+            <text>alert('@((TempData[AlertEntity.ALERT_ENTITY] as AlertEntity).Message)')</text>
+        }
+    $(function () {
+        $("#__captcha").click(function () {
+            $(this).prop("src", "/system/Captcha?timestamp=" + Date.parse(new Date()));
+        });
+        //粒子背景特效
+        $('body').particleground({
+            dotColor: '#5cbdaa',
+            lineColor: '#5cbdaa'
+        });
+    });
+</script>

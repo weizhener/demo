@@ -1,0 +1,32 @@
+﻿@model Pager<UserWalletItemData>
+@{
+    ViewBag.Title = "会员货币列表";
+}
+
+@section head{
+    <style type="text/css">
+        .user-status span {
+            display: inline-block;
+            margin-right: 5px;
+        }
+    </style>
+}
+
+
+@section buttonGroup{
+       @Html.ExportToExcel("ExportWallet","User")
+}
+
+@using (Html.Search())
+{
+    Html.Group("会员帐号", Html.TextBox("userCode", Request.QueryString["userCode"]));
+}
+
+@(Grid.Create<UserWalletItemData>().SetDataSource(Model.Data)
+.Column(m => m.UserCode).Name("会员帐号").End()
+.Column(m => m.Benjin).Name(CurrencyHandler.Benjin.Name).End()
+.Column(m => m.Dianzibi).Name(CurrencyHandler.Dianzibi.Name).End()
+.Render())
+
+@Html.Page(Model)
+

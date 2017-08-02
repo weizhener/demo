@@ -1,0 +1,33 @@
+﻿@model AdminCreateData
+@{
+    ViewBag.Title = "添加管理员";
+}
+
+@using (Html.Form())
+{
+    @Html.RowForEdit(m => m.AdminCode)
+    @Html.RowForEdit(m => m.NickName)
+    @Html.RowForEdit(m => m.L1Pwd)
+    @Html.RowForEdit(m => m.L2Pwd)
+    @Html.RowForEdit(m => m.L3Pwd)
+    if (Model.RoleCollection != null && Model.RoleCollection.Any())
+    {
+    @Html.Row("所属角色", n => Html.CheckBoxFor(m => m.RoleCollection[0].Selected)
+                                    .Append(" ")
+                                    .Append(Html.DisplayFor(m => m.RoleCollection[0].Text))
+                                    .Append(Html.HiddenFor(m => m.RoleCollection[0].Text))
+                                    .Append(Html.HiddenFor(m => m.RoleCollection[0].Value)))
+    
+
+        for (int i = 1; i < Model.RoleCollection.Count(); i++)
+        {
+    @Html.Row("", n => Html.CheckBoxFor(m => m.RoleCollection[i].Selected)
+                                    .Append(" ")
+                                    .Append(Html.DisplayFor(m => m.RoleCollection[i].Text))
+                                    .Append(Html.HiddenFor(m => m.RoleCollection[i].Text))
+                                    .Append(Html.HiddenFor(m => m.RoleCollection[i].Value)))
+        }
+    }
+    
+    @Html.Row("",m=>Html.Submit())
+}

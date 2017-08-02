@@ -1,0 +1,33 @@
+﻿@model Pager<T_Balance>
+@{
+    ViewBag.Title = "结算管理";
+}
+@Html.Tab(new ListItem { Text = "添加结算", Value = "/financial/createBalance" },
+new ListItem { Text = "结算列表", Value = "/financial/Balance", Selected = true })
+
+@(Grid.Create<T_Balance>().SetDataSource(Model.Data)
+.Column(m => m.Type).Name("类型").Value(typeof(BalanceType)).End()
+.Column(m => m.Issue).Name("期数").End()
+.Column(m => m.MinDate).Name("开始日期").End()
+.Column(m => m.MaxDate).Name("结束日期").End()
+.Column(m => m.Status).Name("状态").Value(typeof(BalanceStatus)).End()
+.ActionColumn(@<p>
+    @if (item.Status == BalanceStatus.UnBalanced)
+    {
+        @Html.ActionLink("结算", "RunBalance", new { balanceId = item.Id }, new { onclick = "return confirm('确认结算？')" })   
+        @Html.ActionLink("删除", "DeleteBalance", new { balanceId = item.Id }, new { onclick = "return confirm('确认删除？')" })   
+    }
+    else if (item.Status == BalanceStatus.Balanced)
+    {
+        @Html.ActionLink("结算", "RunBalance", new { balanceId = item.Id }, new { onclick = "return confirm('确认结算？')" })   
+        @Html.ActionLink("奖金明细", "PrizeDetail", new { balanceId = item.Id })   
+        @Html.ActionLink("发放", "DealBalance", new { balanceId = item.Id }, new { onclick = "return confirm('确认发放？')" })   
+        @Html.ActionLink("删除", "DeleteBalance", new { balanceId = item.Id }, new { onclick = "return confirm('确认删除？')" })   
+    }
+    else if (item.Status == BalanceStatus.Completed)
+    {
+        @Html.ActionLink("奖金明细", "PrizeDetail", new { balanceId = item.Id })   
+    }
+</p>).End()
+.Render())
+@Html.Page(Model)

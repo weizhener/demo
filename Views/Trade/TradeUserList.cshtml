@@ -1,0 +1,70 @@
+﻿@model Pager<T_TradeUser>
+@{
+    ViewBag.Title = "匹配记录";
+    var status = TradeHandler.Collection.Where(m => m.Id != TradeHandler.LockBuyer.Id && m.Id != TradeHandler.LockSeller.Id).Select(m => new SelectListItem { Text = m.BuyerStatus, Value = m.Id.ToString() }).ToList();
+    status.Insert(0, new SelectListItem { Text = "全部", Value = "" });
+}
+
+@using (Html.Search())
+{
+    Html.Group("会员帐号", Html.TextBox("buyUserCode", Request.QueryString["buyUserCode"]));
+    Html.Group("真实姓名", Html.TextBox("sellUserCode", Request.QueryString["sellUserCode"]));
+    Html.Group("状态", Html.DropDownList("status", status));
+    Html.Group("流水号", Html.TextBox("SerialNumber", Request.QueryString["SerialNumber"]));
+    @(Html.Hidden("tradeListId", Request["tradeListId"]))
+    
+    using (Html.Group("日期"))
+    {
+    @Html.TextBox("minDate", Request.QueryString["minDate"]) <span>-</span>   
+    @Html.TextBox("maxDate", Request.QueryString["maxDate"])    
+    }
+}
+
+@(Grid.Create<T_TradeUser>().SetDataSource(Model.Data)
+.Column(m => m.SerialNumber).Name("流水号").End()
+.Column(m => m.BuyUserCode).Name("买单会员帐号").End()
+.Column(m => m.BuyName).Name("买单会员名称").End()
+.Column(m => m.SellUserCode).Name("卖单会员帐号").End()
+.Column(m => m.SellName).Name("买单会员名称").End()
+.Column(m => m.Total).Name("数额").End()
+.Column(m => m.Status).Name("状态").Value(m => TradeHandler.Element(m.Status).BuyerStatus).End()
+.Column(m => m.CreateDate).Name("匹配日期").End()
+.ActionColumn(@<span>
+    @Html.ActionLink("查看信息", "EditTradeUser", new { tradeUserId = item.Id })
+    @Html.ActionLink("留言", "TradeMessage", new { tradeUserId = item.Id })
+    @if (item.Status == TradeHandler.WaitBuyer.Id)
+    {
+        @Html.ActionLink("拆分", "ChuliBuyer2", new { tradeUserId = item.Id })
+    }
+    @if (item.Status == TradeHandler.WaitSeller.Id)
+    {
+        @Html.ActionLink("确认收款", "SellerConfirm", new { tradeUserId = item.Id }) 
+    }
+   @* @if (item.Status == TradeHandler.Buyfreeze.Id)
+    {
+         @Html.ActionLink("处理买家", "ChuliBuyer", new { tradeUserId = item.Id }, new { onclick = "return confirm('本操作将冻结买家帐号,并删除本次匹配,卖单重新排队匹配,确认?')" })
+    }*@
+    @if (item.Status == TradeHandler.Sellfreeze.Id)
+    {
+        @Html.ActionLink("处理买家", "ChuliBuyer", new { tradeUserId = item.Id }, new { onclick = "return confirm('本操作将冻结买家帐号,并删除本次匹配,卖单重新排队匹配,确认?')" })
+    }
+     @if (item.Status == TradeHandler.Sellfreeze.Id)
+    {
+        @Html.ActionLink("解除冻结", "JiechuSeller", new { tradeUserId = item.Id }, new { onclick = "return confirm('确认解除冻结')" })
+    }
+</span>).End()
+.Sum(Model.SumData)
+.Render())
+@Html.Page(Model)
+
+
+@section foot{
+    <script src="/Scripts/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#minDate,#maxDate").click(function () {
+                WdatePicker({ dateFmt: 'yyyy/MM/dd HH:mm:ss' });
+            });
+        });
+    </script>
+}

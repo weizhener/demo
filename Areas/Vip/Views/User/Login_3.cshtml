@@ -1,0 +1,155 @@
+﻿@model UserLoginData
+@{
+    Layout = null;
+
+    var lang = new List<T_Language>();
+    using (ZXContext db = new ZXContext())
+    {
+        lang = db.Language.OrderBy(m => m.SequenceNum).ToList();
+    }
+
+    HttpCookie cookie = Request.Cookies[BaseController.CULTURE_COOKIE_NAME];
+}
+<html>
+<head>
+    <!-- Page title -->
+    <title>@(Config.Instance.Single.UserHomeTitle.ToLocal())</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style type="text/css">
+        body, ul, ol, li, p, h1, h2, h3, h4, h5, h6, form, fieldset, table, td, img, div, dl, dt, dd, input {
+            margin: 0;
+            padding: 0;
+        }
+
+        img {
+            border: none;
+        }
+
+        li {
+            list-style: none;
+        }
+
+        select, textarea {
+            outline: none;
+            border: none;
+            background: none;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        a {
+            text-decoration: none;
+            color: #656565;
+        }
+
+        body {
+            width: 100%;
+            height: auto;
+            background: url(/Theme/Home/2/images/tutututtutu.jpg) no-repeat;
+            background-position: top center;
+            background-size: cover;
+            overflow: hidden;
+        }
+
+        .table1 {
+            width: 100%;
+            position: absolute;
+            z-index: 99;
+            top: 90px;
+            left:20px;
+        }
+
+            .table1 th {
+                color: #FFF;
+                text-align: right;
+                height: 40px;
+            }
+
+        .queren {
+            width: 100px;
+            height: 40px;
+            float: left;
+            margin-left: 80px;
+            font-weight: bold;
+            font-size: 16px;
+            border-radius: 8px;
+            background: rgb(221,221,221);
+            cursor: pointer;
+        }
+
+            .queren:hover, .quxiao:hover {
+                background: #FF9;
+            }
+
+        .quxiao {
+            width: 100px;
+            height: 40px;
+            float: left;
+            font-weight: bold;
+            font-size: 16px;
+            margin-left: 30px;
+            border-radius: 8px;
+            background: rgb(221,221,221);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div style="width: 400px; margin: 10% auto; position: relative;">
+        <div style="width: 100%; text-align: center; padding-bottom: 20px;">
+            <img src="/Theme/Home/2/images/huzhupingtai.png" />
+        </div>
+        <div style="width: 100%; height: 250px; background: #999; filter: alpha(Opacity=20); -moz-opacity: 0.2; opacity: 0.2; border-radius: 200px; border: 1px solid #000; position: relative; z-index: 1;">
+        </div>
+        @using (Html.BeginForm("Login", "User", FormMethod.Post))
+        {
+            <table class="table1">
+                <tr>
+                    <th>账号: </th>
+                    <td>
+                        @(Html.TextBoxFor(m => m.UserCode, new { @style = "width: 200px; height: 25px; border: 2px solid #999;", placeholder = "请输入账号".ToLocal() }))
+
+                    </td>
+                </tr>
+                <tr>
+                    <th>密码: </th>
+                    <td>
+                        @(Html.PasswordFor(m => m.Password, new { style = "width: 200px; height: 25px; border: 2px solid #999;", placeholder = "请输入密码".ToLocal() }))
+                    </td>
+                </tr>
+                <tr>
+                    <th>验证码: </th>
+                    <td>
+                        @(Html.PasswordFor(m => m.Captcha, new { style = "width: 100px; height: 25px; border: 2px solid #999;", @placeholder = "请输入验证码".ToLocal() }))<img id="__captcha" style="vertical-align:middle;margin-left:20px;" src="/system/Captcha?timestamp=@DateTime.Now.ToFileTime()" />
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="text-align: center; height:30px;"><a href="#" style="color: #FC0; font-size: 12px;">忘记密码?</a></td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="submit" value="登录" class="queren" />
+                        <input type="reset" value="取消" class="quxiao" />
+                    </td>
+                </tr>
+            </table>
+        }
+    </div>
+</body>
+</html>
+<script type="text/javascript" src="/Scripts/jquery-1.9.1.min.js"></script>
+<script type="text/javascript" src="/Scripts/common.js"></script>
+<script type="text/javascript">
+    $(function () {
+        @if (TempData[AlertEntity.ALERT_ENTITY] != null)
+        {
+            <text>alert('@((TempData[AlertEntity.ALERT_ENTITY] as AlertEntity).Message)');</text> 
+        }
+
+        $("#__captcha").click(function () {
+            $(this).prop("src", "/system/Captcha?timestamp=" + common.getTimestamp());
+        });
+    });
+</script>

@@ -1,0 +1,84 @@
+﻿@model CreateCashData
+@{
+    ViewBag.Title = "NavigationTop.Financial.Cash".ToLocal();
+}
+
+@Html.Tab(new ListItem { Text = "NavigationTop.Financial.Cash".ToLocal(), Value = "/vip/financial/CreateCash", Selected = true },
+new ListItem { Text = "NavigationTop.Financial.CashRecord".ToLocal(), Value = "/vip/financial/CashRecord" })
+
+@using (Html.Form())
+{
+    if (Model.UserBankAccount.Any())
+    {
+    @Html.Row("Financial.CurrencyChange.BankAccount".ToLocal(), @<div>
+        @foreach (var userBankAccount in Model.UserBankAccount)
+        {
+            <div>
+                @Html.RadioButtonFor(m => m.UserBankAccountId, userBankAccount.Id)
+                <span>@("{0}---{1}---{2}".FormatString(userBankAccount.Bank, userBankAccount.CardCode, userBankAccount.CardUserName))</span>
+            </div>
+        }
+    </div>)
+    @*
+    @Html.Row("", m => @Html.ActionLink("Financial.CurrencyChange.AddBankAccount".ToLocal(), "CreateUserBankAccount", new { returnUrl = "/vip/financial/createCash" }))
+    *@
+    @Html.Row(Resources.Cash_Currency, k => Html.DropDownListFor(m => m.CurrencyId, Config.Instance.HuiLvForOut.GroupBy(m => m.CurrencyId).Select(n => new SelectListItem { Value = n.Key.ToString(), Text = CurrencyHandler.Element(n.Key).Name })))
+    @Html.RowForDisplay(m => m.WalletAmount)
+    @Html.RowForEdit(m => m.Amount)
+    @Html.RowForDisplay(m => m.BLText)
+    @Html.Row("Financial.CurrencyChange.RealCurrency".ToLocal(), k => Html.DropDownListFor(m => m.RealCurrencyId, Config.Instance.HuiLvForOut.Where(n => n.CurrencyId == Model.CurrencyId).Select(n => new SelectListItem { Value = n.RealCurrencyId.ToString(), Text = RealCurrencyHandler.Element(n.RealCurrencyId).Name })))
+    @Html.RowForDisplay(m => m.RealTotal)
+    @Html.RowForDisplay(m => m.ServiceFee)
+    @Html.RowForDisplay(m => m.RealAmount)
+    @Html.Row("", m => Html.Submit())
+    }
+    else
+    {
+    @Html.ActionLink("Financial.CurrencyChange.CreateUserBankAccount".ToLocal(), "CreateUserBankAccount", new { returnUrl = "/vip/financial/createCash" })
+    }
+}
+
+@section foot{
+    <script src="/Scripts/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#CurrencyId").change(function () {
+                //获取转入货币
+                $.post("/Vip/financial/QueryHuiLvForOutCurrency", { currencyId: $(this).val() }, function (result) {
+                    var countySel = $("#RealCurrencyId").empty();
+                    $(result).each(function () {
+                        countySel.append($("<option value='" + this.Value + "'>" + this.Text + "</option>"));
+                    });
+                    $("#RealCurrencyId").trigger("change");
+                });
+
+                //获取钱包余额
+                $.post("/vip/financial/QueryWalletAmount", { currencyId: $(this).val(), userId: '@_User.Current.Id' }, function (result) {
+                    $("#__WalletAmount").text(result);
+                })
+            });
+
+            $("#RealCurrencyId").change(function () {
+                $.post("/vip/financial/QueryHuiLvForOutItem", { realCurrencyId: $("#RealCurrencyId").val(), currencyId: $("#CurrencyId").val() }, function (result) {
+                    $("#__BLText").text(result.BLTextForOut);
+                });
+
+                $("#Amount").trigger("change");
+            });
+
+            $("#Amount").change(function () {
+                $.post("/vip/financial/CalcCash", { realCurrencyId: $("#RealCurrencyId").val(), currencyId: $("#CurrencyId").val(), amount: $("#Amount").val() }, function (result) {
+                    if (result.IsSuccess) {
+                        $("#__RealAmount").text(result.Data.RealAmount);
+                        $("#__ServiceFee").text(result.Data.ServiceFee);
+                        $("#__RealTotal").text(result.Data.RealTotal);
+                    } else {
+                        $("#__RealAmount").text("");
+                        $("#__ServiceFee").text("");
+                        $("#__RealTotal").text("");
+                    }
+                });
+            });
+        });
+    </script>
+}

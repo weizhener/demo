@@ -1,0 +1,50 @@
+﻿@model CurrencyChangeData
+@{
+    ViewBag.Title = "NavigationTop.Financial.CurrencyChange".ToLocal();
+}
+
+@Html.Tab(new ListItem {  Value="/vip/financial/CurrencyChange",Text="NavigationTop.Financial.CurrencyChange".ToLocal(),Selected=true},
+new ListItem {  Value="/vip/financial/CurrencyChangeRecord",Text="NavigationTop.Financial.CurrencyChangeRecord".ToLocal()})
+
+@using (Html.Form())
+{
+    @Html.Row(Resources.CurrencyChange_FromCurrency, k => Html.DropDownListFor(m => m.FromCurrencyId, Config.Instance.CurrencyChange.Select(n => new SelectListItem { Value = n.FromCurrencyId.ToString(), Text = CurrencyHandler.Element(n.FromCurrencyId).Name })))
+    @Html.RowForDisplay(m => m.FromWalletAmount)
+    @Html.Row(Resources.CurrencyChange_ToCurrency, k => Html.DropDownListFor(m => m.ToCurrencyId, Config.Instance.CurrencyChange.Where(n => n.FromCurrencyId == Model.FromCurrencyId).Select(n => new SelectListItem { Value = n.ToCurrencyId.ToString(), Text = CurrencyHandler.Element(n.ToCurrencyId).Name })))
+    @Html.RowForDisplay(m => m.ToWalletAmount)
+    @Html.RowForDisplay(m => m.BLText)
+    @Html.RowForEdit(m => m.Amount)
+    @Html.Row("", m => Html.Submit())
+}
+
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            $("#FromCurrencyId").change(function () {
+                //获取余额
+                $.post("/vip/financial/QueryWalletAmount", { currencyId: $(this).val(), userId: '@_User.Current.Id' }, function (result) {
+                    $("#__FromWalletAmount").text(result);
+                });
+                //获取转入货币
+                $.post("/Vip/financial/QueryToCurrency", { fromCurrencyId: $(this).val() }, function (result) {
+                    var countySel = $("#ToCurrencyId").empty();
+                    $(result).each(function () {
+                        countySel.append($("<option value='" + this.Value + "'>" + this.Text + "</option>"));
+                    });
+                    $("#ToCurrencyId").trigger("change");
+                });
+            });
+
+            $("#ToCurrencyId").change(function () {
+                //获取余额
+                $.post("/vip/financial/QueryWalletAmount", { currencyId: $(this).val(), userId: '@_User.Current.Id' }, function (result) {
+                    $("#__ToWalletAmount").text(result);
+                });
+                //获取兑换比例
+                $.post("/Vip/financial/QueryCurrencyChangeItem", { fromCurrencyId: $("#FromCurrencyId").val(), toCurrencyId: $(this).val() }, function (result) {
+                    $("__BLText").text(result.BLText);
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,14 @@
+﻿@model ValidateL2PwdData
+
+@{
+    ViewBag.Title = "验证二级密码";
+}
+<div class="panel panel-info">
+    <div class="panel-heading">@("验证二级密码".ToLocal())</div>
+    <div class="panel-body">
+@using (Html.Form())
+{
+    @Html.EditorForModel()
+}
+         </div>
+</div>

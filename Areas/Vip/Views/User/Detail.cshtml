@@ -1,0 +1,53 @@
+﻿@model DetailForUserData
+@{
+    ViewBag.Title = "NavigationTop.Account.Detail".ToLocal();
+}
+
+       @using (Html.Form())
+{
+     
+    @Html.RowForDisplay(m => m.UserCode)
+    @Html.RowForDisplay(m => m.NickName)
+    @Html.RowForDisplay(m => m.LevelName)
+    @Html.RowForDisplay(m => m.Mobile)
+    @Html.RowForDisplay(m => m.Email)
+    
+    @Html.RowForDisplay(m => m.BankName)
+    @Html.RowForDisplay(m => m.BankAddress)
+    @Html.RowForDisplay(m => m.BankUserName)
+    @Html.RowForDisplay(m => m.BankCode)
+    @Html.RowForDisplay(m => m.WeiXinCode)
+    @Html.RowForDisplay(m => m.AlipyUserName)
+    @Html.RowForDisplay(m => m.AlipyCode)
+   
+    foreach (var wallet in Model.Wallet)
+    {
+    @Html.Row(CurrencyHandler.Element(wallet.CurrencyId).Name, @<p class="form-control-static Displayp">@wallet.Amount</p>)
+    }
+}
+@*@using (Html.Form())
+{
+    <div class="panel panel-info">
+        <div class="panel-heading">@("NavigationTop.Account.Detail".ToLocal())</div>
+        <div class="panel-body">
+            @Html.RowForDisplay(m => m.UserCode)
+            @Html.RowForDisplay(m => m.NickName)
+            @Html.RowForDisplay(m => m.LevelName)
+            @Html.RowForDisplay(m => m.Mobile)
+            @Html.RowForDisplay(m => m.Email)
+            @Html.RowForDisplay(m => m.ID_Number)
+        </div>
+    </div>
+    
+    <div class="panel panel-info">
+        <div class="panel-heading">@("User.Wallet.Amount".ToLocal())</div>
+        <div class="panel-body">
+            @foreach (var wallet in Model.Wallet)
+            {
+                @Html.Row(CurrencyHandler.Element(wallet.CurrencyId).Name, @<p class="form-control-static">@wallet.Amount</p>)
+            }
+        </div>
+    </div>
+    
+    
+}*@

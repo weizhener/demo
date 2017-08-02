@@ -1,0 +1,12 @@
+﻿@model ChangeLevelForUserData
+@{
+    ViewBag.Title = "NavigationTop.Team.changelevel".ToLocal();
+}
+
+@Html.Tab(new ListItem { Text = "NavigationTop.Team.changelevel".ToLocal(), Value = "/vip/user/changelevel", Selected = true },
+new ListItem { Text = "NavigationTop.Team.changelevelRecord".ToLocal(), Value = "/vip/user/changelevelrecord" })
+
+@using (Html.Form())
+{
+    @Html.EditorForModel()
+}

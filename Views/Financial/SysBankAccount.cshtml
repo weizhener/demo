@@ -1,0 +1,15 @@
+﻿@model IEnumerable<T_SysBankAccount>
+@{
+    ViewBag.Title = "公司汇款账号";
+}
+
+@Html.Tab(new ListItem { Text = "添加公司汇款账号", Value = "/financial/CreateSysBankAccount" },
+new ListItem { Text = "公司汇款账号", Value = "/financial/SysBankAccount", Selected = true })
+
+@(Grid.Create<T_SysBankAccount>().SetDataSource(Model)
+.Column(m => m.Bank).Name("银行").End()
+.Column(m => m.CardCode).Name("卡号").End()
+.Column(m => m.CardUserName).Name("户主").End()
+.ActionColumn(m => Html.ActionLink("编辑", "EditSysBankAccount", new { sysBankAccountId = m.Id }),
+m => Html.ActionLink("删除", "DeleteSysBankAccount", new { sysBankAccountId = m.Id }, new { onclick = "return confirm('确认删除？')" })).End()
+.Render())

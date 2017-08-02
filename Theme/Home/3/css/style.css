@@ -1,0 +1,96 @@
+/*----------------------common-------------------------*/
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Microsoft YaHei;
+}
+
+li {
+    list-style-type: none;
+}
+
+img {
+    border: none;
+}
+
+a {
+    text-decoration: none;
+    color: #000;
+}
+
+    a:hover {
+        text-decoration: none;
+    }
+
+.clear {
+    clear: both;
+}
+
+p {
+    text-indent: 2em;
+}
+
+body {
+    background: url(/Theme/Home/3/images/bj.jpg)no-repeat;
+    background-size:100% 100%;
+    background-attachment:fixed
+}
+
+.con {
+    margin: 0 auto;
+}
+
+.main {
+    background: url(/Theme/Home/3/images/1.png) no-repeat;
+    position: absolute; /*绝对定位*/
+    top: 50%; /*距顶部50%*/
+    left: 50%;
+    margin: -256.5px 0 0 -410.5px; /*设定这个div的margin-top的负值为自身的高度的一半,margin-left的值也是自身的宽度的一半的负值.(感觉在绕口令)*/
+    width: 821px; /*宽为400,那么margin-top为-200px*/
+    height: 513px; /*高为200那么margin-left为-100px;*/
+    z-index: 99; /*浮动在最上层 */
+}
+
+    .main span {
+        color: #666666;
+        font-size: 18px;
+        margin-left: 20px;
+    }
+
+.checkbox {
+    margin-top: 15px;
+}
+
+.img {
+    margin-top: 15px;
+    margin-left: 110px;
+}
+
+.p1 {
+    color: #eac50b;
+    padding-top: 50px;
+    text-align: center;
+}
+
+.d1 {
+    float: right;
+    margin-top: 160px;
+    margin-right: 100px;
+}
+
+.d2 {
+    width: 375px;
+    height: 40px;
+    border: 0;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+}
+
+.d3 {
+    width: 260px;
+    height: 40px;
+    border: 0;
+    border-radius: 5px;
+    padding-left: 10px;
+}

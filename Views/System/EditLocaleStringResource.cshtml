@@ -1,0 +1,47 @@
+﻿@model EditLocaleStringResourceData
+@{
+    ViewBag.Title = "修改本地化资源";
+}
+
+
+@using (Html.Form())
+{
+    if (Session[Service.AUTO_LOCALIZATION_KEY] == null || Session[Service.AUTO_LOCALIZATION_KEY].ToString().AsBool() == false)
+    {
+    @Html.Row("自动翻译", @<input type="checkbox" checked="checked" id="auto_localization" />)
+    }
+    else
+    {
+    @Html.Row("自动翻译", @<input type="checkbox" id="auto_localization" />)
+    }
+    @Html.RowForEdit(m => m.ResourceName)
+    for (int i = 0; i < Model.LocaleStringResource.Count; i++)
+    {
+    @Html.HiddenFor(m => m.LocaleStringResource[i].LanguageName)
+    @Html.HiddenFor(m => m.LocaleStringResource[i].ResourceId)
+    @Html.HiddenFor(m => m.LocaleStringResource[i].LanguageId)
+    @Html.Row(Model.LocaleStringResource[i].LanguageName, m => Html.TextBoxFor(n => n.LocaleStringResource[i].ResourceValue, new { @id = Model.LocaleStringResource[i].LanguageId }))
+    }
+    @Html.Row(null, m => Html.Submit())
+}
+
+
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            var source = "@(Model.LocaleStringResource.FirstOrDefault().LanguageId)";
+            $("#" + source).change(function () {
+                if ($(this).val() && $("#auto_localization").is(":checked")) {
+                    var data = null;
+                    $.ajaxSetup({ async: false });
+                    $.post("/system/AutoLocalization", { value: $(this).val(), source: source }, function (result) {
+                        data = result;
+                    });
+                    for (var i = 0; i < data.length; i++) {
+                        $("#" + data[i].LanguageId).val(data[i].ResourceValue);
+                    }
+                }
+            });
+        });
+    </script>
+}

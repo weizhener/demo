@@ -1,0 +1,11 @@
+﻿@{
+    ViewBag.Title = "Mall.BuySuccess.Title".ToLocal();
+}
+
+<div class="alert alert-info" role="alert">
+    <span class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+    <span class="sr-only"></span>
+    @("Mall.BuySuccess.Info".ToLocal())
+</div>
+@Html.ActionLinkButton("Mall.GoToCheckOrder".ToLocal(),"ShoppingCart","Mall",new{area="vip"},type:ButtonDisplayType.Info,size:ButtonSize.Default)
+@("Mall.BuySuccess.Or".ToLocal()) @Html.ActionLink("Mall.BuySuccess.ContinueToBuy".ToLocal(),"Index")

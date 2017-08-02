@@ -1,0 +1,26 @@
+﻿@model Pager<T_Order>
+@{
+    ViewBag.Title = "NavigationTop.Mall.Order".ToLocal();
+}
+
+@(Grid.Create<T_Order>().SetDataSource(Model.Data)
+.Column(m => m.SerialNumber).Name("Mall.Order.SerialNumber".ToLocal()).End()
+.Column(m => m.CreateDate).Name(Resources.Date).End()
+.Column(m => m.Total).Name(Resources.Total).End()
+.Column(m => m.ZheKou).Name("Mall.Order.ZheKou".ToLocal()).End()
+.Column(m => m.Amount).Name("Mall.Order.Amount".ToLocal()).End()
+.Column(m => m.Type).Name("Mall.Order.Type".ToLocal()).Value(typeof(OrderType)).End()
+.Column(m => m.Status).Name(Resources.Status).Value(typeof(OrderStatus)).End()
+.ActionColumn(m => Html.ActionLink("Mall.Order.Detail".ToLocal(), "OrderDetail", new { orderId=m.Id}),
+m =>
+{
+    if (m.Status == OrderStatus.Sent)
+    {
+        return Html.ActionLink("Mall.Order.CompleteOrder".ToLocal(), "CompleteOrder", new { orderId = m.Id }, new { onclick="return confirm('确认收货?')" });
+    }
+    return "";
+}).End()
+.Render())
+
+
+@Html.Page(Model)

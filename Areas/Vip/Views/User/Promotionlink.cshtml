@@ -1,0 +1,7 @@
+﻿@{
+    ViewBag.Title = "推广链接".ToLocal();
+}
+@using (Html.Form())
+{
+    @(Html.Row("推广链接".ToLocal(), n => Html.TextArea("Promotionlink", "{0}/vip/user/register?tjuserId={1}".FormatString(ZMZ.ZX.Core.Config.Instance.DomainForUser.First().ToString(), _User.Current.Id), new { @style="width:400px; height:200px;" }))) 
+}

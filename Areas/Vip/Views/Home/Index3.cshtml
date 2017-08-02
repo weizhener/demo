@@ -1,0 +1,163 @@
+﻿@{
+    ViewBag.Title = "首页".ToLocal();
+    var user = new T_User();
+    IEnumerable<T_Wallet> wallet = null;
+    int unreadMessageCount = 0;
+    IEnumerable<T_News> news = null;
+    IEnumerable<T_SysLog> log = null;
+    var tradeList = new List<HomeTradeListData>();
+    var tradeUser = new List<HomeTradeUserData>();
+    string url = "http://{0}{1}/vip/user/register?tj={2}".FormatString(Request.Url.Host, (Request.Url.Port != 80 ? ":" + Request.Url.Port.ToString() : ""), _User.Current.Code);
+
+    using (ZXContext db = new ZXContext())
+    {
+        user = db.User.Find(_User.Current.Id);
+        wallet = db.Wallet.Where(m => m.UserId == _User.Current.Id).ToList();
+        unreadMessageCount = db.Message.Count(m => (m.SenderId == _User.Current.Id || m.ReceiverId == _User.Current.Id) && m.LastModifyMemberId != _User.Current.Id && m.IsRead == false);
+        news = db.News.OrderByDescending(m => m.Type).ThenByDescending(m => m.LastModifyDate).Take(8).ToList();
+        log = db.SysLog.Where(m => m.MemberId == _User.Current.Id).OrderByDescending(m => m.Id).Take(2).ToList();
+    }
+}
+
+
+<div class="row">
+    <div class="col-xs-6">
+        <div class="hpanel">
+            <div class="panel-body" style="background: url(/Theme/Home/2/buy.jpg) no-repeat right bottom #fff; color: #fff; background-size: cover;">
+                <div class="text-right">
+                    <div class="m" style="height: 40px;">
+                    </div>
+                    <p class="small" style="height: 60px;">
+                    </p>
+                    <button class="btn btn-warning  btn-lg" style="background: #6f4615; border-color: #6f4615;" data-toggle="modal" data-target="#CreateBuy">
+                        @("申请提供帮助".ToLocal())
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-6">
+        <div class="hpanel">
+            <div class="panel-body" style="background: url(/Theme/Home/2/sell.jpg) no-repeat center bottom #fff; color: #fff; background-size: cover;">
+                <div class="text-right">
+                    <div class="m" style="height: 40px;">
+                    </div>
+                    <p class="small" style="height: 60px;">
+                    </p>
+                    <button class="btn btn-success btn-lg" style="background: #04395c; border-color: #04395c;" data-toggle="modal" data-target="#CreateSell">
+                        @("申请接受帮助".ToLocal())
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="hpanel">
+            <div class="panel-body list">
+                <div class="row">
+                    <div class="col-xs-3">
+                        <div style="background: #04395c; padding: 20px 30px; border-radius: 10px; font-size: 24px; margin-top: 20px;">
+                            <a href="/Vip/User/Register" style="color: #FFF; text-decoration: none">@("注册会员".ToLocal())</a>
+                            <span style="font-size: 12px; color: #FFF;">Register</span>
+                        </div>
+                        <!--/.info-box-->
+                    </div>
+                    <!--/.col-->
+
+                    <div class="col-xs-3">
+                        <div style="background: #2d2d2d; padding: 20px 30px; border-radius: 10px; font-size: 24px; margin-top: 20px;">
+                            <a href="/Vip/Trade/BuyList" style="color: #FFF; text-decoration: none">@("提供记录".ToLocal())</a>
+                            <span style="font-size: 12px; color: #FFF;">Buy</span>
+                        </div>
+                        <!--/.info-box-->
+                    </div>
+                    <!--/.col-->
+
+                    <div class="col-xs-3">
+                        <div style="background: #6f4615; padding: 20px 30px; border-radius: 10px; font-size: 24px; margin-top: 20px;">
+                            <a href="/Vip/Trade/SellList" style="color: #FFF; text-decoration: none">@("接受记录".ToLocal())</a>
+                            <span style="font-size: 12px; color: #FFF;">Sell</span>
+                        </div>
+                        <!--/.info-box-->
+                    </div>
+                    <!--/.col-->
+
+                    <div class="col-xs-3">
+                        <div style="background: #1d2734; padding: 20px 30px; border-radius: 10px; font-size: 24px; margin-top: 20px;">
+                            <a href="/Vip/Financial/Detail" style="color: #FFF; text-decoration: none">@("财务明细".ToLocal())</a>
+                            <span style="font-size: 12px; color: #FFF;">Financial</span>
+                        </div>
+                        <!--/.info-box-->
+                    </div>
+                    <!--/.col-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel-default" style="padding: 0px 5px;">
+            <div style="background: #2d2d2d; border-radius: 10px; padding: 20px 30px;">
+                @foreach (var item in wallet)
+                {
+                    <span style="display: inline-block; padding-right: 20px; font-size: 16px;">
+                        @(CurrencyHandler.Element(item.CurrencyId).Name) : @(item.Amount)
+                    </span>
+                }
+                <h3 style="color: #6f4615;">@("推广链接".ToLocal())</h3>
+                @*<a href="javascript:void(0)" id="plink" style="font-size: 14px; color:#fff">@(url)</a>
+                    <a href="javascript:void(0)" id="copy123" style="font-size: 14px;color:#fff">@("一键复制".ToLocal())</a>*@
+                @*<script src="/Scripts/zclip/jquery.zclip.min.js"></script>
+                    <script type="text/javascript">
+                        $(function () {
+                            $("#copy123").zclip({
+                                path: '/Scripts/zclip/ZeroClipboard.swf',
+                                copy: $('#plink').text(),
+                                afterCopy: function () {
+                                    $("#plink").css("background-color", '#cff');
+                                    $("<span id='msg'/>").insertAfter($('#copy123')).text('@("复制成功".ToLocal())').fadeOut(2000);
+                                }
+                            });
+                        });
+                    </script>*@
+                <a href="javascript:void(0)" id="plink" style="display: inline-block; margin-left: 10px; color: #fff">@(url)</a>
+                <a href="javascript:void(0)" class="hidden-xs" id="copy123" style="display: inline-block; color: #fff">@("一键复制".ToLocal())</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="panel-default" style="padding: 0px 25px; color: #FFF;">
+            <h3>最新公告</h3>
+            <div class="panel-body" style="border-top: dashed 1px #2c2c2c;">
+                <ul style="padding: 0px; margin: 0px;">
+                    @foreach (var item in news)
+                    {
+                        <li style="list-style: none;"><a style="color:#FFF;" href="/vip/content/NewsDetail?newsId=@item.Id"><span>@item.CreateDate.ToString("yyyy-MM-dd HH:mm")</span>@item.Title </a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+@section foot{
+
+    <script src="/Scripts/zclip/jquery.zclip.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#copy123").zclip({
+                path: '/Scripts/zclip/ZeroClipboard.swf',
+                copy: $('#plink').html(),
+                afterCopy: function () {
+                    //$("#plink").css("background-color", '#cff');
+                    $("<span id='msg'/>").insertAfter($('#copy123')).text('@("复制成功".ToLocal())').fadeOut(2000);
+                }
+            });
+        });
+    </script>
+}

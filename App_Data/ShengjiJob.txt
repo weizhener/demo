@@ -1,0 +1,405 @@
+2016/8/15 13:56:26==================================================
+计算升级经理
+2016/8/15 13:56:26==================================================
+基础提供程序在 Open 上失败。
+2016/8/15 13:56:26==================================================
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 13:56:26==================================================
+System.Data.Entity.Core.EntityException: 基础提供程序在 Open 上失败。 ---> System.Data.SqlClient.SqlException: 无法打开登录所请求的数据库 "L2"。登录失败。
+用户 'sa' 登录失败。
+   在 System.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, DbConnectionPool pool, String accessToken, Boolean applyTransientFaultHandling)
+   在 System.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   在 System.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.Open()
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.<Open>b__36(DbConnection t, DbConnectionInterceptionContext c)
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.<Open>b__2()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.<>c__DisplayClass1.<Execute>b__0()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute(Action operation)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 13:56:26==================================================
+*********************************************
+2016/8/15 13:56:27==================================================
+计算升级经理
+2016/8/15 13:56:27==================================================
+基础提供程序在 Open 上失败。
+2016/8/15 13:56:27==================================================
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 13:56:27==================================================
+System.Data.Entity.Core.EntityException: 基础提供程序在 Open 上失败。 ---> System.Data.SqlClient.SqlException: 无法打开登录所请求的数据库 "L2"。登录失败。
+用户 'sa' 登录失败。
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.Open()
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.<Open>b__36(DbConnection t, DbConnectionInterceptionContext c)
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.<Open>b__2()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.<>c__DisplayClass1.<Execute>b__0()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute(Action operation)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 13:56:27==================================================
+*********************************************
+2016/8/15 14:01:24==================================================
+计算升级经理
+2016/8/15 14:01:24==================================================
+基础提供程序在 Open 上失败。
+2016/8/15 14:01:24==================================================
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 14:01:24==================================================
+System.Data.Entity.Core.EntityException: 基础提供程序在 Open 上失败。 ---> System.Data.SqlClient.SqlException: 无法打开登录所请求的数据库 "L2"。登录失败。
+用户 'sa' 登录失败。
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.Open()
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.<Open>b__36(DbConnection t, DbConnectionInterceptionContext c)
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.<Open>b__2()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.<>c__DisplayClass1.<Execute>b__0()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute(Action operation)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 14:01:24==================================================
+*********************************************
+2016/8/15 14:01:35==================================================
+计算升级经理
+2016/8/15 14:01:35==================================================
+基础提供程序在 Open 上失败。
+2016/8/15 14:01:35==================================================
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 14:01:35==================================================
+System.Data.Entity.Core.EntityException: 基础提供程序在 Open 上失败。 ---> System.Data.SqlClient.SqlException: 无法打开登录所请求的数据库 "L2"。登录失败。
+用户 'sa' 登录失败。
+   在 System.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, DbConnectionPool pool, String accessToken, Boolean applyTransientFaultHandling)
+   在 System.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   在 System.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.Open()
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.<Open>b__36(DbConnection t, DbConnectionInterceptionContext c)
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.<Open>b__2()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.<>c__DisplayClass1.<Execute>b__0()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute(Action operation)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 14:01:35==================================================
+*********************************************
+2016/8/15 14:01:38==================================================
+计算升级经理
+2016/8/15 14:01:38==================================================
+基础提供程序在 Open 上失败。
+2016/8/15 14:01:38==================================================
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 14:01:38==================================================
+System.Data.Entity.Core.EntityException: 基础提供程序在 Open 上失败。 ---> System.Data.SqlClient.SqlException: 无法打开登录所请求的数据库 "L2"。登录失败。
+用户 'sa' 登录失败。
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.Open()
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.<Open>b__36(DbConnection t, DbConnectionInterceptionContext c)
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.<Open>b__2()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.<>c__DisplayClass1.<Execute>b__0()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute(Action operation)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 14:01:38==================================================
+*********************************************
+2016/8/15 14:01:40==================================================
+计算升级经理
+2016/8/15 14:01:40==================================================
+基础提供程序在 Open 上失败。
+2016/8/15 14:01:40==================================================
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 14:01:40==================================================
+System.Data.Entity.Core.EntityException: 基础提供程序在 Open 上失败。 ---> System.Data.SqlClient.SqlException: 无法打开登录所请求的数据库 "L2"。登录失败。
+用户 'sa' 登录失败。
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.Open()
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.<Open>b__36(DbConnection t, DbConnectionInterceptionContext c)
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.<Open>b__2()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.<>c__DisplayClass1.<Execute>b__0()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute(Action operation)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 14:01:40==================================================
+*********************************************
+2016/8/15 14:02:09==================================================
+计算升级经理
+2016/8/15 14:02:09==================================================
+基础提供程序在 Open 上失败。
+2016/8/15 14:02:09==================================================
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 14:02:09==================================================
+System.Data.Entity.Core.EntityException: 基础提供程序在 Open 上失败。 ---> System.Data.SqlClient.SqlException: 无法打开登录所请求的数据库 "L2"。登录失败。
+用户 'sa' 登录失败。
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.Open()
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.<Open>b__36(DbConnection t, DbConnectionInterceptionContext c)
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.<Open>b__2()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.<>c__DisplayClass1.<Execute>b__0()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute(Action operation)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 14:02:09==================================================
+*********************************************
+2016/8/15 14:02:10==================================================
+计算升级经理
+2016/8/15 14:02:10==================================================
+基础提供程序在 Open 上失败。
+2016/8/15 14:02:10==================================================
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 14:02:10==================================================
+System.Data.Entity.Core.EntityException: 基础提供程序在 Open 上失败。 ---> System.Data.SqlClient.SqlException: 无法打开登录所请求的数据库 "L2"。登录失败。
+用户 'sa' 登录失败。
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.Open()
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.<Open>b__36(DbConnection t, DbConnectionInterceptionContext c)
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.<Open>b__2()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.<>c__DisplayClass1.<Execute>b__0()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute(Action operation)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 14:02:10==================================================
+*********************************************
+2016/8/15 14:02:33==================================================
+计算升级经理
+2016/8/15 14:02:33==================================================
+基础提供程序在 Open 上失败。
+2016/8/15 14:02:33==================================================
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 14:02:33==================================================
+System.Data.Entity.Core.EntityException: 基础提供程序在 Open 上失败。 ---> System.Data.SqlClient.SqlException: 无法打开登录所请求的数据库 "L2"。登录失败。
+用户 'sa' 登录失败。
+   在 System.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, DbConnectionPool pool, String accessToken, Boolean applyTransientFaultHandling)
+   在 System.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   在 System.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.Open()
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.<Open>b__36(DbConnection t, DbConnectionInterceptionContext c)
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.<Open>b__2()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.<>c__DisplayClass1.<Execute>b__0()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute(Action operation)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 14:02:33==================================================
+*********************************************
+2016/8/15 14:02:34==================================================
+计算升级经理
+2016/8/15 14:02:34==================================================
+基础提供程序在 Open 上失败。
+2016/8/15 14:02:34==================================================
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 14:02:34==================================================
+System.Data.Entity.Core.EntityException: 基础提供程序在 Open 上失败。 ---> System.Data.SqlClient.SqlException: 无法打开登录所请求的数据库 "L2"。登录失败。
+用户 'sa' 登录失败。
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.Open()
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.<Open>b__36(DbConnection t, DbConnectionInterceptionContext c)
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.<Open>b__2()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.<>c__DisplayClass1.<Execute>b__0()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute(Action operation)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.ShengjiJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\ShengjiJob.cs:行号 44
+2016/8/15 14:02:34==================================================
+*********************************************

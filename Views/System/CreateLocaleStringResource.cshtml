@@ -1,0 +1,42 @@
+﻿@model CreateLocaleStringResourceData
+@{
+    ViewBag.Title = "添加本地化资源";
+}
+
+@Html.Tab(new ListItem { Text = "添加语言", Value = "/system/AddLanguage" },
+new ListItem { Text = "语言管理", Value = "/system/Language" },
+new ListItem { Text = "添加语言资源", Value = "/system/CreateLocaleStringResource", Selected = true },
+new ListItem { Text = "语言资源管理", Value = "/system/LocaleStringResource" })
+
+@using (Html.Form())
+{
+    
+    @Html.RowForEdit(m => m.ResourceName)
+    for (int i = 0; i < Model.LocaleStringResource.Count; i++)
+    {
+    @Html.HiddenFor(m => m.LocaleStringResource[i].LanguageName)
+    @Html.HiddenFor(m => m.LocaleStringResource[i].LanguageId)
+    @Html.Row(Model.LocaleStringResource[i].LanguageName, m => Html.TextBoxFor(n => n.LocaleStringResource[i].ResourceValue, new { @id = Model.LocaleStringResource[i].LanguageId }))
+    }
+    @Html.Row(null, m => Html.Submit())
+}
+
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            var source = "@(Model.LocaleStringResource.FirstOrDefault().LanguageId)";
+            $("#" + source).change(function () {
+                if ($(this).val()) {
+                    var data = null;
+                    $.ajaxSetup({ async: false });
+                    $.post("/system/AutoLocalization", { value: $(this).val(), source: source }, function (result) {
+                        data = result;
+                    });
+                    for (var i = 0; i < data.length; i++) {
+                        $("#" + data[i].LanguageId).val(data[i].ResourceValue);
+                    }
+                }
+            });
+        });
+    </script>
+}

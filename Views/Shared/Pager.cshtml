@@ -1,0 +1,42 @@
+﻿@model Pager
+<div style="margin-top: 5px;">
+    <div style="float: left; margin-top: 8px; font-size: 13px;">@Resources.PageDetail.FormatString(Model.ItemCount,Model.PageNum,Model.PageCount,Model.PageSize)</div>
+    <div style="float: right;">
+        @if (Model.PageNum == 1)
+            {
+            <span>@Resources.PageFirst</span>  <span> | </span> 
+            <span>@Resources.PagePrev</span>   <span> | </span>     
+            }
+            else
+            {
+            <a href="@Model.GeneratePagerItem(Html, 1)">@Resources.PageFirst</a>  <span> | </span> 
+            <a href="@Model.GeneratePagerItem(Html, Model.PageNum - 1)">@Resources.PagePrev</a> <span> | </span> 
+            }
+        @if (Model.PageCount == 0 || Model.PageNum == Model.PageCount)
+            {
+            <span>@Resources.PageNext</span><span> | </span> 
+            <span>@Resources.PageLast</span>
+            }
+            else
+            {
+            <a href="@Model.GeneratePagerItem(Html, Model.PageNum + 1)">@Resources.PageNext</a> <span> | </span>
+            <a href="@Model.GeneratePagerItem(Html, Model.PageCount)">@Resources.PageLast</a>
+            }
+        @Resources.PageGo
+        <div class="btn-group">
+            <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown">
+                @(Model.PageNum == 0 ? 1 : Model.PageNum) <span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-right" style="min-width: 20px;" role="menu">
+                @for (int i = 1; i <= Model.PageCount; i++)
+                {
+                    <li><a href="@Model.GeneratePagerItem(Html, i)">@i.ToString()</a></li>
+                }
+            </ul>
+            @Resources.PageGoUnit
+        </div>
+        
+    </div>
+    <div style="clear: both;"></div>
+</div>
+

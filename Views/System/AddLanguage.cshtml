@@ -1,0 +1,12 @@
+﻿@model AddLanguageData
+@{
+    ViewBag.Title = "添加新语言";
+}
+@Html.Tab(new ListItem { Text="添加语言", Value="/system/AddLanguage",Selected=true },
+new ListItem { Text="语言管理", Value="/system/Language" },
+new ListItem { Text="添加语言资源", Value="/system/CreateLocaleStringResource" },
+new ListItem { Text="语言资源管理", Value="/system/LocaleStringResource" })
+@using (Html.Form())
+{
+    @Html.EditorForModel()
+}

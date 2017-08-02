@@ -1,0 +1,32 @@
+﻿@model Pager<T_Remittance>
+@{
+    ViewBag.Title = "NavigationTop.Financial.Remittance".ToLocal();
+}
+
+@Html.Tab(new ListItem { Value="/vip/financial/createRemittance",Text="NavigationTop.Financial.Remittance".ToLocal() },
+new ListItem { Value="/vip/financial/RemittanceRecord",Text="NavigationTop.Financial.RemittanceRecord".ToLocal(),Selected=true })
+
+@(Grid.Create<T_Remittance>().SetDataSource(Model.Data)
+.Column(m => m.SysBankAccount).Name(Resources.Remittance_SysBankAccount).End()
+.Column(m => m.PostDate).Name(Resources.Remittance_Date).End()
+.Column(m => m.PostBankAccount).Name(Resources.Remittance_PostBankAccount).End()
+.Column(m => m.RealCurrencyId).Name(Resources.Remittance_RealCurrency).End()
+.Column(m => m.RealAmount).Name(Resources.Remittance_RealAmount).End()
+.Column(m => m.BLText).Name(Resources.Financial_HuiLv).End()
+.Column(m => m.CurrencyId).Name(Resources.Remittance_Currency).End()
+.Column(m => m.Amount).Name(Resources.Remittance_Amount).End()
+.Column(m => m.Status).Name(Resources.Status).Value(typeof(InstanceStatus)).End()
+.ActionColumn(m =>
+{
+    if (m.Status == InstanceStatus.Checking)
+    {
+        return Html.ActionLink(Resources.Delete, "DeleteRemittance", new { remittanceId = m.Id, returnUrl = "/vip/financial/RemittanceRecord" }, new { onclick = "return confirm('{0}')".FormatString(Resources.ConfirmDelete) });
+    }
+    else
+    {
+        return "";
+    }
+}).End()
+.Render())
+
+@Html.Page(Model)

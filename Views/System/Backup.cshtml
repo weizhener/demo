@@ -1,0 +1,12 @@
+﻿@model BackupData
+@{
+    ViewBag.Title = "备份数据库";
+}
+
+@*@Html.Tab(new ListItem { Text = "备份数据库".ToLocal(), Value = "/system/Backup", Selected = true },
+new ListItem { Text = "还原数据库".ToLocal(), Value = "/system/Bak" })*@
+
+@using (Html.Form())
+{
+    @Html.EditorForModel()
+}

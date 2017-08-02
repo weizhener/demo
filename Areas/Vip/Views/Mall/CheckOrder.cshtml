@@ -1,0 +1,86 @@
+﻿@model CheckOrderData
+
+@{
+    ViewBag.Title = "Mall.CheckOrder".ToLocal();
+}
+
+@using (Html.Form())
+{
+    <div class="panel panel-default">
+        <div class="panel-heading">@("Mall.Order.DeliveryAddress".ToLocal())</div>
+        <div class="panel-body">
+            @foreach (var item in Model.DeliveryAddress)
+            {
+                <div style="margin: 10px 0;">
+                    @if (item.IsDefault)
+                    {
+                        <input type="radio" value="@item.Id" name="DeliveryAddressId" id="@item.Id" checked="checked" />
+                        <label for="@item.Id">@item.Address @item.Mobile @item.Recipient @item.ZipCode</label>
+                    }
+                    else
+                    {
+                        <input type="radio" value="@item.Id" name="DeliveryAddressId" id="@item.Id" />
+                        <label for="@item.Id">@item.Address @item.Mobile @item.Recipient @item.ZipCode</label>
+                    }
+                </div>
+            }
+            @Html.ActionLinkButton("Mall.Order.AddDeliveryAddress".ToLocal(), "CreateDeliveryAddress", "Mall", new { area = "vip", returnUrl = "/vip/mall/CheckOrder" }, iconType: BootstrapIcon.PLUS, type: ButtonDisplayType.Primary)
+        </div>
+    </div>
+    
+    <div class="panel panel-default">
+        <div class="panel-heading">@Resources.Desciption</div>
+        <div class="panel-body">
+            @Html.TextAreaFor(m => m.Description, new { @class = "form-control" })
+        </div>
+    </div>
+    
+    <div class="panel panel-default">
+        <div class="panel-heading">@("Mall.Order.Detail".ToLocal())</div>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>@("Mall.Product".ToLocal())</th>
+                    <th>@("Mall.Product.Price".ToLocal())</th>
+                    <th>@("Mall.Product.BuyCount".ToLocal())</th>
+                    <th>@Resources.Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.ShoppingCart)
+                {
+                    <tr id="@item.ProductId">
+                        <td>
+                            <img style="width:80px;height:80px;" src="@item.Product.ImageUrl" />
+                            @item.Product.ProductCode @item.Product.ProductName @item.Product.GuiGe
+                        </td>
+                        <td>@item.Product.Price</td>
+                        <td>@item.Count</td>
+                        <td>@(item.Count * item.Product.Price)</td>
+                    </tr>
+                }
+                <tr>
+                    <td>@Resources.Total：</td>
+                    <td></td>
+                    <td></td>
+                    <td>@(Model.ShoppingCart.Any() ? Model.ShoppingCart.Sum(m => m.Count * m.Product.Price) : 0.00m)</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+    
+    <div class="panel panel-default">
+        <div class="panel-heading">@("Mall.Order.Pay".ToLocal())</div>
+        <div class="panel-body">
+            @Html.EditorFor(m => m.PayItemId)
+        </div>
+    </div>
+    
+    <div>
+        <div class="pull-right">
+            @Html.Button("Mall.Order.SubmitOrder".ToLocal(), "btnSubmit", iconType: BootstrapIcon.SAVED, type: ButtonType.Submit, displayType: ButtonDisplayType.Success, size: ButtonSize.Default)
+        </div>
+    </div>
+}
+

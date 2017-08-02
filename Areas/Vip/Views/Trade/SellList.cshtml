@@ -1,0 +1,64 @@
+﻿@model Pager<HomeTradeListData>
+@{
+    ViewBag.Title = "接受帮助".ToLocal();
+}
+
+       <div class="row">
+    <div class="col-xs-12">
+        <div class="hpanel">
+           
+            <div class="panel-body list">
+                <div class="table-responsive project-list">
+                    <table class="table table-striped maintable">
+        <tbody>
+             @foreach (var item in Model.Data)
+             {
+                  <tr style="font-size: 15px;">
+                       <td align="center">
+                                <a href="javascript:void(0);" class="complete ">
+                                    <i class="fa icon-star-full" style="font-size: 35px; display: block; color: #b1251d;"></i>
+                                </a>
+                        <p style="margin-top: 5px;"><strong>@(item.UserCode)</strong></p>
+                    </td>
+                                <td style="padding: 30px 10px;">
+                                    <font>@("参与者".ToLocal()):@(item.UserCode)</font>
+                                    <font>@("数额".ToLocal()):@(item.Total)</font>
+                                    <font>@("剩余".ToLocal()):@(item.Rest)</font>
+                                    <font>@("日期".ToLocal()):@(item.CreateDate.ToString("yyyy-MM-dd HH:mm:ss"))</font>
+                                    <font>@("状态".ToLocal()):@if (item.Rest == 0 && item.Status == TradeHandler.Wait.Id)
+                                                             {
+                                                                <span>@("匹配完成".ToLocal())</span> 
+                                                             }
+                                                             else if (item.Rest>=0 && item.Rest<item.Total && item.Status==TradeHandler.Wait.Id)
+                                                             {
+                                                                 <span>@("部分匹配".ToLocal())</span> 
+                                                             }
+                                                             else
+                                                             {
+                                                                 @(TradeHandler.Element(item.Status).BuyerStatus) 
+                                                             }
+
+
+                                    </font>
+                                </td>
+                                <td style="width: 200px; padding: 30px 0px;">
+                                    @if (item.Status == TradeHandler.Wait.Id && item.Rest > 0 && item.Rest==item.Total)
+                                    {
+                                        <a class="btn btn-danger btn-xs" href="/vip/trade/TradeCancel?tradeId=@(item.Id)" onclick="return confirm('@("确认取消".ToLocal())?')">@("取消".ToLocal())</a>
+                                    }
+                                    <a class="btn btn-info btn-xs" href="/vip/trade/TradeUserDetail?tradeId=@(item.Id)">@("查看详情".ToLocal())&gt;&gt;</a>
+                                </td>
+                   
+                </tr>
+             }
+            <!--compley-->
+               
+        </tbody>
+    </table>
+                    @Html.Page(Model)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+   

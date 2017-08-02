@@ -1,0 +1,107 @@
+﻿
+/* CSS Document */
+*{ margin:0; padding:0}
+li{ list-style:none}
+a{ color:#575757;}
+a:hover{ color:#0866c6}
+.clean{ clear:both}
+img{ border:0 ;}
+a{ text-decoration:none}
+body{font-family:"微软雅黑" 'Microsoft YaHei';margin:0; height:100%; color:#575757 }
+
+/**头部****/
+.h-top{ height:60px; background:#00a196 url(../images/top_bg.jpg) repeat-y;  }
+.h-top .logo_2{ width:15%; text-align:center;height:60px; background:#004098}
+.h-top .logo_2 img{ margin:15px 0 0 0}
+.h-top .yhxx{ width:30%}  
+.h-top .yhxx .left{ width:40%; margin:0 20px 0 0;  text-align:right; font-size:14px; color:#fff;}    
+.h-top .yhxx .left p{ margin:10px 0 0 0}     
+.h-top .yhxx .left #localtime{ font-size:12px;} 
+.h-top .top_word{ font-size:20px; color:#fff; margin:15px 0 0 2%}
+.menu { width:40%; height:60px; line-height:60px; background:#0757a8; text-align:center }
+.menu a:hover{ color:#fff;}
+#nav {padding:0; margin:0; list-style:none; height:60px;  position:relative; z-index:500; font-family:arial, verdana, sans-serif;}
+#nav li.top1 {display:block; color:#fff;  height:60px; line-height:60px; background:url(../images/tiao.gif) right no-repeat; text-align:center }
+#nav li.top1 p{ width:80%; margin:22px auto 0}
+#nav li.top1 img{ float:left; width:20px; height:20px; margin:0px 10px 0 0}
+#nav li.top1 span{ color:#FFF; font-size:14px; display:block; height:20px; line-height:20px; float:left; background: url(../images/down.jpg) no-repeat right; width:70%;  }
+#nav li:hover {position:relative; z-index:200;}
+#nav ul, 
+#nav li:hover ul ul,
+#nav li:hover ul li:hover ul ul,
+#nav li:hover ul li:hover ul li:hover ul ul,
+#nav li:hover ul li:hover ul li:hover ul li:hover ul ul
+{position:absolute; left:-9999px; top:-9999px; width:0; height:0; margin:0; padding:0; list-style:none;}
+#nav li:hover ul.sub
+{left:0; top:38px;_top:62px; background: #fff;  border-top:0 none;border-bottom:0 none; border:1px solid #dedede; white-space:nowrap; width:100%; height:auto; z-index:300; text-align:left}
+#nav li:hover ul.sub li
+{display:block; height:32px; line-height:32px; position:relative; font-weight:normal; border-bottom:1px solid #ccc}
+#nav li:hover ul.sub li a
+{display:block; font-size:12px; height:32px;width:80%; margin:auto;line-height:32px; text-indent:5px; color:#000; text-decoration:none;}
+#nav li:hover ul.sub li.tuichu{ background:#0866c6; height:22px; line-height:22px; margin:5px 0; border:1px solid #0866c6;}
+#nav li:hover ul.sub li.tuichu a{ line-height:22px;height:22px; text-align:center; color:#fff;}
+
+/**头部****/
+/**内容****/
+.h-content { width:100%}
+  /**左侧****/
+.h-content .con_left{ width:15%; background:#efefef;font-size:12px;}
+.h-content .con_left .web{ background:#282828; height:30px; line-height:30px; color:#fff; text-align:center;font-size:14px;}
+
+.menu_list { width: 100%; }
+.menu_head { cursor: pointer; height:40px; line-height:40px; border-bottom:1px solid #fff; position: relative; font-weight:bold; background:#00a196 url(../images/left_bg.jpg) repeat-y }
+.menu_body { display:none; }
+.menu_body a { display:block; height:35px; width:100%; line-height:35px; color:#586050; background-color:#efefef;  border-bottom:1px solid #e5e5e5;  }
+.menu_body a span{width:70%; margin-left:20px; padding-left:10px; background:url(../images/arrow_hui.jpg) no-repeat 0 3px }
+ .menu_body a.current span{ color: #0866c6;background:url(../images/arrow_blue.jpg) no-repeat 0 3px }
+.menu_body a:hover span { color: #0866c6;background:url(../images/arrow_blue.jpg) no-repeat 0 3px }
+.menu_head b{ padding-left:40px; font-weight:normal; color:#fff;background: #0866c6 ; }
+.menu_head b.b1{ background:url(../images/icon_1.png) no-repeat 15px 0}
+.menu_head b.b2{ background:url(../images/icon_2.png) no-repeat 15px 0}
+.menu_head b.b3{ background:url(../images/icon_3.png) no-repeat 15px 0}
+.menu_head b.b4{ background:url(../images/icon_4.png) no-repeat 15px 0}
+.menu_head b.b5{ background:url(../images/icon_5.png) no-repeat 15px 0}
+ /**左侧****/
+ /**右侧****/
+.h-content .con_right{ width:85%;}
+.h-content .con_right .crumbread{ height:30px;background:#dedede url(../images/home.jpg) no-repeat 15px 5px; font-size:12px; line-height:30px; padding-left:40px; color:#727272}
+.main{ width:95%; margin:20px auto}
+.main h1.title{ text-align:center; font-weight:normal; color:#0866c6; font-size:20px; margin-bottom:20px;}
+.main .index_1 ,.index_2 ,.index_3 ,.index_4{ border:1px solid #0866c6;  width:100%; overflow:hidden}
+.index_tit{ height:35px; background:#0866c6; line-height:35px; color:#fff; /*margin:1px*/}
+.index_tit span{ margin:0 0 0 10px;}
+.hy_right_1 {  width:100%; height:190px; font-size:12px;}
+.hy_right_1 .hy_tx{ width:110px; height:140px; padding:10px; border-right:1px solid #eaeaea; margin:15px 0 0 10px; text-align:center }
+.hy_right_1 .hy_tx .div_img{ width:107px; height:107px;/*非IE的主流浏览器识别的垂直居中的方法*/ 
+display: table-cell; border:1px solid #eaeaea; padding:1px;
+vertical-align:middle; 
+/*设置水平居中*/ 
+text-align:center; 
+/* 针对IE的Hack */ 
+*display: block; 
+*font-size: 93px;/*约为高度的0.873，200*0.873 约为175*/ 
+*font-family:Arial;/*防止非utf-8引起的hack失效问题，如gbk编码*/ }
+.hy_right_1 .hy_tx .div_img img{vertical-align:middle;  height:auto;width:106px;}
+.hy_right_1 .hy_tx a{ color:#575757;margin-top:10px; display:block; font-size:12px;}
+.hy_txinfor{ width:83%; margin:20px 0px 0 20px; height:150px;  _margin:20px 0px 0 20px;}
+.hy_txinfor .name{ margin:10px 0 0 0; width:100%;}
+.hy_txinfor .name span{ font-size:16px;}
+.hy_txinfor .hy_yz{ margin:15px 0 0 0;width:83%;}
+.hy_yz span{ color:#575757; background: url(../images/jb_1.jpg) no-repeat; margin-right:20px; padding-left:25px; height:22px; line-height:22px; display:block; float:left}
+.hy_yz span.jb_2{background: url(../images/jb_2.jpg) no-repeat; }
+ .hy_yz span.jb_3{background: url(../images/jb_3.jpg) no-repeat; }
+.hy_yz span.jb_4{background: url(../images/jb_4.jpg) no-repeat; }
+.hy_txinfor .ddtx{ width:790px; border:1px solid #eaeaea; padding:10px 0; height:54px; margin:10px 20px 0 0}
+.hy_txinfor .ddtx .left{ margin:20px 0 0 10px}
+.hy_txinfor .ddtx .left span{ margin-right:20px;}
+.hy_txinfor .ddtx .left span a{ color:#575757}
+.hy_txinfor .ddxq { width:200px; padding-left:15px; height:54px;border-left:1px solid #eaeaea; margin-right:20px;}
+.hy_txinfor .ddxq p{ border-bottom:1px solid #eaeaea; line-height:26px; text-align:center}
+.hy_txinfor .ddxq p.p2{ border:0;}
+
+.index_2 ,.index_3{ margin:10px 0 0 0}
+.index_2 ul ,.index_3 .ts_con{ width:98%; margin:10px auto; font-size:12px;line-height:32px;}
+.index_2 ul li span{ float:right}
+ /**右侧****/
+/**首页内容****/
+ 

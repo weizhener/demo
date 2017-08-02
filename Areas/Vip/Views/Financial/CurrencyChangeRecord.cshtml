@@ -1,0 +1,18 @@
+﻿@model Pager<T_CurrencyChange>
+
+@{
+    ViewBag.Title = "NavigationTop.Financial.CurrencyChangeRecord".ToLocal();
+}
+
+@Html.Tab(new ListItem {  Value="/vip/financial/CurrencyChange",Text="NavigationTop.Financial.CurrencyChange".ToLocal()},
+new ListItem {  Value="/vip/financial/CurrencyChangeRecord",Text="NavigationTop.Financial.CurrencyChangeRecord".ToLocal(),Selected=true})
+
+@(Grid.Create<T_CurrencyChange>().SetDataSource(Model.Data)
+.Column(m => m.FromCurrencyId).Name(Resources.CurrencyChange_FromCurrency).Value(m => CurrencyHandler.Element(m.FromCurrencyId).Name).End()
+.Column(m => m.ToCurrencyId).Name(Resources.CurrencyChange_ToCurrency).Value(m => CurrencyHandler.Element(m.ToCurrencyId).Name).End()
+.Column(m => m.BLText).Name(Resources.CurrencyChange_BLText).End()
+.Column(m => m.Amount).Name(Resources.CurrencyChange_Amount).End()
+.Column(m => m.CreateDate).Name(Resources.Date).End()
+.Render())
+
+@Html.Page(Model)

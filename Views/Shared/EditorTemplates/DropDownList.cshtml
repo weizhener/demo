@@ -1,0 +1,6 @@
+﻿@model object
+
+@{
+    string listName = (string)ViewData.ModelMetadata.AdditionalValues[ListProviderBus.ListItemKey];
+    @Html.DropDownList("", listName, Model)
+}

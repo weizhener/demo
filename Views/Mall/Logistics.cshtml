@@ -1,0 +1,18 @@
+﻿@model IEnumerable<T_Logistics>
+
+@{
+    ViewBag.Title = "物流管理";
+}
+
+@section buttonGroup{
+    @Html.ActionLinkButton("添加","CreateLogistics","Mall")
+    }
+
+@(Grid.Create<T_Logistics>().SetDataSource(Model)
+.Column(m => m.Name).Name("物流名称").End()
+.Column(m => m.Tel).Name("联系方式").End()
+.Column(m => m.Contacter).Name("联系人").End()
+.Column(m => m.Url).Name("官网地址").End()
+.ActionColumn(m => Html.ActionLink("编辑", "EditLogistics", new { logisticsId = m.Id }),
+m => Html.ActionLink("删除", "DeleteLogistics", new { logisticsId = m.Id }, new { onclick = "return confirm('确认删除？')" })).End()
+.Render())

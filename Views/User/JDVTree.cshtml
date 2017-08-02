@@ -1,0 +1,128 @@
+﻿@model VTreeNode<JDVTreeNodeData>
+@{
+    ViewBag.Title = "安置网络图";
+    var netCeng = new List<SelectListItem>();
+    using (ZXContext db = new ZXContext())
+    {
+        int ceng = 8;
+        if (db.User.Count() > 0)
+        {
+            ceng = db.User.Max(m => m.JDLevel + 1);
+        }
+        for (int i = 2; i < ceng; i++)
+        {
+            netCeng.Add(new SelectListItem { Text = i.ToString() + "层", Value = i.ToString() });
+        }
+    }
+}
+
+@section head{
+    <link href="/Content/orgchart.css" rel="stylesheet" />
+    <link href="/Content/vtree-net.css" rel="stylesheet" />
+}
+
+@if (Model != null)
+{
+    using (Html.Search(false))
+    {
+        Html.Group("会员帐号", Html.TextBox("userCode", Request.QueryString["userCode"]));
+        Html.Group("显示层数", Html.DropDownList("layout", netCeng));
+
+        Html.SearchBtn();
+
+        Html.Group("", Html.ActionLinkButton("上一层", "JDVTree", "User", routeValues: new { userCode = Model.Data.JDUserCode }));
+        Html.Group("", Html.ActionLinkButton("顶层", "JDVTree", "User", routeValues: new { userCode = "" }));
+
+        foreach (var item in UserJDPosition.UserJDPositionCollection)
+        {
+            Html.Group("", Html.ActionLinkButton("{0}底层".FormatString(item.PositionName.ToLocal()), "JDVTree", "User", routeValues: new { userCode = Request.QueryString["userCode"], jdposition = item.Position }));
+        }
+    }
+
+    <div class="user-level">
+        @for (int i = 0; i < LevelHandler.Collection.Count; i++)
+        {
+            <label class="user-level-@(i + 1)">@LevelHandler.Collection[i].Name</label>
+        }
+    </div>
+    <div class="user-level-split"></div>
+
+    @helper NodeContentForNormal(VTreeNode<JDVTreeNodeData> node)
+{
+    var levelCssClass = "user-level-{0}".FormatString(LevelHandler.Element(node.Data.LevelId).Weight);
+    
+        <table class="net-node @levelCssClass">
+            <tr>
+                <td colspan="3">@Html.ActionLink(node.Data.UserCode + " [" + node.Data.NickName + "]", "JDVTree", new { userCode = node.Data.UserCode })</td>
+            </tr>
+            <tr>
+                <td colspan="3">@(LevelHandler.Element(node.Data.LevelId).Name)</td>
+            </tr>
+            <tr>
+                <td></td>
+                <td>@UserJDPosition.POSITION_1_NAME.ToLocal()</td>
+                <td>@UserJDPosition.POSITION_2_NAME.ToLocal()</td>
+            </tr>
+            <tr>
+                <td>新增</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td>累计</td>
+                <td colspan="2">0</td>
+            </tr>
+            <tr>
+                <td>剩余</td>
+                <td>0</td>
+                <td>0</td>
+            </tr>
+            <tr>
+                <td colspan="2">@node.Data.JiHuoDate</td>
+                <td>@(node.Data.IsVirtual ? "ZX.User.IsVirtual".ToLocal() : "ZX.User.NotVirtual".ToLocal())</td>
+            </tr>
+        </table>
+    }
+
+    @helper NodeContentForRegister(VTreeNode<JDVTreeNodeData> node)
+{
+        @Html.ActionLinkButton("注册", "Register", "User", new { jdUserId = node.Parent.Data.UserId, jdPosition = node.Data.JDPosition })
+    }
+
+    @helper NodeContentForInvalid(VTreeNode<JDVTreeNodeData> node)
+{
+        <table class="net-node">
+            <tr>
+                <td>@Html.ActionLink(node.Data.UserCode + " [" + node.Data.NickName + "]", "JDVTree", new { userCode = node.Data.UserCode })</td>
+            </tr>
+            <tr>
+                <td>@(LevelHandler.Element(node.Data.LevelId).Name)</td>
+            </tr>
+            <tr>
+                <td>未激活</td>
+            </tr>
+        </table>
+    }
+
+    <table class="net-box">
+        <tr>
+            <td align="center">
+                @Html.VTree(Model, node =>
+           {
+               if (node.Data.IsRegister)
+               {
+                   return NodeContentForRegister(node);
+               }
+               else if (node.Data.IsValid == false)
+               {
+                   return NodeContentForInvalid(node);
+               }
+               else
+               {
+                   return NodeContentForNormal(node);
+               }
+           })
+            </td>
+        </tr>
+    </table>
+}

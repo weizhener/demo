@@ -1,0 +1,17 @@
+﻿@model IEnumerable<T_Role>
+@{
+    ViewBag.Title = "角色管理";
+}
+
+@section buttonGroup{
+    @Html.ActionLinkButton("添加角色","CreateRole","System",iconType:BootstrapIcon.PLUS)
+    }
+
+@(Grid.Create<T_Role>().SetDataSource(Model)
+.Column(m => m.RoleName).Name("角色名称").End()
+.Column(m => m.Description).Name("角色名称").End()
+.Column(m => m.CreateDate).Name("创建日期").End()
+.ActionColumn(m => Html.ActionLink("编辑", "EditRole", new { roleId = m.Id }),
+m => Html.ActionLink("权限", "Authorize", new { roleId = m.Id }),
+m => Html.ActionLink("删除", "DeleteRole", new { roleId = m.Id })).End()
+.Render())

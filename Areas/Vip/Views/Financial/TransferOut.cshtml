@@ -1,0 +1,25 @@
+﻿@model Pager<T_Transfer>
+@{
+    ViewBag.Title = "NavigationTop.Financial.TransferOutRecord".ToLocal();
+}
+
+@Html.Tab(new ListItem { Value = "/vip/financial/CreateTransferOut", Text = "NavigationTop.Financial.Transfer".ToLocal() },
+new ListItem { Value = "/vip/financial/TransferOut", Text = "NavigationTop.Financial.TransferOutRecord".ToLocal(), Selected = true },
+new ListItem { Value = "/vip/financial/TransferIn", Text = "NavigationTop.Financial.TransferInRecord".ToLocal() })
+
+<div class="panel panel-info">
+    <div class="panel-heading">@("NavigationTop.Financial.TransferOutRecord".ToLocal())</div>
+    <div class="panel-body">
+       @(Grid.Create<T_Transfer>().SetDataSource(Model.Data)
+.Column(m => m.ToUserCode).Name(Resources.TransferOut_ToUserCode).End()
+.Column(m => m.CurrencyId).Name(Resources.Currency).Value(m => CurrencyHandler.Element(m.CurrencyId).Name).End()
+.Column(m => m.Total).Name(Resources.TransferOut_Total).End()
+.Column(m => m.ServiceFee).Name(Resources.ServiceFee).End()
+.Column(m => m.Amount).Name(Resources.TransferOut_Amount).End()
+.Column(m => m.CreateDate).Name(Resources.Date).End()
+.Render())
+
+@Html.Page(Model)
+    </div>
+</div>
+

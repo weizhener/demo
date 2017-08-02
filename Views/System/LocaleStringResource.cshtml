@@ -1,0 +1,36 @@
+﻿@model Pager<LocaleStringResourceData>
+@{
+    ViewBag.Title = "本地化数据";
+}
+
+
+@section buttonGroup{
+    @Html.ActionLinkButton("添加", "CreateLocaleStringResource", "System", iconType: BootstrapIcon.PLUS)
+    @Html.ActionLinkButton("导出", "ExportLocaleStringResource", "System")
+    @Html.ActionLinkButton("导入", "ImportLocaleStringResource", "System")
+}
+
+@Html.Tab(new ListItem { Text="添加语言", Value="/system/AddLanguage" },
+new ListItem { Text="语言管理", Value="/system/Language" },
+new ListItem { Text="添加语言资源", Value="/system/CreateLocaleStringResource" },
+new ListItem { Text="语言资源管理", Value="/system/LocaleStringResource",Selected=true })
+
+@using (Html.Search())
+{
+    Html.Group("资源名称", Html.TextBox("resourceName", Request.QueryString["resourceName"]));
+    Html.Group("资源值", Html.TextBox("resourceValue", Request.QueryString["resourceValue"]));
+}
+
+
+
+@(Grid.Create<LocaleStringResourceData>().SetDataSource(Model.Data)
+.Column(m => m.LanguageName).Name("语言名称").End()
+.Column(m => m.ResourceName).Name("资源名称").End()
+.Column(m => m.ResourceValue).Name("资源值").End()
+.ActionColumn(m => Html.ActionLink("编辑", "EditLocaleStringResource", new { resourceId = m.ResourceId }),
+                m => Html.ActionLink("删除", "DeleteLocaleStringResource", new { resourceId = m.ResourceId }, new { onclick = "return confirm('确认删除？')" })).End()
+.Render())
+
+@Html.Page(Model)
+
+

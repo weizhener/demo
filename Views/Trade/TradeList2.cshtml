@@ -1,0 +1,105 @@
+﻿@model Pager<T_TradeList>
+@{
+    ViewBag.Title = "接受帮助";
+    int buyCount = 0, sellCount = 0;
+    decimal buyTotal = 0, sellTotal = 0;
+    decimal buyWaitPIPEI = 0, sellWaitPIPEI = 0;//等待匹配
+    decimal waitDakuan = 0, waitShoukuan = 0;
+    using (ZXContext db = new ZXContext())
+    {
+
+        DateTime minDate = ((Request["minDate"] == null || Request["minDate"].ToString().IsNullOrWhiteSpace()) ? System.Data.SqlTypes.SqlDateTime.MinValue.Value : Convert.ToDateTime(Request["minDate"].ToString()));
+        DateTime maxDate = ((Request["maxDate"] == null || Request["maxDate"].ToString().IsNullOrWhiteSpace()) ? System.Data.SqlTypes.SqlDateTime.MaxValue.Value : Convert.ToDateTime(Request["maxDate"].ToString()));
+
+        buyCount = db.TradeList.Count(m => m.CreateDate >= minDate && m.CreateDate <= maxDate && m.Type == TradeType.Buyer && m.Status != TradeHandler.Cancel.Id);
+        sellCount = db.TradeList.Count(m => m.CreateDate >= minDate && m.CreateDate <= maxDate && m.Type == TradeType.Seller && m.Status != TradeHandler.Cancel.Id);
+
+        buyTotal = db.TradeList.Where(m => m.CreateDate >= minDate && m.CreateDate <= maxDate && m.Type == TradeType.Buyer && m.Status != TradeHandler.Cancel.Id)
+                                .Select(m => m.Total).DefaultIfEmpty(0).Sum();
+        sellTotal = db.TradeList.Where(m => m.CreateDate >= minDate && m.CreateDate <= maxDate && m.Type == TradeType.Seller && m.Status != TradeHandler.Cancel.Id)
+                                .Select(m => m.Total).DefaultIfEmpty(0).Sum();
+
+        buyWaitPIPEI = db.TradeList.Where(m => m.CreateDate >= minDate && m.CreateDate <= maxDate && m.Type == TradeType.Buyer && m.Status != TradeHandler.Cancel.Id)
+                                .Select(m => m.Rest).DefaultIfEmpty(0).Sum();
+        sellWaitPIPEI = db.TradeList.Where(m => m.CreateDate >= minDate && m.CreateDate <= maxDate && m.Type == TradeType.Seller && m.Status != TradeHandler.Cancel.Id)
+                                .Select(m => m.Rest).DefaultIfEmpty(0).Sum();
+
+        waitDakuan = db.TradeUser.Where(m => m.CreateDate >= minDate && m.CreateDate <= maxDate && m.Status == TradeHandler.WaitBuyer.Id)
+                                    .Select(m => m.Total).DefaultIfEmpty(0).Sum();
+        waitShoukuan = db.TradeUser.Where(m => m.CreateDate >= minDate && m.CreateDate <= maxDate && m.Status == TradeHandler.WaitSeller.Id)
+                                    .Select(m => m.Total).DefaultIfEmpty(0).Sum();
+    }
+}
+
+@using (Html.Search(false))
+{
+    Html.Group("会员帐号", Html.TextBox("userCode", Request.QueryString["userCode"]));
+
+    using (Html.Group("日期"))
+    {
+    @Html.TextBox("minDate", Request.QueryString["minDate"]) <span>-</span>   
+    @Html.TextBox("maxDate", Request.QueryString["maxDate"])    
+    }
+    Html.SearchBtn();
+    <br />
+    <br />
+    <span style="display: inline-block; padding-left: 10px;">提供帮助总数量 : @(buyCount)</span>
+    <span style="display: inline-block; padding-left: 10px;">接受帮助总数量 : @(sellCount)</span>
+    <span style="display: inline-block; padding-left: 10px;">提供帮助总金额 : @(buyTotal)</span>
+    <span style="display: inline-block; padding-left: 10px;">接受帮助总金额 : @(sellTotal)</span>
+    <br />
+    <span style="display: inline-block; padding-left: 10px;">提供帮助等待匹配总金额 : @(buyWaitPIPEI)</span>
+    <span style="display: inline-block; padding-left: 10px;">接受帮助等待匹配总金额 : @(sellWaitPIPEI)</span>
+    <span style="display: inline-block; padding-left: 10px;">等待打款总金额 : @(waitDakuan)</span>
+    <span style="display: inline-block; padding-left: 10px;">等待收款总金额 : @(waitShoukuan)</span>
+}
+@(Grid.Create<T_TradeList>().SetDataSource(Model.Data)
+.Column(m => m.UserCode).Name("会员帐号").End()
+.Column(m => m.UserName).Name("会员名称").End()
+.Column(m => m.Type).Name("类型").Value(@<span>
+    @if (item.Type == TradeType.Buyer)
+    {
+        <span style="color: red;">@(item.Type.EnumMetadataDisplay())</span>
+    }
+    else
+    {
+        <span style="color: green;">@(item.Type.EnumMetadataDisplay())</span>
+    }
+</span>).End()
+.Column(m => m.Total).Name("数额").End()
+.Column(m => m.Rest).Name("剩余").End()
+.Column(m => m.Status).Name("状态").Value(@<span>
+    @if (item.Rest == 0 && item.Status == TradeHandler.Wait.Id)
+    {
+        <span>匹配完成</span>
+    }
+    else
+    {
+        @(TradeHandler.Element(item.Status).BuyerStatus)
+    }
+</span>).End()
+.Column(m => m.CreateDate).Name("日期").End()
+.ActionColumn(
+@<span>
+    @Html.ActionLink("详细信息", "EditTradeList", new { tradeListId = item.Id })
+    @Html.ActionLink("查看匹配", "TradeUserList", new { tradeListId = item.Id })
+    @if (item.Status == TradeHandler.Wait.Id && item.Rest > 0)
+    {
+        @(Html.ActionLink("撤单", "TradeListCancel", new { tradeListId = item.Id }, new { onclick = "return confirm('确认撤单?')" }))
+    }
+</span>
+).End()
+.Sum(Model.SumData)
+.Render())
+@Html.Page(Model)
+
+
+@section foot{
+    <script src="/Scripts/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        $("#minDate,#maxDate").click(function () {
+            WdatePicker({ dateFmt: 'yyyy/MM/dd HH:mm:ss' });
+        });
+        $("table tr td:last").html("");
+    </script>
+}

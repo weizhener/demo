@@ -1,0 +1,12 @@
+﻿@model CreateUserBankAccountData
+@{
+    ViewBag.Title = "NavigationTop.Financial.CreateUserBankAccount".ToLocal();
+}
+
+@Html.Tab(new ListItem { Text = "NavigationTop.Financial.CreateUserBankAccount".ToLocal(), Value = "/vip/financial/CreateUserBankAccount", Selected = true },
+new ListItem { Text = "NavigationTop.Financial.UserBankAccount".ToLocal(), Value = "/vip/financial/UserBankAccount" })
+
+@using (Html.Form())
+{
+    @Html.EditorForModel()
+}

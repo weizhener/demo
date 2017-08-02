@@ -1,0 +1,28 @@
+﻿@model IEnumerable<T_Admin>
+@{
+    ViewBag.Title = "管理员设置";
+}
+
+@section buttonGroup{
+    @Html.ActionLinkButton("添加管理员","CreateAdmin","System",iconType:BootstrapIcon.PLUS)
+    }
+
+@(Grid.Create<T_Admin>()
+.SetDataSource(Model)
+.Column(m => m.AdminCode).Name("管理员编号").End()
+.Column(m => m.NickName).Name("管理员真实姓名").End()
+.Column(m => m.IsLock).Name("状态").Value("锁定", "正常").End()
+.ActionColumn(m => Html.ActionLink("编辑", "EditAdmin", new { adminId = m.Id }),
+m =>
+{
+    if (m.IsLock)
+    {
+        return Html.ActionLink("启用", "lockAdmin", new { adminId = m.Id });
+    }
+    else
+    {
+        return Html.ActionLink("锁定", "LockAdmin", new { adminId = m.Id });
+    }
+},
+m => Html.ActionLink("删除", "DeleteAdmin", new { adminId = m.Id }, new { onclick="return confirm('确认删除？')"})).End()
+.Render())

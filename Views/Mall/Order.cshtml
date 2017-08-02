@@ -1,0 +1,45 @@
+﻿@model Pager<T_Order>
+@{
+    ViewBag.Title = "订单管理";
+}
+
+@section buttonGroup{
+    @Html.ExportToExcel("ExportOrderRecord", "Mall")
+}
+
+@using (Html.Search())
+{
+    Html.Group("订单号", Html.TextBox("serialNumber",Request.QueryString["serialNumber"]));
+    Html.Group("会员帐号", Html.TextBox("userCode",Request.QueryString["userCode"]));
+    
+    var type = new List<SelectListItem> { new SelectListItem { Text = "==全部==", Value = "" } };
+    type.AddRange(OrderType.Common.ToSelectDataSource().ToList().Each(m => m.Selected = (m.Value == Request.QueryString["type"])));
+    Html.Group("订单类型", Html.DropDownList("type", type));
+
+    var status = new List<SelectListItem> { new SelectListItem { Text = "==全部==", Value = "" } };
+    status.AddRange(OrderStatus.Paid.ToSelectDataSource().ToList().Each(m => m.Selected = (m.Value == Request.QueryString["status"])));
+    Html.Group("订单状态", Html.DropDownList("status", status));
+}
+
+@(Grid.Create<T_Order>().SetDataSource(Model.Data)
+.Column(m => m.SerialNumber).Name("订单号").End()
+.Column(m => m.UserCode).Name("会员帐号").End()
+.Column(m => m.CreateDate).Name("日期").End()
+.Column(m => m.Total).Name("总额").End()
+.Column(m => m.ZheKou).Name("折扣").End()
+.Column(m => m.Amount).Name("实际支付金额").End()
+.Column(m => m.Type).Name("类型").Value(typeof(OrderType)).End()
+.Column(m => m.Status).Name("状态").Value(typeof(OrderStatus)).End()
+.ActionColumn(m => Html.ActionLink("详情", "OrderDetail", new { orderId=m.Id}),
+m =>
+{
+    if (m.Status == OrderStatus.Paid)
+    {
+        return Html.ActionLink("发货", "Send", new { orderId = m.Id });
+    }
+    return "";
+}).End()
+.Render())
+
+
+@Html.Page(Model)

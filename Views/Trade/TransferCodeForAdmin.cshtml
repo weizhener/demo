@@ -1,0 +1,38 @@
+﻿@{
+    ViewBag.Title = "转出激活码";
+    int rest = 0;
+    using (ZXContext db = new ZXContext())
+    {
+        rest = db.JihuoCode.Count(m => m.BuyId == null && m.UseId == null);
+    }
+}
+
+@Html.Tab(new ListItem { Text = "创建激活码".ToLocal(), Value = "/trade/CreateJihuoCode" },
+new ListItem { Text = "转出激活码".ToLocal(), Value = "/trade/TransferCodeForAdmin", Selected = true },
+new ListItem { Text = "激活码列表".ToLocal(), Value = "/trade/JihuoCodeList" }
+)
+@using (Html.BeginForm("TransferCodeForAdmin", null, FormMethod.Post, new { @class = "form-horizontal", @id = "transferjihuoCodeForm" }))
+{
+    @(Html.Row("转入会员帐号", n => Html.TextBox("toUserCode")))
+    
+    @(Html.Row("转出数量", n => Html.TextBox("count")))
+    @(Html.Row("激活码剩余数量", @<span>@(rest)</span>))
+    @(Html.Row(null, @<input type="button" id="save" value="转让" class=" btn-primary btn" />))
+}
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            $("#save").click(function () {
+                if ($("#count").val() <= 0) {
+                    alert("转让失败!");
+                }
+                else {
+                    if (confirm("确认转让?")) {
+                        $(this).attr({ "disabled": "disabled" });
+                        $("#transferjihuoCodeForm").submit();
+                    }
+                }
+            })
+        })
+    </script>
+}

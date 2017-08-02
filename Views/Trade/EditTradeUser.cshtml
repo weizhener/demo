@@ -1,0 +1,46 @@
+﻿@model EditTradeUserData
+@{
+    ViewBag.Title = "编辑信息";
+    var status = new List<SelectListItem>
+    {
+        new SelectListItem { Text= TradeHandler.WaitBuyer.BuyerStatus, Value=TradeHandler.WaitBuyer.Id.ToString()},
+        new SelectListItem { Text= TradeHandler.WaitSeller.BuyerStatus, Value=TradeHandler.WaitSeller.Id.ToString()},
+        new SelectListItem { Text= TradeHandler.Complete.BuyerStatus, Value=TradeHandler.Complete.Id.ToString()},
+        new SelectListItem { Text= TradeHandler.LockBuyer.BuyerStatus, Value=TradeHandler.LockBuyer.Id.ToString()},
+        new SelectListItem { Text= TradeHandler.LockSeller.BuyerStatus, Value=TradeHandler.LockSeller.Id.ToString()},
+    };
+    status.FirstOrDefault(m => m.Value == Model.Status.ToString()).Selected = true;
+}
+@using (Html.Form())
+{
+    @(Html.HiddenFor(m => m.ReturnUrl))
+    @(Html.HiddenFor(m => m.TradeUserId))
+    @(Html.HiddenFor(m => m.SerialNumber))
+    @(Html.HiddenFor(m => m.BuyUserCode))
+    @(Html.HiddenFor(m => m.SellUserCode))
+    @(Html.HiddenFor(m => m.Total))
+    @(Html.HiddenFor(m => m.Status))
+    @(Html.HiddenFor(m => m.BankName))
+    @(Html.HiddenFor(m => m.BankAddress))
+    @(Html.HiddenFor(m => m.BankUserName))
+    @(Html.HiddenFor(m => m.BankCode))
+    @(Html.HiddenFor(m => m.CreateDate))
+    @(Html.HiddenFor(m => m.HuiKuanDate))
+    @(Html.HiddenFor(m => m.ShoukuanDate))
+    @(Html.RowForDisplay(m => m.SerialNumber))
+    @(Html.RowForDisplay(m => m.BuyUserCode))
+    @(Html.RowForDisplay(m => m.SellUserCode))
+    @(Html.RowForDisplay(m => m.Total))
+    @(Html.RowForDisplay(m => m.CreateDate))
+    @(Html.Row("当前状态", @<span>@(TradeHandler.Element(Model.Status).BuyerStatus)</span>))
+    @(Html.Row("打款凭证", @<span>
+        @if (Model.ImgPath.IsNullOrWhiteSpace() == false)
+        {
+            <a href="@(Model.ImgPath)" target="_blank">
+                <img src="@(Model.ImgPath)" style="width:100px;" /></a>
+        }
+    </span>))
+    @(Html.RowForDisplay(m => m.HuiKuanDate))
+    @(Html.RowForDisplay(m => m.ShoukuanDate))
+    //@(Html.Row(null, m => Html.Submit()))
+}

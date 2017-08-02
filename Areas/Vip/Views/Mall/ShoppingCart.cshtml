@@ -1,0 +1,62 @@
+﻿@model IEnumerable<T_ShoppingCart>
+@{
+    ViewBag.Title = "NavigationTop.Mall.ShoppingCart".ToLocal();
+}
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>@("Mall.Product".ToLocal())</th>
+            <th>@("Mall.Product.Price".ToLocal())</th>
+            <th>@("Mall.Product.BuyCount".ToLocal())</th>
+            <th>@Resources.Total</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr id="@item.ProductId">
+                <td>
+                    <img style="width:80px;height:80px;" src="@item.Product.ImageUrl" />
+                    @item.Product.ProductCode @item.Product.ProductName @item.Product.GuiGe
+                </td>
+                <td>@item.Product.Price</td>
+                <td><input type="text" value="@item.Count" class="count" original-val="@item.Count" /></td>
+                <td>@(item.Count * item.Product.Price)</td>
+                <td>@Html.ActionLink(Resources.Delete, "DeleteFromShoppingCart", new { productId = item.ProductId }, new { onclick="return confirm('{0}')".FormatString(Resources.ConfirmDelete)})</td>
+            </tr>
+        }
+        <tr>
+            <td>@Resources.Total：</td>
+            <td></td>
+            <td></td>
+            <td>@(Model.Any() ? Model.Sum(m => m.Count * m.Product.Price) : 0.00m)</td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+@Html.ActionLinkButton("Mall.GoToCheckOrder".ToLocal(), "CheckOrder", "mall", new { area="vip"},type:ButtonDisplayType.Info,size:ButtonSize.Default)
+
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            $(".count").change(function () {
+                var $count = $(this);
+                common.loading.open();
+                $.post("/vip/mall/ChangeCount", { count: $(this).val(), productId: $(this).closest("tr").prop("id") }, function (result) {
+                    if (result.IsSuccess) {
+                        window.location.href = "/vip/mall/shoppingcart";
+                    }
+                    else {
+                        alert(result.Error);
+                        $count.val($count.attr("original-val"));
+                    }
+                    common.loading.close();
+                });
+            });
+        });
+    </script>
+    }

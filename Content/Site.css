@@ -1,0 +1,146 @@
+﻿body
+{
+    font-size: .85em;
+    font-family: "Trebuchet MS", Verdana, Helvetica, Sans-Serif;
+    color: #232323;
+    background-color: #fff;
+}
+
+header,
+footer,
+nav,
+section {
+    display: block;
+}
+
+/* Styles for basic forms
+-----------------------------------------------------------*/
+
+fieldset 
+{
+    border:1px solid #ddd;
+    padding:0 1.4em 1.4em 1.4em;
+    margin:0 0 1.5em 0;
+}
+
+legend 
+{
+    font-size:1.2em;
+    font-weight: bold;
+}
+
+textarea 
+{
+    min-height: 75px;
+}
+
+.editor-label 
+{
+    margin: 1em 0 0 0;
+}
+
+.editor-field 
+{
+    margin:0.5em 0 0 0;
+}
+
+
+/* Styles for validation helpers
+-----------------------------------------------------------*/
+.field-validation-error
+{
+    color: #ff0000;
+}
+
+.field-validation-valid
+{
+    display: none;
+}
+
+.input-validation-error
+{
+    border: 1px solid #ff0000;
+    background-color: #ffeeee;
+}
+
+.validation-summary-errors
+{
+    font-weight: bold;
+    color: #ff0000;
+}
+
+.validation-summary-valid
+{
+    display: none;
+}
+/*表格*/
+.grid-action-td{width:80px;white-space:nowrap;}
+.grid-action{white-space:nowrap;}
+.grid-action a{margin:0 5px;white-space:nowrap;}
+
+/*页面顶部操作栏*/
+#page-operating {
+    border-bottom: solid 1px #ccc;
+    padding: 10px 60px 10px 20px;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px;
+    background-color: #fff;
+    position: fixed;
+    height: 50px;
+    top: 0;
+    left: 0px;
+    width: 100%;
+    z-index: 100;
+}
+
+.input-required {color:red;display:inline-block;margin-left:5px;}
+
+
+/*查询*/
+#form_search div.form-group {
+/*margin-bottom: 5px;*/
+margin-left: 10px;
+}
+#form_search .btn-search {
+margin-left: 20px;
+}
+
+/*加载等待动画*/
+#sys_shadow{position:fixed;_position:absolute;top:0;left:0;right:0;bottom:0;z-index:99;}
+#sys_loading{position:fixed;_position:absolute;top:50%;left:50%;width:124px;height:124px;overflow:hidden;background:url(/images/loading.gif) no-repeat;z-index:100; margin:-62px 0 0 -62px;} 
+
+input[type='text'],input[type='password'],textarea{
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.428571429;
+    color: #555;
+    vertical-align: middle;
+    background-image: none;
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+select{
+    display: inline-block !important;
+    height: 34px;
+    width:auto !important;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.428571429;
+    color: #555;
+    vertical-align: middle;
+    background-image: none;
+    border: 1px solid #CCC;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+    transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
+}
+
+/*产品列表显示图片*/
+table .product-image{width:80px;height:80px;}

@@ -1,0 +1,37 @@
+﻿@model CreateMessageData
+@{
+    ViewBag.Title = "NavigationTop.Content.CreateMessage".ToLocal();
+}
+<div class="panel panel-info">
+    <div class="panel-heading">@("NavigationTop.Content.CreateMessage".ToLocal())</div>
+    <div class="panel-body">
+       @using (Html.Form())
+{
+    <div class="form-group">
+        <label class="col-sm-2 control-label"></label>
+        <div class="col-sm-10">
+            <p>@("服务时间 周一至周五，北京香港时间9:00至17:00".ToLocal())</p>
+        </div>
+    </div>
+    @Html.EditorForModel()
+}
+    </div>
+</div>
+
+
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            $("#ReceiverType").change(function () {
+                if ($(this).val() == "System") {
+                    $("#UserCode").closest(".form-group").hide().val("@("客服".ToLocal())");
+                }
+                else {
+                    $("#UserCode").closest(".form-group").show().val("");
+                }
+            });
+
+            $("#UserCode").closest(".form-group").hide();
+        })
+    </script>
+}

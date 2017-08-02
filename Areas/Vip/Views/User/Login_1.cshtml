@@ -1,0 +1,119 @@
+﻿@model UserLoginData
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>登录</title>
+    <link href="/Theme/Login/1/css/css.css?timestmap=@DateTime.Now.ToFileTime()" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+        .alert {
+            padding: 5px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+            border-radius: 4px;
+            border: 1px solid #ff0000;
+            background-color: #ffeeee;
+            color: #ff0000;
+        }
+    </style>
+    <script type="text/javascript" src="/Theme/Login/1/js/jquery-1.8.0.min.js"></script>
+    @*<script type="text/javascript" src="/Theme/Login/1/js/jquery.jslides.js"></script>*@
+    <script type="text/javascript" src="/Theme/Login/1/js/curvycorners.js"></script>
+    <script type="text/javascript" src="/Scripts/common.js"></script>
+    <script type="text/JavaScript">
+        addEvent(window, 'load', initCorners);
+        function initCorners() {
+            var setting = {
+                tl: { radius: 5 },
+                tr: { radius: 5 },
+                bl: { radius: 5 },
+                br: { radius: 5 },
+                antiAlias: true
+            }
+            curvyCorners(setting, ".threesnow");
+        }
+
+        $(function () {
+            $("#UserCode").val("会员帐号").focus(function () {
+                if ($(this).val() == "会员帐号") { $(this).val(""); }
+            }).blur(function () {
+                if (!$(this).val()) { $(this).val("会员帐号"); }
+            });
+            $("#Password").val("密码").prop("type", "text").focus(function () {
+                $(this).prop("type", "password");
+                if ($(this).val() == "密码") { $(this).val(""); }
+            }).blur(function () {
+                if (!$(this).val()) { $(this).val("密码"); $(this).prop("type", "text"); }
+            });
+            $("#Captcha").val("验证码").focus(function () {
+                if ($(this).val() == "验证码") { $(this).val(""); }
+            }).blur(function () {
+                if (!$(this).val()) { $(this).val("验证码"); }
+            });
+
+            $("#__captcha").click(function () {
+                $(this).prop("src", "/system/Captcha?timestamp=" + common.getTimestamp());
+            });
+        });
+    </script>
+    <!--[if IE 6]>
+<style type="text/css">
+html{overflow:hidden}
+body{height:100%;overflow:auto}
+.login_div{position:absolute}
+</style>
+<![endif]-->
+</head>
+<body>
+    <div id="full-screen-slider" class="bg">
+        <ul id="slides">
+            <li style="background: url('/Theme/Login/1/images/bg_1.jpg') no-repeat center"></li>
+            @*<li style="background: url('/Theme/Login/1/images/bg_4.jpg') no-repeat center"></li>
+            <li style="background: url('/Theme/Login/1/images/bg_3.jpg') no-repeat center"></li>
+            <li style="background: url('/Theme/Login/1/images/bg_2.jpg') no-repeat center"></li>*@
+        </ul>
+
+    </div>
+    <div class="login_div">
+        <div class="login">
+            <p class="logo" style ="padding-top:0px;font-size:30px">
+              <span>会员管理系统</span> 
+            </p>
+            <div class="login_con">
+                <form method="post" action="/vip/user/login">
+                    @if (TempData[AlertEntity.ALERT_ENTITY] != null)
+                    {
+                        <div class="alert">
+                            @((TempData[AlertEntity.ALERT_ENTITY] as AlertEntity).Message)
+                        </div>
+                    }
+                    <p class="p_yhm">
+                        <span></span>
+                        @Html.TextBoxFor(m => m.UserCode)
+                    </p>
+                    <p class="p_mm">
+                        <span></span>
+                        @Html.PasswordFor(m => m.Password)
+                    </p>
+                    <p class="p_yzm">
+                        @Html.TextBoxFor(m => m.Captcha)
+                    </p>
+                    <p class="p_yzm2" style="background: none;">
+                        <img id="__captcha" src="/system/Captcha?timestamp=@DateTime.Now.ToFileTime()" />
+                    </p>
+                    <div class="clean"></div>
+                    <p class="button">
+                        <input type="submit" class="sub" value="" />
+                    </p>
+                    <p class="p_p">
+                        <span class="left">已有账号，<a href="/vip/user/Forget_Email">忘记密码？</a></span><span class="right">@*<input type="checkbox" checked="checked" />自动登录</span>*@</p>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

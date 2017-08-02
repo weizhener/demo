@@ -1,0 +1,109 @@
+﻿@model ProductTypeManager
+
+@{
+    ViewBag.Title = "产品分类";
+}
+@section buttonGroup{
+    <div class="btn-group">
+        <button type="button" class="btn btn-default btn-sm" id="btnDown">
+            <span class="glyphicon glyphicon-arrow-down"></span>
+            向下</button>
+        <button type="button" class="btn btn-default btn-sm" id="btnUp">
+            <span class="glyphicon glyphicon-arrow-up"></span>
+            向上</button>
+    </div>
+    <button type="button" class="btn btn-default btn-sm" id="btnSaveSequenceNum">
+        <span class="glyphicon glyphicon-floppy-disk"></span>
+        保存排序</button>
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <div class="pull-left">产品分类</div>
+        <div class="pull-right">
+            <ol class="breadcrumb" style="margin: 0px; padding: 0px;">
+                @if (Model.Scope == null)
+                {
+                    <li class="active">全部</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink("全部", "ProductType")</li>
+                    foreach (var item in Model.Scope.Where(m => m.Id != Model.ParentId))
+                    {
+                    <li>@Html.ActionLink(item.Name, "ProductType", new { parentId = item.Id })</li>
+                    }
+                    <li class="active">@Model.Scope.FirstOrDefault(m => m.Id == Model.ParentId).Name</li>
+                }
+            </ol>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+    <div class="panel-body">
+        <table class="table">
+            <tr class="hide">
+                <td colspan="2"></td>
+            </tr>
+            @foreach (var item in Model.Children)
+            {
+                <tr id="@item.Id">
+                    <td>@item.Name</td>
+                    <td style="width: 175px;">
+                        @Html.ActionLink("编辑", "EditProductType", new { productTypeId = item.Id })
+                        @Html.ActionLink("删除", "DeleteProductType", new { productTypeId = item.Id }, new { onclick = "return confirm('确认删除？')" })
+                        @Html.ActionLink("进入子分类", "ProductType", new { parentId = item.Id })
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td colspan="2">
+                    @Html.ActionLink("添加分类", "CreateProductType", new { parentId = Model.ParentId })
+                </td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            var grid = common.grid.get($("table"));
+            grid.init();
+
+            //向下
+            $("#btnDown").click(function () {
+                var row = common.grid.get($("table")).getSelectedRow();
+                if (row.length > 0) {
+                    row.insertAfter(row.next());
+                }
+                else {
+                    common.message.alert("请点击表格，选中一行然后再操作", 2, true);
+                }
+            });
+            //向上
+            $("#btnUp").click(function () {
+                var row = common.grid.get($("table")).getSelectedRow();
+                if (row.length > 0) {
+                    if (row.prev().prev().length) {
+                        row.insertBefore(row.prev());
+                    }
+                }
+                else {
+                    common.message.alert("请点击表格，选中一行然后再操作", 2, true);
+                }
+            });
+            //保存排序
+            $("#btnSaveSequenceNum").click(function () {
+                var productTypeIdSource = "";
+                $("tr:gt(0)").each(function () {
+                    productTypeIdSource += $(this).prop("id");
+                });
+                common.loading.open();
+                $.post("/Mall/SaveProductTypeSequenceNum", { source: productTypeIdSource }, function () {
+                    alert("保存成功");
+                    common.loading.close();
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,49 @@
+﻿@{
+    ViewBag.Title = "激活会员".ToLocal();
+    int rest = 0;
+    using (ZXContext db = new ZXContext())
+    {
+        rest = db.JihuoCode.Count(m => m.BuyId == _User.Current.Id && m.UseId == null);
+    }
+}
+
+@Html.Tab(
+new ListItem { Text = "我的激活码".ToLocal(), Value = "/vip/user/MyJihuoCodeList" },
+new ListItem { Text = "购买激活码".ToLocal(), Value = "/vip/user/BuyJihuoCode" },
+new ListItem { Text = "激活会员".ToLocal(), Value = "/vip/user/JihuoUser", Selected = true },
+new ListItem { Text = "激活列表".ToLocal(), Value = "/vip/user/JihuoList" },
+new ListItem { Text = "转让激活码".ToLocal(), Value = "/vip/user/TransferJihuoCode" },
+new ListItem { Text = "转让记录".ToLocal(), Value = "/vip/user/TransferJihuoCodeList" }
+)
+
+<div class="panel panel-info">
+    <div class="panel-heading">@("激活会员".ToLocal())</div>
+    <div class="panel-body">
+        @using (Html.BeginForm(null, null, FormMethod.Post, new { @class = "form-horizontal", @id = "jihuouserform" }))
+{
+    @(Html.Row("会员帐号".ToLocal(), n => Html.TextBox("userCode")))
+    @(Html.Row("激活码".ToLocal(), n => Html.TextBox("jihuoCode")))
+    @(Html.Row("激活码剩余数量".ToLocal(), @<span>@(rest)</span>))
+    @(Html.Row(null, @<input type="button" class=" btn-primary btn" value="激活" id="save" />))
+}
+    </div>
+</div>
+
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            $("#save").click(function () {
+                if ($("#userCode").val() == "") {
+                    alert("激活失败!");
+                }
+                else {
+                    if (confirm("确认激活?")) {
+                        $(this).attr({ "disabled": "disabled" });
+                        $("#jihuouserform").submit();
+                    }
+                }
+            })
+
+        });
+    </script>
+}

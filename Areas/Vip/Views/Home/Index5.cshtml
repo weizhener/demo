@@ -1,0 +1,257 @@
+﻿@{
+    ViewBag.Title = "Index3";
+    IEnumerable<T_Wallet> wallet = null;
+    int unreadMessageCount = 0;
+    IEnumerable<T_News> news = null;
+    IEnumerable<T_News> news2 = null;
+    IEnumerable<T_SysLog> log = null;
+    T_User user = null;
+    decimal xianjin = 0;
+    decimal gupiao = 0;
+    decimal gp = 0;
+    int tjcnt = 0;
+    decimal tjjiangjin = 0;
+    string url = "http://{0}{1}/vip/user/register?tj={2}".FormatString(Request.Url.Host, (Request.Url.Port != 80 ? ":" + Request.Url.Port.ToString() : ""), _User.Current.Code);
+    using (ZXContext db = new ZXContext())
+    {
+        wallet = db.Wallet.Where(m => m.UserId == _User.Current.Id).ToList();
+        unreadMessageCount = db.Message.Count(m => (m.SenderId == _User.Current.Id || m.ReceiverId == _User.Current.Id) && m.LastModifyMemberId != _User.Current.Id && m.IsRead == false);
+        news = db.News.Where(m => m.Type != NewsType.Top).OrderByDescending(m => m.Type).ThenByDescending(m => m.LastModifyDate).Take(8).ToList();
+        news2 = db.News.Where(m => m.Type == NewsType.Top).OrderByDescending(m => m.Type).ThenByDescending(m => m.LastModifyDate).Take(8).ToList();
+        log = db.SysLog.Where(m => m.MemberId == _User.Current.Id).OrderByDescending(m => m.Id).Take(2).ToList();
+        user = db.User.Find(_User.Current.Id);
+        xianjin = wallet.FirstOrDefault(m => m.CurrencyId == CurrencyHandler.Benjin.Id).Amount;
+        gupiao = wallet.FirstOrDefault(m => m.CurrencyId == CurrencyHandler.Dianzibi.Id).Amount;
+        gp = wallet.FirstOrDefault(m => m.CurrencyId == CurrencyHandler.JiHuobi.Id).Amount;
+        tjcnt = db.User.Count(m => m.TJUserId == user.Id && m.IsValid);
+        tjjiangjin = db.PrizeDetail.Where(m => m.UserId == user.Id && m.Field == "Field_1").Select(n => n.Currency_1).DefaultIfEmpty(0).Sum();
+        //users = db.User.Where(m => m.IsValid).OrderByDescending(m => m.JiHuoDate).Take(20).Select(m => new UserCodeNickName
+        //{
+        //    UserCode = m.UserCode,
+        //    NickName = m.NickName
+        //}).ToList();
+
+    }
+}
+
+<div class="rside">
+    @*<div class="four">
+        <div class="d1">
+            <div class="d2">
+                <img src="/Theme/Home/3/images/jt.png" />
+            </div>
+            <span>@("欢迎".ToLocal())</span>
+        </div>
+        <div class="fr"></div>*@
+    @*
+        <div class="d3">
+            <div style="overflow: hidden; width: 97%;">
+                <div style="width: 2230px; height: 150px;">
+                    <div style="width: 2230px; height: 150px; margin-left: 0px;" id="movearea" onmouseover="stopmove()" onmouseout="beginmove()">
+                        <div style="width: 1115px; height: 150px; float: left;" id="moveAreaValue1">
+                          @*  <img src="/Theme/Home/3/images/y1.png" width="52%" />
+                            <img src="/Theme/Home/3/images/y2.png" width="38%" class="img2" />*@
+    @*
+                                    <p style="color:#fff"><img src="/Theme/Home/2/china.png"/>@(users.FirstOrDefault().UserCode)<img src="/Theme/Home/2/english.png" />@(users.FirstOrDefault().UserCode)</p>
+                                     <p style="color:#fff"></p>
+                                    
+                            </div>
+                        <div style="width: 1115px; height: 150px; float: left;" id="moveAreaValue2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <script>
+                var movenum = 0;
+                var timer;
+                function beginmove() {
+                    if (timer != null) {
+                        clearInterval(timer);
+                    }
+                    document.getElementById("moveAreaValue2").innerHTML = document.getElementById("moveAreaValue1").innerHTML;
+                    timer = setInterval(
+                        function () {
+                            movenum--;
+                            if (movenum <= -1115) {
+                                movenum = 0;
+                            }
+                            document.getElementById("movearea").style.marginLeft = movenum + "px"
+                        }, 10
+                    );
+                }
+                beginmove();
+                function stopmove() {
+                    clearInterval(timer);
+                }
+
+
+            </script>
+
+        </div>
+*@
+    @*<div style="height: 100%; margin-left: 75px; cursor: pointer; position: relative;">
+            <div style="position: absolute; top: 0px; bottom: 0px; left: 0px; right: 0px; z-index: 999;">
+            </div>
+            <marquee style="width: 100%; height: 100%; margin: 0px; padding: 0px;" contenteditable="true" onstart="this.firstChild.innerHTML+=this.firstChild.innerHTML;" behavior="scroll" direction="left" scrollamount="10" onmouseover="stop()" onmouseout="start()">
+                @foreach (var item in users)
+                {
+                    if (users.IndexOf(item) % 3 == 0)
+                    {
+                        <img src="/Theme/Home/2/china.png" style="height:50px;margin-bottom:22px" /> 
+                    }
+                    else
+                    {
+                        <img src="/Theme/Home/2/english.png" style="height:50px;margin-bottom:22px" />
+                    }
+                    <div style="padding:20px 0;@((users.IndexOf(item) == users.Count - 1) ? "" : "padding-right:100px;") display:inline-block;">
+                        <p style="color:#fff;">@(item.UserCode)</p>
+                        <p style="color:#fff;">@(item.NickName)</p>
+                    </div>
+                }
+                </marquee>
+        </div>
+    </div>*@
+    @*<div class="four">
+        <div class="d1">
+            <div class="d2">
+                <img src="/Theme/Home/3/images/jt.png" />
+            </div>
+            <span>@("通告".ToLocal())</span>
+        </div>
+        <div class="fr"></div>
+        <div class="text_01">
+            <ul>
+                @foreach (var item in news2)
+                {
+                    <li><a href="/vip/content/NewsDetail?newsId=@item.Id" style="color:#fff"><span>@item.CreateDate.ToString("yyyy-MM-dd HH:mm")</span>@item.Title </a></li>    
+                }
+            </ul>
+        </div>
+    </div>*@
+    <div class="row" style="margin-bottom: 20px; margin-top: 0px; width: 115%;">
+        <div class="col-xs-6">
+            <div class="hpanel">
+                <div class="panel-body" style="background: url(/Theme/Home/2/buy.jpg) no-repeat right bottom #fff; color: #fff; background-size: cover;">
+                    <div class="text-right">
+                        <div class="m" style="height: 40px;">
+                        </div>
+                        <p class="small" style="height: 60px;">
+                        </p>
+                        <button class="btn btn-warning  btn-lg" style="background: #6f4615; border-color: #6f4615;" data-toggle="modal" data-target="#CreateBuy">
+                            @("申请提供帮助".ToLocal())
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xs-6">
+            <div class="hpanel">
+                <div class="panel-body" style="background: url(/Theme/Home/2/sell.jpg) no-repeat center bottom #fff; color: #fff; background-size: cover;">
+                    <div class="text-right">
+                        <div class="m" style="height: 40px;">
+                        </div>
+                        <p class="small" style="height: 60px;">
+                        </p>
+                        <button class="btn btn-success btn-lg" style="background: #04395c; border-color: #04395c;" data-toggle="modal" data-target="#CreateSell">
+                            @("申请接受帮助".ToLocal())
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="four">
+        <div class="d1">
+            <div class="d2">
+                <img src="/Theme/Home/3/images/jt.png" />
+            </div>
+            <span>@("我的状态".ToLocal())</span>
+        </div>
+        <div class="fr"></div>
+        <div class="d4" style="width: 100%; height: 150px;">
+
+            <div style="float: left; margin-right: 1.2%; line-height: 40px; width: 22%; text-align: left; background-color: #b22d00; border-radius: 5px;">
+                <p style="color: #FC3;">@("静态钱包".ToLocal())</p>
+                <p style="text-indent: 0px; font-size: 25px; line-height: 50px; color: #fff; margin: 0px; padding: 0px; text-align: center; font-weight: 900;">$@(xianjin)</p>
+            </div>
+            <div style="float: left; margin-right: 1.2%; line-height: 40px; width: 22%; text-align: left; background-color: #d96d00; border-radius: 5px;">
+                <p style="color: #FC3;">@("动态钱包".ToLocal())</p>
+                <p style="text-indent: 0px; font-size: 25px; line-height: 50px; color: #fff; margin: 0px; padding: 0px; text-align: center; font-weight: 900;">$@(gupiao)</p>
+            </div>
+            <div style="float: left; margin-right: 1.2%; line-height: 40px; width: 22%; text-align: left; background-color: #4b9de9; border-radius: 5px;">
+                <p style="color: #FC3;">@("激活币".ToLocal())</p>
+                <p style="text-indent: 0px; font-size: 25px; line-height: 50px; color: #fff; margin: 0px; padding: 0px; text-align: center; font-weight: 900;">@(gp)</p>
+            </div>
+            <div style="float: left; margin-right: 1.2%; line-height: 40px; width: 22%; text-align: left; background-color: #545463; border-radius: 5px;">
+                <p style="color: #FC3;">@("个人推荐".ToLocal())</p>
+                <p style="text-indent: 0px; font-size: 25px; line-height: 50px; color: #fff; margin: 0px; padding: 0px; text-align: center; font-weight: 900;">@(tjcnt)</p>
+            </div>
+            @*  <div style="float: left; line-height: 40px; text-align: left;width: 20%; background-color: #007955; border-radius: 5px;">
+                <p style="color: #FC3;">推荐奖金</p>
+                <p style="text-indent: 0px; font-size: 25px; line-height: 50px; color: #fff; margin: 0px; padding: 0px; text-align: center; font-weight: 900;">€ @(tjjiangjin) <span style="font-size: 14px; font-weight: 400;">待提款：@(tjjiangjin)</span></p>
+            </div>*@
+        </div>
+    </div>
+
+    <div class="four">
+        <div class="d1">
+            <div class="d2">
+                <img src="/Theme/Home/3/images/jt.png" />
+            </div>
+            <span>@("最新公告".ToLocal())</span>
+        </div>
+        <div class="fr"></div>
+        <div class="text_01">
+            <ul>
+                @foreach (var item in news)
+                {
+                    <li><a href="/vip/content/NewsDetail?newsId=@item.Id"style="color:#fff"><span>@item.CreateDate.ToString("yyyy-MM-dd HH:mm")</span>@item.Title </a></li>    
+                }
+            </ul>
+        </div>
+    </div>
+
+    <div class="four">
+        <div class="d1">
+            <div class="d2">
+                <img src="/Theme/Home/3/images/jt.png" />
+            </div>
+            <span>@("推广链接".ToLocal())</span>
+        </div>
+        <div class="fr"></div>
+        <a href="javascript:void(0)" id="plink" style="font-size: 14px; color: #fff">@(url)</a>
+        <a href="javascript:void(0)" id="copy123" style="font-size: 14px; color: #fff">@("一键复制".ToLocal())</a>
+        <script src="/Scripts/zclip/jquery.zclip.min.js"></script>
+
+        <script type="text/javascript">
+            $(function () {
+                $("#copy123").zclip({
+                    path: '/Scripts/zclip/ZeroClipboard.swf',
+                    copy: $('#plink').text(),
+                    afterCopy: function () {
+                        $("#plink").css("background-color", '#cff');
+                        $("<span id='msg'/>").insertAfter($('#copy123')).text('@("复制成功".ToLocal())').fadeOut(2000);
+                    }
+                });
+            });
+        </script>
+    </div>
+</div>
+@section foot{
+    <script src="/Scripts/zclip/jquery.zclip.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#copy123").zclip({
+                path: '/Scripts/zclip/ZeroClipboard.swf',
+                copy: $('#plink').html(),
+                afterCopy: function () {
+                    //$("#plink").css("background-color", '#cff');
+                    $("<span id='msg'/>").insertAfter($('#copy123')).text('@("复制成功".ToLocal())').fadeOut(2000);
+                }
+            });
+        });
+    </script>
+}

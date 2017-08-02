@@ -1,0 +1,9 @@
+﻿@{
+    bool? value = null;
+    if (ViewData.Model != null)
+    {
+        value = Convert.ToBoolean(ViewData.Model,
+                                  System.Globalization.CultureInfo.InvariantCulture);
+    }
+}
+@Html.CheckBox("", value ?? false, new { @class = "" })

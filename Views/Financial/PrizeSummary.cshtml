@@ -1,0 +1,41 @@
+﻿@using System.Linq.Expressions
+
+@model Pager<PrizeSummaryList>
+
+@section buttonGroup{
+    @Html.ExportToExcel("ExportPrizeSummaryRecord", "Financial")
+}
+
+@{
+    ViewBag.Title = "奖金汇总";
+    var grid = Grid.Create<PrizeSummaryList>().SetDataSource(Model.Data)
+        .Column(m => m.UserCode).Name("会员帐号").End();
+    foreach (var item in PrizeHandler.MetadataCollection)
+    {
+        var parameter = Expression.Parameter(typeof(PrizeSummaryList));
+        var member = Expression.Property(parameter, item.Field);
+        grid.Column(Expression.Lambda<Func<PrizeSummaryList, object>>(Expression.Convert(member, typeof(object)), parameter)).Name(item.Name);
+    }
+}
+
+@using (Html.Search())
+{
+    Html.Group("会员帐号", Html.TextBox("userCode", Request.QueryString["userCode"]));
+}
+
+@(grid
+.Column(m=>m.Total).Name("合计").End()
+.Render())
+
+@Html.Page(Model)
+
+@section foot{
+    <script src="/Scripts/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#minDate,#maxDate").click(function () {
+                WdatePicker({ dateFmt: 'yyyy/MM/dd HH:mm:ss' });
+            });
+        });
+    </script>
+}

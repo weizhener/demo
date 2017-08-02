@@ -1,0 +1,47 @@
+﻿@model Pager<T_PrizeDetail>
+@{
+    ViewBag.Title = "奖金明细";
+}
+
+@section buttonGroup{
+    @Html.ExportToExcel("ExportPrizeDetailRecord", "Financial")
+}
+
+@using (Html.Search())
+{
+    @Html.Hidden("balanceId", Request.QueryString["balanceId"])
+    
+    var prizeFieldCollection = new List<SelectListItem> { new SelectListItem { Value = "", Text = "==全部==" } };
+    prizeFieldCollection.AddRange(PrizeHandler.MetadataCollection.Select(m => new SelectListItem
+    {
+        Text = m.Name,
+        Value = m.Field,
+        Selected = (m.Field == Request.QueryString["field"])
+    }));
+    Html.Group("奖金", Html.DropDownList("field", prizeFieldCollection));
+
+    Html.Group("会员帐号", Html.TextBox("userCode", Request.QueryString["userCode"]));
+}
+
+@(Grid.Create<T_PrizeDetail>().SetDataSource(Model.Data)
+.Column(m => m.UserCode).Name("会员帐号").End()
+.Column(m => m.Field).Name("奖金名称").Value(m => PrizeHandler.Metadata(m.Field).Name).End()
+.Column(m => m.Currency_1).Name(CurrencyHandler.Dianzibi.Name).End()
+.Column(m => m.Currency_2).Name(CurrencyHandler.Benjin.Name).End()
+.Column(m => m.Description).Name("来源").End()
+.Column(m => m.CreateDate).Name("日期").End()
+.Column(m => m.Status).Name("状态").Value(typeof(FaFangStatus)).End()
+.Column(m => m.FaFangCreateDate).Name("发放日期").End()
+//.Column(m => m.IsDeal).Name("状态").Value("已发放", "冻结中").End()
+.Sum(Model.SumData)
+.Render())
+
+@Html.Page(Model)
+
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            $("table tbody tr td").last().html("");
+        });
+    </script>
+}

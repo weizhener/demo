@@ -1,0 +1,27 @@
+﻿@model Pager<T_JihuoCode>
+@{
+    ViewBag.Title = "激活码列表";
+}
+
+@Html.Tab(
+new ListItem { Text = "我的激活码".ToLocal(), Value = "/vip/user/MyJihuoCodeList" },
+new ListItem { Text = "购买激活码".ToLocal(), Value = "/vip/user/BuyJihuoCode" },
+new ListItem { Text = "激活会员".ToLocal(), Value = "/vip/user/JihuoUser" },
+new ListItem { Text = "激活列表".ToLocal(), Value = "/vip/user/JihuoList", Selected = true },
+new ListItem { Text = "转让激活码".ToLocal(), Value = "/vip/user/TransferJihuoCode" },
+new ListItem { Text = "转让记录".ToLocal(), Value = "/vip/user/TransferJihuoCodeList" }
+)
+
+<div class="panel panel-info">
+    <div class="panel-heading">@("激活码列表".ToLocal())</div>
+    <div class="panel-body">
+       @(Grid.Create<T_JihuoCode>().SetDataSource(Model.Data)
+//.Column(m => m.Code).Name("激活码").End()
+//.Column(m => m.BuyUserCode).Name("购买人").End()
+//.Column(m => m.BuyDate).Name("购买日期").End()
+.Column(m => m.UseUserCode).Name("激活人".ToLocal()).End()
+.Column(m => m.UseDate).Name("激活日期".ToLocal()).End()
+.Render())
+@Html.Page(Model)
+    </div>
+</div>

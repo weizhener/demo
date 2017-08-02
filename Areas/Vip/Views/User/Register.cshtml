@@ -1,0 +1,206 @@
+﻿@model RegisterForUserData
+@{
+    ViewBag.Title = "NavigationTop.Team.Register".ToLocal();
+    if (!Request.IsAuthenticated)
+    {
+        Layout = Config.Instance.LayoutForAnonymous;
+    }
+}
+       @using (Html.Form())
+{
+    
+            @Html.RowForDisplay(m => m.UserCode, true, m => Html.Button(Resources.Refresh, "refreshUserCode", type: ButtonType.Button))
+            @Html.RowForEdit(m => m.TJUserCode, true)
+            @Html.RowForEdit(m => m.TJUserMobile, true)
+            @*@Html.RowForEdit(m => m.ReportCenterUserCode, true)*@
+    
+
+            @Html.RowForEdit(m => m.NickName, true)
+            @(Html.RowForEdit(m => m.Mobile, true))
+            if (!Config.Instance.Single.HideWeixin)
+            {
+                @(Html.RowForEdit(m => m.WeiXinCode))
+            }
+            @(Html.RowForEdit(m => m.BankName, true))
+            @(Html.RowForEdit(m => m.BankAddress, true))
+            @(Html.RowForEdit(m => m.BankCode, true))
+            @(Html.RowForEdit(m => m.BankUserName, true))
+            if (!Config.Instance.Single.HideAlipay)
+            {
+                @(Html.RowForEdit(m => m.AlipyUserName))
+                @(Html.RowForEdit(m => m.AlipyCode))
+            }
+
+            @Html.RowForEdit(m => m.L1Pwd)
+            @Html.RowForEdit(m => m.ConfirmL1Pwd)
+            @Html.RowForEdit(m => m.L2Pwd)
+            @Html.RowForEdit(m => m.ConfirmL2Pwd)
+            @Html.RowForEdit(m => m.SecretSecurityId, false)
+            @Html.RowForEdit(m => m.SecretSecurityMatchText, true)
+            @*@Html.RowForEdit(m => m.Captcha, null, @<input type="button" id="GetCaptcha" value="@("获取验证码".ToLocal())" class="btn btn-default btn-sm" />)*@
+
+            @Html.Row(null, m => Html.Submit())
+
+@*@Html.RowForEdit(m => m.LevelId)*@
+@*@Html.RowForEdit(m => m.JDUserCode)*@
+@*@Html.RowForEdit(m => m.JDPosition)*@
+    
+    <div style="display: none;">
+        @Html.Row("areas".ToLocal(), k => Html.DropDownListFor(m => m.ProvinceId, PCCProvider.GetAllProvince().Select(m => new SelectListItem { Text = m.Name, Value = m.Id.ToString(), Selected = (m.Id == Model.ProvinceId) }))
+                                .Append(Html.DropDownListFor(m => m.CityId, PCCProvider.GetPCCItems(PCCProvider.DEFAULT_PROVINCE).Select(m => new SelectListItem { Text = m.Name, Value = m.Id.ToString(), Selected = (m.Id == Model.CityId) })))
+                                .Append(Html.DropDownListFor(m => m.CountyId, PCCProvider.GetPCCItems(PCCProvider.DEFAULT_CITY).Select(m => new SelectListItem { Text = m.Name, Value = m.Id.ToString(), Selected = (m.Id == Model.CityId) }))))
+        @Html.RowForEdit(m => m.ID_Number)
+    </div>
+@*@Html.RowForEdit(m => m.Captcha, true, @<span><img id="__captcha" style="cursor:pointer;" src="/system/Captcha?timestamp=@DateTime.Now.ToFileTime()" /></span>)*@
+}
+
+
+
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            //刷新会员帐号
+            $("#refreshUserCode").click(function () {
+                $.get("/user/GetRandomUserCode", { timestamp: common.getTimestamp() }, function (result) {
+                    $("#UserCode").val(result.Data);
+                });
+            });
+
+            $("#GetCaptcha").click(function () {
+                if ($("#Mobile").val() == "") {
+                    alert("@("手机号码不能为空".ToLocal())!");
+                }
+                else {
+                    var IsSuccess = false;
+                    $.ajaxSetup({ async: false });
+                    $.post("/system/SendCaptcha", { mobile: $("#Mobile").val(), tjusercode: $("#TJUserCode").val() }, function (result) {
+                        alert(result.Error);
+                        IsSuccess = result.IsSuccess;
+                    });
+                    if (IsSuccess) {
+                        $(this).attr("disabled", "disabled");
+                        var max = 60;
+                        var index = max;
+                        var t = setInterval(function () {
+                            $("#GetCaptcha").val("@("获取验证码".ToLocal())(" + index-- + ")");
+                            if (index <= 0) {
+                                index = max;
+                                clearInterval(t);
+                                $("#GetCaptcha").val("@("获取验证码".ToLocal())");
+                                $("#GetCaptcha").removeAttr("disabled");
+                            }
+                        }, 1000);
+                    }
+                }
+            });
+            $("#__captcha").click(function () {
+                $(this).prop("src", "/system/Captcha?timestamp=" + common.getTimestamp());
+            });
+            //推荐人真实姓名
+            $("#TJUserCode").change(function () {
+                if (common.isNull($(this).val())) { return; }
+                $.get("/user/GetNickName", { userCode: $(this).val() }, function (result) {
+                    if (result.IsSuccess) {
+                        $("#TJUserCode___extension__").text(result.Data);
+                    }
+                    else {
+                        $("#TJUserCode___extension__").text("");
+                        if (result.Error) {
+                            alert(result.Error);
+                        }
+                    }
+                });
+            });
+
+            //验证接点人编号并获取接点人真实姓名
+            $("#JDUserCode").change(function () {
+                if (common.isNull($("#JDUserCode").val())) { return; }
+                //获取真实姓名
+                $.get("/user/GetNickName", { userCode: $(this).val() }, function (result) {
+                    if (result.IsSuccess) {
+                        $("#JDUserCode___extension__").text(result.Data);
+                    }
+                    else {
+                        $("#JDUserCode___extension__").text("");
+                        if (result.Error) {
+                            alert(result.Error);
+                        }
+                    }
+                });
+                //验证接点人
+                $.post("/user/validJD", { jdUserCode: $(this).val(), position: $("#JDPosition").val() }, function (result) {
+                    if (!result.IsSuccess) {
+                        alert(result.Error);
+                    }
+
+                    if (result.Data) {
+                        //重置市场
+                        $("#JDPosition").val(result.Data);
+                    }
+                });
+            });
+
+            //验证市场
+            $("#JDPosition").change(function () {
+                $.post("/user/validJD", { jdUserCode: $("#JDUserCode").val(), position: $(this).val() }, function (result) {
+                    if (!result.IsSuccess) {
+                        alert(result.Error);
+                    }
+
+                    if (result.Data) {
+                        //重置市场
+                        $("#JDPosition").val(result.Data);
+                    }
+                });
+            });
+
+            //服务中心真实姓名
+            $("#ReportCenterUserCode").change(function () {
+                if (common.isNull($(this).val())) { return; }
+                $.get("/user/GetNickName", { userCode: $(this).val() }, function (result) {
+                    if (result.IsSuccess) {
+                        $("#ReportCenterUserCode___extension__").text(result.Data);
+                    }
+                    else {
+                        $("#ReportCenterUserCode___extension__").text("");
+                        if (result.Error) {
+                            alert(result.Error);
+                        }
+                    }
+                });
+
+                $.get("/user/ValidReportCenter", { reportCenterUserCode: $(this).val() }, function (result) {
+                    if (!result.IsSuccess) {
+                        alert(result.Error);
+                    }
+                });
+            });
+
+            //省市地区级联
+            $("#ProvinceId").change(function () {
+                $.get("/system/pcc", { parentId: $(this).val() }, function (cityCollection) {
+                    var citySel = $("#CityId").empty();
+                    $(cityCollection).each(function () {
+                        citySel.append($("<option value='" + this.Id + "'>" + this.Name + "</option>"));
+                    });
+
+                    $.get("/system/pcc", { parentId: cityCollection[0].Id }, function (countyCollection) {
+                        var countySel = $("#CountyId").empty();
+                        $(countyCollection).each(function () {
+                            countySel.append($("<option value='" + this.Id + "'>" + this.Name + "</option>"));
+                        });
+                    });
+                });
+            });
+
+            $("#CityId").change(function () {
+                $.get("/system/pcc", { parentId: $(this).val() }, function (countyCollection) {
+                    var countySel = $("#CountyId").empty();
+                    $(countyCollection).each(function () {
+                        countySel.append($("<option value='" + this.Id + "'>" + this.Name + "</option>"));
+                    });
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,99 @@
+﻿@model Pager<UserItemData>
+@{
+    ViewBag.Title = "会员列表";
+}
+
+@section head{
+    <style type="text/css">
+        .user-status span {
+            display: inline-block;
+            margin-right: 5px;
+        }
+    </style>
+}
+
+@section foot{
+    <script src="/Scripts/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#minDate,#maxDate").click(function () {
+                WdatePicker({ dateFmt: 'yyyy/MM/dd HH:mm:ss' });
+            });
+        });
+    </script>
+}
+@section buttonGroup{
+    @Html.ExportToExcel("ExportUserList", "User")
+
+    @if (_User.Current.RightType == RightType.Developer)
+    {
+        @Html.ActionLinkButton("修复推荐关系图", "RepairTJ", "user", htmlAttributes: new { onclick = "return confirm('执行之前请先备份数据库，确认执行？')" }) 
+    }
+    @Html.ActionLinkButton("注册会员", "register", "user", iconType: BootstrapIcon.PLUS)
+}
+
+@using (Html.Search())
+{
+    Html.Group("会员帐号", Html.TextBox("userCode", Request.QueryString["userCode"]));
+    Html.Group("真实姓名", Html.TextBox("nickName", Request.QueryString["userCode"]));
+    Html.Group("手机号码", Html.TextBox("mobile", Request.QueryString["mobile"]));
+    using (Html.Group("激活日期"))
+    {
+    @Html.TextBox("minDate", Request.QueryString["minDate"]) <span>-</span>   
+    @Html.TextBox("maxDate", Request.QueryString["maxDate"])    
+    }
+}
+
+
+@(Grid.Create<UserItemData>().SetDataSource(Model.Data)
+.Column(m => m.UserCode).Name("会员帐号").Value(m => Html.ActionLink(m.UserCode, "SSORedirect", "System", new { userId = m.Id }, new { target = "_blank" })).End()
+.Column(m => m.NickName).Name("真实姓名").End()
+.Column(m => m.LevelId).Name("级别").Value(@<div>
+   <p>@(LevelHandler.Element(item.LevelId).Name)</p>
+    @if(item.titelid!=0)
+    {
+         <p style="color: red;">@(TitelHandler.Element(item.titelid).Name)</p>
+    }
+</div>).End()
+        .Column(m => m.TJUserCode).Name("推荐人").Value(m => "{0}/{1}".FormatString(m.TJUserCode, m.TJUserNickName)).End()
+        //.Column(m => m.JDUserCode).Name("安置人").Value(m => "{0}/{1}".FormatString(m.JDUserCode, m.JDUserNickName)).End()
+        .Column(m => m.JiHuoDate).Name("激活日期").End()
+        .Column("状态", @<span class="user-status">
+            @if (item.IsVirtual)
+            {
+                <span style="color: red;">@("Emptysingle".ToLocal())</span>
+            }
+            else 
+            {
+                <span>@("Realsimple".ToLocal())</span>
+            }
+
+            @if (item.IsLock)
+            {
+                <span style="color: red;">锁定</span>
+            }
+            else
+            {
+                <span>正常</span>
+            }
+        </span>).End()
+        .ActionColumn(m =>
+        {
+            if (m.IsLock)
+            {
+                return Html.ActionLink("解锁", "SetLock", new { userId = m.Id, isLock = false });
+            }
+            else
+            {
+                return Html.ActionLink("锁定", "SetLock", new { userId = m.Id, isLock = true });
+            }
+        },
+                m => Html.ActionLink("编辑", "Edit", new { userId = m.Id }),
+                m => Html.ActionLink("删除", "Delete", new { userId = m.Id }, new { onclick = "return confirm('确认删除？')" }),
+                m => Html.DropDownButtonGroup("更多", Html.ActionLink("查看详情", "Detail", new { userId = m.Id }),
+                                                        Html.ActionLink("重置密码", "ResetPassword", new { userId = m.Id })
+                                                        )).End()
+        .Render())
+
+@Html.Page(Model)
+

@@ -1,0 +1,25 @@
+﻿@model IEnumerable<T_ChangeLevel>
+@{
+    ViewBag.Title = "NavigationTop.Team.changelevelRecord".ToLocal();
+}
+
+@Html.Tab(new ListItem { Text = "NavigationTop.Team.changelevel".ToLocal(), Value = "/vip/user/changelevel" },
+new ListItem { Text = "NavigationTop.Team.changelevelRecord".ToLocal(), Value = "/vip/user/changelevelrecord", Selected = true })
+
+@(Grid.Create<T_ChangeLevel>().SetDataSource(Model)
+.Column(m => m.BeforeLevelId).Name(Resources.BeforeLevel).Value(m => LevelHandler.Element(m.BeforeLevelId).Name).End()
+.Column(m => m.AfterLevelId).Name(Resources.AfterLevel).Value(m => LevelHandler.Element(m.AfterLevelId).Name).End()
+.Column(m => m.CreateDate).Name(Resources.Date).End()
+.Column(m => m.Status).Name(Resources.Status).Value(typeof(InstanceStatus)).End()
+.ActionColumn(m =>
+{
+    if (m.Status == InstanceStatus.Checking)
+    {
+        return Html.ActionLink(Resources.Delete, "DeleteChangeLevel", new { changeLevelId = m.Id, returnUrl = "/vip/user/ChangeLevelRecord" }, new { onclick = "return confirm('{0}')".FormatString(Resources.ConfirmDelete) });
+    }
+    else
+    {
+        return "";
+    }
+}).End()
+.Render())

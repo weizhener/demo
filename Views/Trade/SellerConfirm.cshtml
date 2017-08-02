@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "后台确认收款";
+}
+@using (Html.Form())
+{
+    @(Html.Hidden("tradeUserId", Request["tradeUserId"]))
+    @(Html.Row("评价", @<span>
+
+        @foreach (PingjiaType pingjia in Enum.GetValues(typeof(PingjiaType)))
+        {
+            if (pingjia == PingjiaType.type0)
+            {
+                continue;
+            }
+            <label>
+                <input type="radio" name="pingjia" value="@(pingjia)" @(pingjia == PingjiaType.type1 ? "checked='checked'" : "")  />
+                @(pingjia.EnumMetadataDisplay())
+            </label>
+        }
+    </span>))
+    @(Html.Row("留言人", @<input type="text" name="userName" />))
+    @(Html.Row("留言内容", @<textarea name="context"></textarea>))
+    @(Html.Row(null, m => Html.Submit()))
+}

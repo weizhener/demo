@@ -1,0 +1,136 @@
+﻿@model UserLoginData
+@{
+    Layout = null;
+}
+<!doctype html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=yes">
+    <title></title>
+    <script type="text/javascript" src="/Theme/Login/1/js/jquery-1.8.0.min.js"></script>
+    <script type="text/javascript" src="/Scripts/common.js"></script>
+    <link href="/Theme/Login/3/css/default.css" rel="stylesheet" />
+    <link href="/Theme/Login/3/css/styles.css" rel="stylesheet" />
+    <link href="/Theme/Login/3/css/normalize.css" rel="stylesheet" />
+    <script src="/Theme/Login/3/js/prefixfree.min.js"></script>
+    <script type="text/JavaScript">
+        addEvent(window, 'load', initCorners);
+        function initCorners() {
+            var setting = {
+                tl: { radius: 5 },
+                tr: { radius: 5 },
+                bl: { radius: 5 },
+                br: { radius: 5 },
+                antiAlias: true
+            }
+            curvyCorners(setting, ".threesnow");
+        }
+
+        $(function () {
+            $("#UserCode").val("会员编号").focus(function () {
+                if ($(this).val() == "会员编号") { $(this).val(""); }
+            }).blur(function () {
+                if (!$(this).val()) { $(this).val("会员编号"); }
+            });
+            $("#Password").val("密码").prop("type", "text").focus(function () {
+                $(this).prop("type", "password");
+                if ($(this).val() == "密码") { $(this).val(""); }
+            }).blur(function () {
+                if (!$(this).val()) { $(this).val("密码"); $(this).prop("type", "text"); }
+            });
+            $("#Captcha").val("验证码").focus(function () {
+                if ($(this).val() == "验证码") { $(this).val(""); }
+            }).blur(function () {
+                if (!$(this).val()) { $(this).val("验证码"); }
+            });
+
+            $("#__captcha").click(function () {
+                $(this).prop("src", "/system/Captcha?timestamp=" + common.getTimestamp());
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="cont">
+        <div class="demo">
+            <div class="login">
+                <div class="login__check"></div>
+                <div class="login__form">
+                    <form method="post" action='/vip/user/login' class='form-signin' role='form' id="uLogin">
+                        <div class="login__row">
+                            <svg class="login__icon name svg-icon" viewBox="0 0 20 20">
+                                <path d="M0,20 a10,8 0 0,1 20,0z M10,0 a4,4 0 0,1 0,8 a4,4 0 0,1 0,-8" />
+                            </svg>
+                            <input type="text" class="login__input name" placeholder="会员编号" name="UserCode" />
+                        </div>
+                        <div class="login__row">
+                            <svg class="login__icon pass svg-icon" viewBox="0 0 20 20">
+                                <path d="M0,20 20,20 20,8 0,8z M10,13 10,16z M4,8 a6,8 0 0,1 12,0" />
+                            </svg>
+                            <input type="password" class="login__input pass" placeholder="密码" name="Password" />
+                        </div>
+                        <div class="login__row" style="position: relative;">
+                            <input type="password" class="login__input pass" placeholder="验证码" name="Captcha" />
+                            <div style="width: 50px; height: 100%; line-height:4rem; display: table-cell; position: absolute; right: 0px; top: 0px; bottom: 0px; vertical-align:middle; ">
+                                <img id="__captcha" src="/system/Captcha?timestamp=@DateTime.Now.ToFileTime()" style="width:45px;height:30px;cursor:pointer; vertical-align:middle;" />
+
+                            </div>
+                        </div>
+                       @* <button type="button" class="login__submit">登 录</button>*@
+                        <button type="submit" class="login__submit">登录</button>
+                       @* <p><a href="/vip/user/Forget_SecretSecurity">忘记密码?</a></p>*@
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/Theme/Login/3/js/jquery.min.js"></script>
+    <script src="/Theme/Login/3/js/stopExecutionOnTimeout.js"></script>
+    <script>
+        $(document).ready(function () {
+            var animating = false, submitPhase1 = 1100, submitPhase2 = 400, logoutPhase1 = 800, $login = $('.login'), $app = $('.app');
+            function ripple(elem, e) {
+                $('.ripple').remove();
+                var elTop = elem.offset().top, elLeft = elem.offset().left, x = e.pageX - elLeft, y = e.pageY - elTop;
+                var $ripple = $('<div class=\'ripple\'></div>');
+                $ripple.css({
+                    top: y,
+                    left: x
+                });
+                elem.append($ripple);
+            }
+            ;
+            $(document).on('click', '.login__submit', function (e) {
+                if (animating)
+                    return;
+                animating = true;
+                var that = this;
+                ripple($(that), e);
+                $(that).addClass('processing');
+                $("#uLogin").submit();
+                //setTimeout(function () {
+                //    $(that).addClass('success');
+                //    setTimeout(function () {
+                //        $app.show();
+                //        $app.css('top');
+                //        $app.addClass('active');
+                //    }, submitPhase2 - 70);
+                //    setTimeout(function () {
+                //        $login.hide();
+                //        $login.addClass('inactive');
+                //        animating = false;
+                //        $(that).removeClass('success processing');
+                //    }, submitPhase2);
+                //}, submitPhase1);
+            });
+        });
+
+    @if (ViewContext.TempData[AlertEntity.ALERT_ENTITY] != null)
+    {
+        <text>alert("@((ViewContext.TempData[AlertEntity.ALERT_ENTITY] as AlertEntity).Message)")</text>
+    }
+    </script>
+</body>
+</html>

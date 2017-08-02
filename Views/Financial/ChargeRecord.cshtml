@@ -1,0 +1,61 @@
+﻿@model Pager<T_Charge>
+@{
+    ViewBag.Title = "充值扣款";
+}
+
+@Html.Tab(new ListItem { Text = "充值扣款", Value = "/financial/Charge" },
+new ListItem { Text = "充值扣款记录", Value = "/financial/ChargeRecord", Selected = true })
+
+@using (Html.Search())
+{
+    Html.Group("会员帐号", Html.TextBox("userCode", Request.QueryString["userCode"]));
+
+    var currencylIdCollection = new List<SelectListItem> { new SelectListItem { Text = "==全部==", Value = "" } };
+    currencylIdCollection.AddRange(CurrencyHandler.Collection.Select(m => new SelectListItem { Text = m.Name, Value = m.Id.ToString(), Selected = Request.QueryString["currencyId"].AsInt() == m.Id }));
+
+    Html.Group("货币类型", Html.DropDownList("currencyId", currencylIdCollection));
+
+    using (Html.Group("日期"))
+    {
+    @Html.TextBox("minDate", Request.QueryString["minDate"]) <span>-</span>   
+    @Html.TextBox("maxDate", Request.QueryString["maxDate"])    
+    }
+}
+
+
+
+@(Grid.Create<T_Charge>().SetDataSource(Model.Data)
+.Column(m => m.UserCode).Name("会员帐号").End()
+.Column(m => m.NickName).Name("会员名称").End()
+.Column(m => m.CurrencyId).Name("货币类型").Value(m => CurrencyHandler.Element(m.CurrencyId).Name).End()
+.Column(m => m.Amount).Name("金额").PageSum(true).End()
+.Column(m => m.CreateDate).Name("日期").End()
+.Column(m => m.Status).Name("状态").Value(typeof(InstanceStatus)).End()
+.Column(m => m.Description).Name("备注").End()
+.Sum(Model.SumData)
+.ActionColumn(m =>
+{
+    if (m.Status == InstanceStatus.Checking)
+    {
+        return Html.ActionLink("通过", "CheckedCharge", new { chargeId = m.Id }, new { onclick = "return confirm('确认通过？')" }).Append(
+            Html.ActionLink("删除", "DeleteCharge", new { chargeId = m.Id }, new { onclick = "return confirm('确认删除？')" }));
+    }
+    else
+    {
+        return "";
+    }
+}).End()
+.Render())
+
+@Html.Page(Model)
+
+@section foot{
+    <script src="/Scripts/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#minDate,#maxDate").click(function () {
+                WdatePicker({ dateFmt: 'yyyy/MM/dd HH:mm:ss' });
+            });
+        });
+    </script>
+}

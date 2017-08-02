@@ -1,0 +1,1 @@
+$(function(){toastr.options={"closeButton":true,"timeOut":"180000",};});

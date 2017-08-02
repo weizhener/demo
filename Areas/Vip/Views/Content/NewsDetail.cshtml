@@ -1,0 +1,10 @@
+﻿@model T_News
+@{
+    ViewBag.Title = "Content.News.Detail".ToLocal();
+}
+
+<div>
+    <h2 style="text-align: center;">@Model.Title</h2>
+    <h4 style="text-align:center; color: #aaa; border-bottom: 1px solid #ccc; padding: 10px 0;">@Model.CreateDate</h4>
+    <div>@Html.Raw(Model.Content)</div>
+</div>

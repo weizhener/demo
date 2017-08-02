@@ -1,0 +1,17 @@
+﻿@model ChangeL2PwdForUserData
+@{
+    ViewBag.Title = "User.ChangeL2Pwd".ToLocal();
+}
+
+@Html.Tab(new ListItem { Text = "User.ChangeL1Pwd".ToLocal(), Value = "/vip/user/changel1pwd" },
+new ListItem { Text = "User.ChangeL2Pwd".ToLocal(), Value = "/vip/user/changel2pwd", Selected = true })
+
+<div class="panel panel-info">
+    <div class="panel-heading">@("User.ChangeL2Pwd".ToLocal())</div>
+    <div class="panel-body">
+        @using (Html.Form())
+        {
+            @Html.EditorForModel()
+        }
+    </div>
+</div>

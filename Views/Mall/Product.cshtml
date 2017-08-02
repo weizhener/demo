@@ -1,0 +1,32 @@
+﻿@model Pager<T_Product>
+@{
+    ViewBag.Title = "产品管理";
+}
+
+@section buttonGroup{
+    @Html.ActionLinkButton("添加产品", "CreateProduct", "Mall")
+}
+
+@section head{
+    <style type="text/css">
+        td{vertical-align:middle !important;}
+    </style>
+    }
+
+@(Grid.Create<T_Product>().SetDataSource(Model.Data)
+.Column(m => m.ProductCode).Name("编号").End()
+.Column(m => m.ProductName).Name("名称").End()
+.Column("分类", m => m.ProductType.Name).End()
+.Column(m => m.GuiGe).Name("规格").End()
+.Column(m => m.IsLock).Name("状态").Value("已下架", "正常").End()
+.Column(m => m.ImageUrl).Name("图片").Value(@<img src="@item.ImageUrl" class="product-image"/>).End()
+.ActionColumn(m => Html.ActionLink("切换分类", "MoveToNewProductType", new { productId = m.Id }),
+m => Html.ActionLink("编辑", "EditProduct", new { productId = m.Id }),
+m =>
+{
+    return Html.ActionLink((m.IsLock ? "上架" : "下架"), "SetLock", new { productId = m.Id });
+},
+m => Html.ActionLink("删除", "DeleteProduct", new { productId = m.Id }, new { onclick = "return confirm('确认删除？')" })).End()
+.Render())
+
+@Html.Page(Model)

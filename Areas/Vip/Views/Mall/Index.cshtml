@@ -1,0 +1,80 @@
+﻿@model MallIndexData
+
+@{
+    ViewBag.Title = "NavigationTop.Mall".ToLocal();
+}
+
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <ol class="breadcrumb" style="margin-bottom:5px;">
+                @if (Model.Scope == null || Model.Scope.Any() == false)
+                {
+                    <li class="active">@Resources.All</li>
+                }
+                else
+                {
+                    <li>@Html.ActionLink(Resources.All, "Index")</li>
+                    foreach (var item in Model.Scope.Where(m => m.Id != Model.ProductTypeId))
+                    {
+                    <li>@Html.ActionLink(item.Name, "Index", new { productTypeId = item.Id })</li>
+                    }
+                    <li class="active">@Model.Scope.FirstOrDefault(m => m.Id == Model.ProductTypeId).Name</li>
+                }
+            </ol>
+        </div>
+    </div>
+    <div class="row">
+        <div class="class col-md-12">
+            <ul class="nav nav-pills" style="margin-bottom:10px;border:1px dotted #f5f5f5;">
+                @foreach (var item in Model.Children)
+                {
+                <li role="presentation">@Html.ActionLink(item.Name, "Index", new { productTypeId=item.Id })</li>
+                }
+            </ul>
+        </div>
+    </div>
+    <div class="row">
+        @foreach (var item in Model.Product.Data)
+        {
+            <div class="col-md-3">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <a target="_blank" title="@item.ProductName" href="/vip/mall/Buy?productId=@item.Id" >
+                                    <img class="img-responsive" src="@item.ImageUrl" />
+                                </a>
+                            </div>
+                        </div>
+                        <div class="row" style="color: red;">
+                            <div class="col-md-12">
+                                <h3>@item.Price</h3>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p>
+                                    <a target="_blank" href="/vip/mall/Buy?productId=@item.Id" >
+                                        @item.ProductCode
+                                        @item.ProductName
+                                        @item.GuiGe
+                                    </a>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+    <div>
+        <div class="col-md-12">
+            @Html.Page(Model.Product)
+        </div>
+    </div>
+</div>
+

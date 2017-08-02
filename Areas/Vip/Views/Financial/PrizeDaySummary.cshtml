@@ -1,0 +1,24 @@
+﻿@using System.Linq.Expressions
+
+@model Pager<T_PrizeDaySummary>
+
+@{
+    ViewBag.Title = "NavigationTop.Content.PrizeDaySummary".ToLocal();
+    var grid = Grid.Create<T_PrizeDaySummary>().SetDataSource(Model.Data)
+        .Column(m => m.CreateDate).Name(Resources.Date).End();
+    foreach (var item in PrizeHandler.MetadataCollection)
+    {
+        var parameter = Expression.Parameter(typeof(T_PrizeDaySummary));
+        var member = Expression.Property(parameter, item.Field);
+        grid.Column(Expression.Lambda<Func<T_PrizeDaySummary, object>>(Expression.Convert(member, typeof(object)), parameter)).Name(item.Name);
+    }
+}
+
+
+@(grid
+.Column(m=>m.Total).Name(Resources.Total).End()
+.Render())
+
+@Html.Page(Model)
+
+

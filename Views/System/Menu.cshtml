@@ -1,0 +1,194 @@
+﻿@model MenuManagerData
+@{
+    ViewBag.Title = "菜单管理";
+}
+
+@section buttonGroup{
+    @Html.ActionLink("收集菜单", "InitRightResource", null, new { @class = "btn btn-default btn-sm" })
+<div class="btn-group">
+        <button type="button" class="btn btn-default btn-sm" id="btnDown">
+            <span class="glyphicon glyphicon-arrow-down"></span>
+            向下</button>
+        <button type="button" class="btn btn-default btn-sm" id="btnUp">
+            <span class="glyphicon glyphicon-arrow-up"></span>
+            向上</button>
+    </div>
+    <button type="button" class="btn btn-default btn-sm" id="btnSaveSequenceNum">
+        <span class="glyphicon glyphicon-floppy-disk"></span>
+        保存排序</button>
+}
+
+@section head{
+    <style type="text/css">
+        .menu-row {
+            border-bottom: 1px dashed #ccc;
+            padding:10px 5px 5px 5px;
+        }
+        .menu-row-hover{background-color:#D3D8F6;}
+        .menu-row-active{background-color:#D3D8F6;}
+    </style>
+}
+
+@foreach (var item in Model.MenuTypeCollection.Where(m => !m.IsLock && !m.IsSystem && Model.MenuCollection.Any(n => n.MenuTypeId == m.Id)).OrderBy(m => m.MenuTypeSequenceNum))
+{
+    <div class="panel panel-default">
+        <div class="panel-heading">@item.MenuTypeName</div>
+        <div class="panel-body">
+            @foreach (var menuItem in Model.MenuCollection.Where(m => m.MenuTypeId == item.Id).OrderBy(m => m.MenuSequenceNum))
+            {
+                <div class="menu-row" id="@menuItem.Id">
+                    <div class="pull-left">@menuItem.MenuName</div>
+                    <div class="pull-right">
+                        @Html.ActionLink("编辑", "EditMenu", new { menuId = menuItem.Id })
+                        @Html.ActionLink("移到未分组", "RemoveMenu", new { menuId = menuItem.Id })
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                移动菜单到 <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu pull-right" role="menu">
+                                @foreach (var menuTypeItem in Model.MenuTypeCollection.Where(m => !m.IsLock && !m.IsSystem && Model.MenuCollection.Any(n => n.MenuTypeId == m.Id)).OrderBy(m => m.MenuTypeSequenceNum))
+                                {
+                                    <li>@Html.ActionLink(menuTypeItem.MenuTypeName, "MoveMenu", new { menuId = menuItem.Id, menuTypeId = menuTypeItem.Id })</li>
+                                }
+                                <li class="divider"></li>
+                                @foreach (var menuTypeItem in Model.MenuTypeCollection.Where(m => m.IsLock || m.IsSystem || !Model.MenuCollection.Any(n => n.MenuTypeId == m.Id)).OrderBy(m => m.MenuTypeSequenceNum))
+                                {
+                                    <li>@Html.ActionLink(menuTypeItem.MenuTypeName, "MoveMenu", new { menuId = menuItem.Id, menuTypeId = menuTypeItem.Id })</li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            }
+        </div>
+    </div> 
+}
+
+<div style="padding:10px 0;color:blue;">*************************** 华丽的分割线——锁定、系统 *************************</div>
+
+@foreach (var item in Model.MenuTypeCollection.Where(m => m.IsLock || m.IsSystem).OrderBy(m => m.MenuTypeSequenceNum))
+{
+    <div class="panel panel-default">
+        <div class="panel-heading">@item.MenuTypeName</div>
+        <div class="panel-body">
+            @foreach (var menuItem in Model.MenuCollection.Where(m => m.MenuTypeId == item.Id).OrderBy(m => m.MenuSequenceNum))
+            {
+                <div class="menu-row" id="@menuItem.Id">
+                    <div class="pull-left">@menuItem.MenuName</div>
+                    <div class="pull-right">
+                        @Html.ActionLink("编辑", "EditMenu", new { menuId = menuItem.Id })
+                        @Html.ActionLink("移到未分组", "RemoveMenu", new { menuId = menuItem.Id })
+
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                                移动菜单到 <span class="caret"></span>
+                            </button>
+                            <ul class="dropdown-menu pull-right" role="menu">
+                                @foreach (var menuTypeItem in Model.MenuTypeCollection.Where(m => !m.IsLock && !m.IsSystem && Model.MenuCollection.Any(n => n.MenuTypeId == m.Id)).OrderBy(m => m.MenuTypeSequenceNum))
+                                {
+                                    <li>@Html.ActionLink(menuTypeItem.MenuTypeName, "MoveMenu", new { menuId = menuItem.Id, menuTypeId = menuTypeItem.Id })</li>
+                                }
+                                <li class="divider"></li>
+                                @foreach (var menuTypeItem in Model.MenuTypeCollection.Where(m => m.IsLock || m.IsSystem || !Model.MenuCollection.Any(n => n.MenuTypeId == m.Id)).OrderBy(m => m.MenuTypeSequenceNum))
+                                {
+                                    <li>@Html.ActionLink(menuTypeItem.MenuTypeName, "MoveMenu", new { menuId = menuItem.Id, menuTypeId = menuTypeItem.Id })</li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            }
+
+            <div></div>
+        </div>
+    </div> 
+}
+
+<div style="padding:10px 0;color:blue;">*************************** 华丽的分割线——锁定、系统 *************************</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">未分组</div>
+    <div class="panel-body">
+        @foreach (var menuItem in Model.MenuCollection.Where(m => m.MenuTypeId == null))
+        {
+            <div class="menu-row" id="@menuItem.Id">
+                <div class="pull-left">@menuItem.MenuName</div>
+                <div class="pull-right">
+                    @Html.ActionLink("编辑", "EditMenu", new { menuId = menuItem.Id })
+                    @Html.ActionLink("移到未分组", "RemoveMenu", new { menuId = menuItem.Id })
+
+                    <div class="btn-group">
+                        <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                            移动菜单到 <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu pull-right" role="menu">
+                            @foreach (var menuTypeItem in Model.MenuTypeCollection.Where(m => !m.IsLock && !m.IsSystem && Model.MenuCollection.Any(n => n.MenuTypeId == m.Id)).OrderBy(m => m.MenuTypeSequenceNum))
+                            {
+                                <li>@Html.ActionLink(menuTypeItem.MenuTypeName, "MoveMenu", new { menuId = menuItem.Id, menuTypeId = menuTypeItem.Id })</li>
+                            }
+                            <li class="divider"></li>
+                            @foreach (var menuTypeItem in Model.MenuTypeCollection.Where(m => m.IsLock || m.IsSystem || !Model.MenuCollection.Any(n => n.MenuTypeId == m.Id)).OrderBy(m => m.MenuTypeSequenceNum))
+                            {
+                                <li>@Html.ActionLink(menuTypeItem.MenuTypeName, "MoveMenu", new { menuId = menuItem.Id, menuTypeId = menuTypeItem.Id })</li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        }
+    </div>
+</div>
+
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            $(".menu-row").hover(function () {
+                $(this).addClass("menu-row-hover");
+            }, function () {
+                $(this).removeClass("menu-row-hover");
+            }).click(function () {
+                $(".menu-row").removeClass("menu-row-active");
+                $(this).addClass("menu-row-active");
+            });
+
+            //向下
+            $("#btnDown").click(function () {
+                var row = $(".menu-row-active");
+                if (row.length > 0) {
+                    row.insertAfter(row.next());
+                }
+                else {
+                    alert("请点击菜单项，选中一行然后再操作");
+                }
+            });
+
+            //向上
+            $("#btnUp").click(function () {
+                var row = $(".menu-row-active");
+                if (row.length > 0) {
+                    row.insertBefore(row.prev());
+                }
+                else {
+                    alert("请点击菜单项，选中一行然后再操作");
+                }
+            });
+
+            //保存排序
+            $("#btnSaveSequenceNum").click(function () {
+                var idSequenceNum = "";
+                $(".menu-row-active").parent().children().each(function () {
+                    idSequenceNum += $(this).prop("id");
+                });
+                common.loading.open();
+                $.post("/System/SaveSequenceNum", { idSequenceNum: idSequenceNum }, function () {
+                    alert("保存成功");
+                    common.loading.close();
+                });
+            });
+        });
+    </script>
+    }

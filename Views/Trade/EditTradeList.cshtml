@@ -1,0 +1,31 @@
+﻿@model EditTradeListData
+@{
+    ViewBag.Title = "详细信息";
+}
+
+@using (Html.Form())
+{
+    @(Html.HiddenFor(m=>m.UserCode))
+    @(Html.HiddenFor(m=>m.Type))
+    @(Html.HiddenFor(m=>m.CreateDate))
+    @(Html.HiddenFor(m=>m.TradeDate))
+    @(Html.HiddenFor(m=>m.Status))
+    
+    @(Html.RowForEdit(m => m.Id))
+    @(Html.RowForDisplay(m => m.UserCode))
+    @(Html.Row("类型", @<span>@(Model.Type.EnumMetadataDisplay())</span>))
+    @(Html.RowForEdit(m => m.Total))
+    @(Html.RowForEdit(m => m.Rest))
+    @(Html.RowForDisplay(m => m.CreateDate))
+    @(Html.RowForDisplay(m => m.TradeDate))
+    @(Html.Row("状态", @<span>@(TradeHandler.Element(Model.Status).BuyerStatus)</span>))
+    @(Html.Row(null, m => Html.Submit()))
+}
+@*@section foot{
+    <script src="/Scripts/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        $("#CreateDate,#TradeDate").click(function () {
+            WdatePicker({ dateFmt: 'yyyy-MM-dd HH:mm:ss' });
+        });
+    </script>
+}*@

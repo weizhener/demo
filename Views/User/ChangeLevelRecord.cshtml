@@ -1,0 +1,26 @@
+﻿@model IEnumerable<T_ChangeLevel>
+@{
+    ViewBag.Title = "级别升级记录";
+}
+
+
+@(Grid.Create<T_ChangeLevel>().SetDataSource(Model)
+.Column(m => m.UserCode).Name("会员帐号").End()
+.Column(m => m.BeforeLevelId).Name("升级前级别").Value(m => LevelHandler.Element(m.BeforeLevelId).Name).End()
+.Column(m => m.AfterLevelId).Name("升级后级别").Value(m => LevelHandler.Element(m.AfterLevelId).Name).End()
+.Column(m => m.CreateDate).Name("日期").End()
+.Column(m => m.Status).Name("状态").Value(typeof(InstanceStatus)).End()
+.ActionColumn(m =>
+{
+    if (m.Status == InstanceStatus.Checking)
+    {
+        return Html.ActionLink("通过", "CheckedChangeLevel", new { changeLevelId = m.Id }, new { onclick = "return confirm('确认通过？')" })
+            .Append(Html.ActionLink("删除", "DeleteChangeLevel", new { changeLevelId = m.Id, area = "Vip", returnUrl = "/user/ChangeLevelRecord" }, new { onclick = "return confirm('确认删除？')" }));
+
+    }
+    else
+    {
+        return "";
+    }
+}).End()
+.Render())

@@ -1,0 +1,21 @@
+﻿@model Pager<ZTTeamUserRecord>
+@{
+    ViewBag.Title = "提供帮助".ToLocal();
+}
+
+<div class="panel panel-info">
+    <div class="panel-heading">@("User.ChangeL2Pwd".ToLocal())</div>
+    <div class="panel-body">
+       @(Grid.Create<ZTTeamUserRecord>().SetDataSource(Model.Data)
+.Column(m => m.No).Name("流水号".ToLocal()).End()
+.Column(m => m.Total).Name("金额".ToLocal()).End()
+.Column(m => m.CreateDate).Name("匹配日期".ToLocal()).End()
+.Column(m => m.GuadanDate).Name("下单天数".ToLocal()).Value(@<span>@((DateTime.Now - item.GuadanDate).TotalDays.ToString("0"))</span>).End()
+.Column(m => m.UserCode).Name("会员帐号".ToLocal()).End()
+.Column(m => m.NickName).Name("姓名".ToLocal()).End()
+.Column(m => m.Mobile).Name("手机号码".ToLocal()).End()
+.Column(m => m.Status).Name("状态".ToLocal()).Value(m => TradeHandler.Element(m.Status).BuyerStatus).End()
+.Render())
+@Html.Page(Model)
+    </div>
+</div>

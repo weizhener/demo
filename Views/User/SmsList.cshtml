@@ -1,0 +1,19 @@
+﻿@model Pager<T_SmsList>
+@{
+    ViewBag.Title = "短信记录";
+}
+
+@using (Html.Search())
+{
+    Html.Group("会员帐号", Html.TextBox("userCode", Request.QueryString["userCode"]));
+}
+@(Grid.Create<T_SmsList>().SetDataSource(Model.Data)
+.Column(m => m.UserCode).Name("会员帐号").End()
+.Column(m => m.Mobile).Name("手机号码").End()
+.Column(m => m.Content).Name("短信内容").End()
+.Column(m => m.CreateDate).Name("创建日期").End()
+.Column(m => m.Status).Name("状态").Value(typeof(SmsStatus)).End()
+.Column(m => m.SendDate).Name("发送日期").End()
+.Column(m=>m.Result).Name("返回值").End()
+.Render())
+@Html.Page(Model)

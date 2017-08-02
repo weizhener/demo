@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="/Theme/Home/1/css/css.css" rel="stylesheet" type="text/css" />
+    <link href="/Content/Site.css?timespan=@DateTime.Now.ToOADate()" rel="stylesheet" type="text/css" />
+    <!-- bootstrap -->
+    <link href="@Url.Content("~/Content/bootstrap.min.css")" rel="stylesheet" />
+    <!-- WARNING: Respond.js doesn't work if you view the page via  -->
+    <!--[if lt IE 9]>
+      <script src="@Url.Content("~/Scripts/html5shiv.min.js")"></script>
+      <script src="@Url.Content("~/Scripts/respond.min.js")"></script>
+    <![endif]-->
+
+    <!-- alertify -->
+    <link href="/Content/alertify/alertify.core.css" rel="stylesheet" />
+    <link href="/Content/alertify/alertify.bootstrap.css" rel="stylesheet" />
+
+    <style type="text/css">
+        body {
+            padding: 5px;
+            margin: 0;
+            font-family: 'Microsoft YaHei';
+            font-size: 14px;
+        }
+
+        table {
+            word-break: break-all;
+            word-wrap: break-word;
+        }
+
+        .l {
+            color: #fff;
+            font-size: 14px;
+        }
+
+            .l img {
+                width: 20px;
+                height: 20px;
+                margin-right: 5px;
+            }
+    </style>
+    @RenderSection("head", false)
+    <!--下啦-->
+    <script src="/Theme/Home/1/js/stuHover.js" type="text/javascript"></script>
+    <!--左侧导航-->
+    <script type="text/javascript" src="/Theme/Home/1/js/dbdh.js"></script>
+    <title>Index</title>
+</head>
+<body>
+
+    @RenderBody()
+
+    <!--引入bootstrap-->
+    <script type="text/javascript" src="/Scripts/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/Scripts/json2.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript" src="/Scripts/alertify/alertify.min.js"></script>
+    <script type="text/javascript" src="/Scripts/localization.js"></script>
+    <script type="text/javascript" src="/Scripts/common.js"></script>
+    @RenderSection("foot", false)
+
+</body>
+</html>

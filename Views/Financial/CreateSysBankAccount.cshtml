@@ -1,0 +1,12 @@
+﻿@model CreateSysBankAccountData
+@{
+    ViewBag.Title = "添加公司汇款账号";
+}
+
+@Html.Tab(new ListItem { Text = "添加公司汇款账号", Value = "/financial/CreateSysBankAccount", Selected = true },
+new ListItem { Text = "公司汇款账号", Value = "/financial/SysBankAccount" })
+
+@using (Html.Form())
+{
+    @Html.EditorForModel()
+}

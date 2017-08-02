@@ -1,0 +1,81 @@
+﻿@model T_Order
+
+@{
+    ViewBag.Title = "Mall.Order.Detail".ToLocal();
+}
+
+
+
+<div class="panel panel-default">
+    <div class="panel-heading">@("Mall.Order.Product".ToLocal())</div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>@("Mall.Product".ToLocal())</th>
+                <th>@("Mall.Product.BuyCount".ToLocal())</th>
+                <th>@Resources.Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderDetail)
+            {
+                <tr>
+                    <td>@item.Product</td>
+                    <td>@item.Count</td>
+                    <td>@item.Total</td>
+                </tr>
+            }
+            <tr>
+                <td>@Resources.Total：</td>
+                <td></td>
+                <td>@(Model.OrderDetail.Any() ? Model.OrderDetail.Sum(m => m.Total) : 0.00m)</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">@Resources.Desciption</div>
+    <div class="panel-body">
+        @Model.Description
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">@("Mall.Order.DeliveryAddress".ToLocal())</div>
+    <div class="panel-body">
+        @Model.DeliveryAddress
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">@("Mall.Order.WuLiu".ToLocal())</div>
+
+    @if (Model.Status == OrderStatus.Paid)
+    {
+        <div class="panel-body">
+            @OrderStatus.Paid.EnumMetadataDisplay()
+        </div>
+    }
+    else
+    {
+        <div class="list-group">
+            <a href="#" class="list-group-item">
+                <h4 class="list-group-item-heading">@("Mall.Order.WuLiu.Name".ToLocal())</h4>
+                <p class="list-group-item-text">@Model.Logistics.Name</p>
+            </a>
+            <a href="#" class="list-group-item">
+                <h4 class="list-group-item-heading">@("Mall.Order.WuLiu.Tel".ToLocal())</h4>
+                <p class="list-group-item-text">@Model.Logistics.Tel</p>
+            </a>
+            <a href="#" class="list-group-item">
+                <h4 class="list-group-item-heading">@("Mall.Order.WuLiu.Contacter".ToLocal())</h4>
+                <p class="list-group-item-text">@Model.Logistics.Contacter</p>
+            </a>
+            <a href="#" class="list-group-item">
+                <h4 class="list-group-item-heading">@("Mall.Order.WuLiu.TrackingNO".ToLocal())</h4>
+                <p class="list-group-item-text">@Model.TrackingNO</p>
+            </a>
+        </div>
+    }
+</div>

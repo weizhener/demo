@@ -1,0 +1,21 @@
+﻿@model OrderSendData
+
+@{
+    ViewBag.Title = "发货";
+}
+
+@using (Html.Form())
+{
+    @Html.HiddenFor(m=>m.OrderId)
+    @(Grid.Create<T_Logistics>()
+                .SetDataSource(Model.Logistics)
+                .Column("", @<input type="radio" name="LogisticsId" value="@item.Id" />).End()
+                .Column(m => m.Name).Name("物流名称").End()
+                .Column(m => m.Tel).Name("联系方式").End()
+                .Column(m => m.Contacter).Name("联系人").End()
+                .Column(m => m.Url).Name("官网地址").End()
+                .Render().Append(Html.ValidationMessageFor(m => m.LogisticsId)))
+    @Html.Row("", m => Html.ActionLink("添加物流", "CreateLogistics", new { returnUrl = "/mall/Send?orderId={0}".FormatString(Model.OrderId) })) 
+    @Html.RowForEdit(m => m.TrackingNo)
+    @Html.Row("", m => Html.Submit())
+}

@@ -1,0 +1,32 @@
+﻿@{
+    ViewBag.Title = "NavigationTop.Net.TJTreeNet".ToLocal();
+}
+
+@section head{
+    <link href="/Content/zTreeStyle/zTreeStyle.css" rel="stylesheet" />
+    }
+@using (Html.Search())
+{
+    Html.Group(Resources.UserCode, Html.TextBox("userCode", Request.QueryString["userCode"]));
+}
+
+<ul id="tree" class="ztree"></ul>
+
+
+@section foot{
+    <script src="/Scripts/jquery.ztree.all-3.5.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        var setting = {
+            async: {
+                enable: true,
+                url: "/Vip/user/QueryTJTreeData?userCode=" + $("#userCode").val(),
+                autoParam: ["id"]
+            }
+        };
+
+        $(document).ready(function () {
+            $.fn.zTree.init($("#tree"), setting);
+        });
+
+    </script>
+    }

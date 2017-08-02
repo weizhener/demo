@@ -1,0 +1,74 @@
+﻿@model Pager<UserItemData>
+@{
+    ViewBag.Title = "星级会员列表";
+}
+
+@section head{
+    <style type="text/css">
+        .user-status span {
+            display: inline-block;
+            margin-right: 5px;
+        }
+    </style>
+}
+
+@section foot{
+    <script src="/Scripts/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#minDate,#maxDate").click(function () {
+                WdatePicker({ dateFmt: 'yyyy/MM/dd HH:mm:ss' });
+            });
+        });
+    </script>
+}
+@using (Html.Search())
+{
+    Html.Group("会员帐号", Html.TextBox("userCode", Request.QueryString["userCode"]));
+    Html.Group("真实姓名", Html.TextBox("nickName", Request.QueryString["userCode"]));
+    Html.Group("手机号码", Html.TextBox("mobile", Request.QueryString["mobile"]));
+    using (Html.Group("激活日期"))
+    {
+    @Html.TextBox("minDate", Request.QueryString["minDate"]) <span>-</span>   
+    @Html.TextBox("maxDate", Request.QueryString["maxDate"])    
+    }
+}
+
+
+@(Grid.Create<UserItemData>().SetDataSource(Model.Data)
+.Column(m => m.UserCode).Name("会员帐号").Value(m => Html.ActionLink(m.UserCode, "SSORedirect", "System", new { userId = m.Id }, new { target = "_blank" })).End()
+.Column(m => m.NickName).Name("真实姓名").End()
+.Column(m => m.LevelId).Name("级别").Value(@<div>
+   <p>@(LevelHandler.Element(item.LevelId).Name)</p>
+</div>).End()
+.Column(m => m.titelid).Name("职称").Value(@<div>
+    @if(item.titelid!=0)
+    {
+         <p style="color: red;">@(TitelHandler.Element(item.titelid).Name)</p>
+    }
+</div>).End()
+        .Column(m => m.TJUserCode).Name("推荐人").Value(m => "{0}/{1}".FormatString(m.TJUserCode, m.TJUserNickName)).End()
+        .Column(m => m.JiHuoDate).Name("激活日期").End()
+        .Column("状态", @<span class="user-status">
+            @if (item.IsVirtual)
+            {
+                <span style="color: red;">@("Emptysingle".ToLocal())</span>
+            }
+            else 
+            {
+                <span>@("Realsimple".ToLocal())</span>
+            }
+
+            @if (item.IsLock)
+            {
+                <span style="color: red;">锁定</span>
+            }
+            else
+            {
+                <span>正常</span>
+            }
+        </span>).End()
+        .Render())
+
+@Html.Page(Model)
+

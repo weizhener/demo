@@ -1,0 +1,59 @@
+﻿@model Pager<T_Cash>
+@{
+    ViewBag.Title = "提现记录";
+}
+
+@section buttonGroup{
+    @Html.ExportToExcel("ExportCashRecord", "Financial")
+}
+
+
+@using (Html.Search())
+{
+    Html.Group("会员帐号", Html.TextBox("userCode", Request.QueryString["userCode"]));
+    using (Html.Group("日期"))
+    {
+    @Html.TextBox("minDate", Request.QueryString["minDate"]) <span>-</span>   
+    @Html.TextBox("maxDate", Request.QueryString["maxDate"])    
+    }
+}
+
+@section foot{
+    <script src="/Scripts/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#minDate,#maxDate").click(function () {
+                WdatePicker({ dateFmt: 'yyyy/MM/dd HH:mm:ss' });
+            });
+        });
+    </script>
+}
+
+@(Grid.Create<T_Cash>().SetDataSource(Model.Data)
+.Column(m => m.UserCode).Name("会员帐号").End()
+.Column(m => m.UserBankAccount).Name("提现银行").End()
+.Column(m => m.CurrencyId).Name("提现货币").Value(m => CurrencyHandler.Element(m.CurrencyId).Name).End()
+.Column(m => m.Amount).Name("提现金额").End()
+.Column(m => m.BLText).Name("汇率").End()
+.Column(m => m.RealCurrencyId).Name("到帐货币").Value(m => RealCurrencyHandler.Element(m.RealCurrencyId).Name).End()
+.Column(m => m.ServiceFee).Name("手续费").End()
+.Column(m => m.RealAmount).Name("实际到帐金额").End()
+.Column(m => m.Status).Name("状态").Value(typeof(CashStatus)).End()
+.Column(m => m.CreateDate).Name("日期").End()
+.ActionColumn(m =>
+{
+    if (m.Status == CashStatus.Accepted)
+    {
+        return Html.ActionLink("完成交易", "CheckedCash", new { cashId = m.Id }, new { onclick = "return confirm('确认完成交易？')" })
+            .Append(Html.ActionLink("删除", "DeleteCash", new { cashId = m.Id }, new { onclick = "return confirm('确认删除？')" }));
+    }
+    else if (m.Status == CashStatus.Checking)
+    {
+        return Html.ActionLink("受理申请，线下转账", "AcceptedCash", new { cashId = m.Id }, new { onclick = "return confirm('确认受理申请？')" })
+            .Append(Html.ActionLink("删除", "DeleteCash", new { cashId = m.Id }, new { onclick = "return confirm('确认删除？')" }));
+    }
+    else { return ""; }
+}).End()
+.Render())
+
+@Html.Page(Model)

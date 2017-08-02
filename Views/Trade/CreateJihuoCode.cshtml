@@ -1,0 +1,27 @@
+﻿@{
+    ViewBag.Title = "创建激活码";
+    int rest = 0;
+    using (ZXContext db = new ZXContext())
+    {
+        rest = db.JihuoCode.Count(m => m.BuyId == null && m.UseId == null);
+    }
+}
+
+@section buttonGroup{
+    @Html.ActionLinkButton("清空未出售的激活码", "DeleteJihuoCode", "Trade", iconType: BootstrapIcon.TRASH, htmlAttributes: new { onclick = "return confirm('确认清空?')" })
+}
+
+@*@Html.Tab(new ListItem { Text = "创建激活码".ToLocal(), Value = "/trade/CreateJihuoCode", Selected = true },
+new ListItem { Text = "激活码列表".ToLocal(), Value = "/trade/JihuoCodeList" })*@
+
+@Html.Tab(new ListItem { Text = "创建激活码".ToLocal(), Value = "/trade/CreateJihuoCode", Selected = true },
+new ListItem { Text = "转出激活码".ToLocal(), Value = "/trade/TransferCodeForAdmin" },
+new ListItem { Text = "激活码列表".ToLocal(), Value = "/trade/JihuoCodeList" }
+)
+
+@using (Html.Form())
+{
+    @(Html.Row("创建数量", n => Html.TextBox("count")))
+    @(Html.Row("剩余数量", @<span>@(rest)</span>))
+    @(Html.Row(null, m => Html.Submit()))
+}

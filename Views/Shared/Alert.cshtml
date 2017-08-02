@@ -1,0 +1,16 @@
+﻿@model AlertEntity
+@if (Model.Type == AlertType.Success)
+{
+    <div class="alert alert-success alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>@Resources.CommonTip</strong> @Html.Raw(Model.Message)
+    </div>
+}
+else
+{
+    <div class="alert alert-danger alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+        <strong>@(Resources.CommonWarining)</strong> @Html.Raw(Model.Message)
+    </div>
+    
+}

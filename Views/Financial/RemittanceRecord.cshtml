@@ -1,0 +1,56 @@
+﻿@model Pager<T_Remittance>
+@{
+    ViewBag.Title = "汇款记录";
+}
+
+@section buttonGroup{
+    @Html.ExportToExcel("ExportRemittanceRecord", "Financial")
+}
+
+@using (Html.Search())
+{
+    Html.Group("会员帐号", Html.TextBox("usercode", Request.QueryString["usercode"]));
+    using (Html.Group("日期"))
+    {
+    @Html.TextBox("minDate", Request.QueryString["minDate"]) <span>-</span>   
+    @Html.TextBox("maxDate", Request.QueryString["maxDate"])    
+    }
+}
+
+@section foot{
+    <script src="/Scripts/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#minDate,#maxDate").click(function () {
+                WdatePicker({ dateFmt: 'yyyy/MM/dd HH:mm:ss' });
+            });
+        });
+    </script>
+}
+
+@(Grid.Create<T_Remittance>().SetDataSource(Model.Data)
+.Column(m => m.UserCode).Name("会员帐号").End()
+.Column(m => m.SysBankAccount).Name("收款账号").End()
+.Column(m => m.PostDate).Name("汇款日期").End()
+.Column(m => m.PostBankAccount).Name("汇款信息").End()
+.Column(m => m.RealCurrencyId).Name("汇款货币").Value(m => RealCurrencyHandler.Element(m.RealCurrencyId).Name).End()
+.Column(m => m.RealAmount).Name("汇款金额").End()
+.Column(m => m.BLText).Name("汇率").End()
+.Column(m => m.CurrencyId).Name("到帐货币").Value(m => CurrencyHandler.Element(m.CurrencyId).Name).End()
+.Column(m => m.Amount).Name("到帐金额").End()
+.Column(m => m.Status).Name("状态").Value(typeof(InstanceStatus)).End()
+.ActionColumn(m =>
+{
+    if (m.Status == InstanceStatus.Checking)
+    {
+        return Html.ActionLink("通过", "CheckedRemittance", new { remittanceId = m.Id }, new { onclick = "return confirm('确认通过？')" })
+                .Append(Html.ActionLink("删除", "DeleteRemittance", new { remittanceId = m.Id, area = "vip", returnUrl = "/financial/RemittanceRecord" }, new { onclick = "return confirm('确认删除？')" }));
+    }
+    else
+    {
+        return "";
+    }
+}).End()
+.Render())
+
+@Html.Page(Model)

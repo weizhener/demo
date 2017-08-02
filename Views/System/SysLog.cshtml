@@ -1,0 +1,14 @@
+﻿@model Pager<T_SysLog>
+@{
+    ViewBag.Title = "SysLog";
+}
+
+@(Grid.Create<T_SysLog>().SetDataSource(Model.Data)
+.Column(m => m.MemberName).Name("操作人").End()
+.Column(m => m.ActionId).Name("动作").Value(m => ActionHandler.Element(m.ActionId).Name).End()
+.Column(m => m.IP).Name("IP地址").End()
+.Column(m => m.DisplayDescription).Name("备注").End()
+.Column(m => m.CreateDate).Name("日期").End()
+.Render())
+
+@Html.Page(Model)

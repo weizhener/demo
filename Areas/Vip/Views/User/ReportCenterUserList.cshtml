@@ -1,0 +1,20 @@
+﻿@model Pager<ReportCenterUserListData>
+@{
+    ViewBag.Title = "团队管理".ToLocal();
+}
+
+@Html.Tab(new ListItem { Text = "User.ReportCenterLevel".ToLocal(), Value = "/vip/user/ReportCenterForCreate" },
+new ListItem { Text = "User.ReportCenterLevelRecord".ToLocal(), Value = "/vip/user/ReportCenterRecord" },
+new ListItem { Text = "团队成员".ToLocal(), Value = "/vip/user/ReportCenterUserList", Selected = true })
+
+
+@(Grid.Create<ReportCenterUserListData>().SetDataSource(Model.Data)
+.Column(m => m.UserCode).Name("会员帐号".ToLocal()).End()
+.Column(m => m.NickName).Name("真实姓名".ToLocal()).End()
+.Column(m => m.Mobile).Name("手机号码".ToLocal()).End()
+.Column(m => m.RegisterDate).Name("注册日期".ToLocal()).End()
+.Column(m => m.TJUserCode).Name("推荐人编号".ToLocal()).End()
+.Column(m => m.TJNickName).Name("推荐人真实姓名".ToLocal()).End()
+.Column(m => m.TJMobile).Name("推荐人手机号码".ToLocal()).End()
+.Render())
+@Html.Page(Model)

@@ -1,0 +1,17 @@
+﻿@model Pager<InvalidUserData>
+@{
+    ViewBag.Title = "待激活会员";
+}
+
+@(Grid.Create<InvalidUserData>().SetDataSource(Model.Data)
+.Column(m => m.UserCode).Name("会员帐号").End()
+.Column(m => m.NickName).Name("真实姓名").End()
+.Column(m => m.TJUserCode).Name("推荐人").Value(m => "{0}/{1}".FormatString(m.TJUserCode, m.TJUserNickName)).End()
+.Column(m => m.JDUserCode).Name("接点人").Value(m => "{0}/{1}".FormatString(m.JDUserCode, m.JDUserNickName)).End()
+.Column(m => m.ReportCenterUserCode).Name("服务中心").Value(m => "{0}/{1}".FormatString(m.ReportCenterUserCode, m.ReportCenterNickName)).End()
+.Column(m => m.RegisterDate).Name("注册日期").End()
+.ActionColumn(m => Html.ActionLink("激活", "JiHuo", new { userId = m.Id }),
+m => Html.ActionLink("删除", "DeleteInvalid", new { userId = m.Id }, new { onclick = "return confirm('确认删除？')" })).End()
+.Render())
+
+@Html.Page(Model)

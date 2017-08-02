@@ -1,0 +1,23 @@
+﻿@model List<TradeMsgItem>
+@{
+    ViewBag.Title = "查看留言";
+}
+<table class="table">
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>[@(item.CreateDate)]@(item.UserName) : @(item.Content)</td>
+        </tr>
+    }
+    <tr>
+        <td>
+            @using (Html.BeginForm("AddTradeMessage", "Trade", FormMethod.Post, new { @class = "form-horizontal" }))
+            {
+                @(Html.Hidden("tradeUserId", Request["tradeUserId"]))
+                @(Html.Row("留言人", m => Html.TextBox("UserName",_User.Current.Code)))
+                @(Html.Row("留言内容", m => Html.TextArea("Content")))
+                @(Html.Row(null, m => Html.Submit()))
+            }
+        </td>
+    </tr>
+</table>

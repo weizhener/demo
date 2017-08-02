@@ -1,0 +1,77 @@
+﻿@model CreateRemittanceData
+@{
+    ViewBag.Title = "NavigationTop.Financial.Remittance".ToLocal();
+}
+
+@section foot{
+    <script src="/Scripts/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#RealCurrencyId").change(function () {
+                //获取转入货币
+                $.post("/Vip/financial/QueryHuiLvForInCurrency", { realCurrencyId: $(this).val() }, function (result) {
+                    var countySel = $("#CurrencyId").empty();
+                    $(result).each(function () {
+                        countySel.append($("<option value='" + this.Value + "'>" + this.Text + "</option>"));
+                    });
+                    $("#CurrencyId").trigger("change");
+                });
+            });
+
+            $("#CurrencyId").change(function () {
+                $.post("/vip/financial/QueryHuiLvForInItem", { realCurrencyId: $("#RealCurrencyId").val(), currencyId: $("#CurrencyId").val() }, function (result) {
+                    $("#__BLText").html(result.BLTextForIn);
+                });
+
+                $("#RealAmount").trigger("change");
+            });
+
+            $("#RealAmount").change(function () {
+                $.post("/vip/financial/CalcCharge", { realCurrencyId: $("#RealCurrencyId").val(), currencyId: $("#CurrencyId").val(), realAmount: $("#RealAmount").val() }, function (result) {
+                    if (result.IsSuccess) {
+                        $("#__Amount").text(result.Data);
+                    } else {
+                        $("#__Amount").text("");
+                    }
+                });
+            });
+
+            $("#PostDate").click(function () {
+                WdatePicker({ dateFmt: 'yyyy/MM/dd HH:mm:ss' });
+            });
+        });
+    </script>
+}
+
+@Html.Tab(new ListItem { Value = "/vip/financial/createRemittance", Text = "NavigationTop.Financial.Remittance".ToLocal(), Selected = true },
+new ListItem { Value = "/vip/financial/RemittanceRecord", Text = "NavigationTop.Financial.RemittanceRecord".ToLocal() })
+
+@using (Html.Form())
+{
+    if (Model.SysBankAccount.Any())
+    {
+    @Html.Row(Resources.Remittance_SysBankAccount, @<div>
+        @foreach (var sysBankAccount in Model.SysBankAccount)
+        {
+            <div>
+                @Html.RadioButtonFor(m => m.SysBankAccountId, sysBankAccount.Id)
+                <span>@("{0}---{1}---{2}".FormatString(sysBankAccount.Bank, sysBankAccount.CardCode, sysBankAccount.CardUserName))</span>
+            </div>
+        }
+    </div>)
+
+    @Html.RowForEdit(m => m.Bank)
+    @Html.RowForEdit(m => m.PostUserName)
+    @Html.RowForEdit(m => m.PostDate)
+    @Html.RowForEdit(m => m.RealCurrencyId)
+    @Html.RowForEdit(m => m.RealAmount)
+    @Html.RowForDisplay(m => m.BLText)
+    @Html.Row(Resources.Remittance_Currency, k => Html.DropDownListFor(m => m.CurrencyId, Config.Instance.HuiLvForIn.Where(n => n.RealCurrencyId == Model.RealCurrencyId).GroupBy(m => m.CurrencyId).Select(n => new SelectListItem { Value = n.Key.ToString(), Text = CurrencyHandler.Element(n.Key).Name })))
+    @Html.RowForDisplay(m => m.Amount)
+    @Html.Row("", m => Html.Submit())
+    }
+    else
+    {
+    @Html.Partial("Alert", new AlertEntity("Financial.Remittance.NotExistsSysBankAccount".ToLocal(), AlertType.Danger, true))
+    }
+}

@@ -1,0 +1,22 @@
+﻿@model Pager<T_Message>
+@{
+    ViewBag.Title = "NavigationTop.Content.UnreadMessage".ToLocal();
+}
+
+
+@Html.Tab(new ListItem { Text="NavigationTop.Content.Message".ToLocal(), Value="/vip/content/Message" },
+new ListItem { Text="NavigationTop.Content.UnreadMessage".ToLocal(), Value="/vip/content/UnreadMessage",Selected=true })
+<div class="panel panel-info">
+    <div class="panel-heading">@("User.ChangeL1Pwd".ToLocal())</div>
+    <div class="panel-body">
+       @(Grid.Create<T_Message>().SetDataSource(Model.Data)
+.Column("Content.Message.Chater".ToLocal(), m => m.SenderId==_User.Current.Id ? m.ReceiverDisplayName : m.SenderDisplayName).End()
+.Column(m => m.MainTitle).Name(Resources.Content_Message_MainTitle).End()
+.Column(m => m.CreateDate).Name(Resources.Date).End()
+.ActionColumn(m => Html.ActionLink(Resources.Detail, "ReplyMessage", new { messageId = m.Id })).End()
+.Render())
+
+@Html.Page(Model)
+    </div>
+</div>
+

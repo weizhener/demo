@@ -1,0 +1,13 @@
+﻿@model CreateDeliveryAddressData
+
+@{
+    ViewBag.Title = "NavigationTop.Mall.CreateAddress".ToLocal();
+}
+
+@Html.Tab(new ListItem { Text = "NavigationTop.Mall.CreateAddress".ToLocal(), Value = "/vip/mall/CreateDeliveryAddress", Selected = true },
+new ListItem { Text = "NavigationTop.Mall.Address".ToLocal(), Value = "/vip/mall/DeliveryAddress" })
+
+@using (Html.Form())
+{
+    @Html.EditorForModel()
+}

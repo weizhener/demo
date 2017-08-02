@@ -1,0 +1,27 @@
+﻿@model Pager<T_News>
+@{
+    ViewBag.Title = "新闻公告";
+}
+
+@Html.Tab(new ListItem { Text = "发布新闻公告", Value = "/content/CreateNews" },
+new ListItem { Text = "新闻公告管理", Value = "/content/News", Selected = true })
+
+@(Grid.Create<T_News>().SetDataSource(Model.Data)
+.Column(m => m.Title).Name("标题").End()
+.Column(m => m.LastModifyDate).Name("日期").End()
+.Column(m => m.Type).Name("类型").Value(typeof(NewsType)).End()
+.ActionColumn(m => Html.ActionLink("编辑", "EditNews", new { newsId = m.Id }),
+    m =>
+    {
+        if (m.Type == NewsType.System)
+        {
+            return Html.ActionLink("删除", "DeleteNews", new { newsId = m.Id }, new { onclick = "return confirm('确认删除？')" });
+        }
+        else
+        {
+            return Html.ActionLink("删除", "DeleteNews", new { newsId = m.Id }, new { onclick = "return confirm('确认删除？')" });
+        }
+    }).End()
+.Render())
+
+@Html.Page(Model)

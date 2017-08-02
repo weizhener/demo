@@ -1,0 +1,17 @@
+﻿@model Pager<T_TradeList>
+@{
+    ViewBag.Title = "审核诚信金";
+}
+
+@using (Html.Search())
+{
+    Html.Group("会员编号", Html.TextBox("userCode", Request.QueryString["userCode"]));
+}
+@(Grid.Create<T_TradeList>().SetDataSource(Model.Data)
+.Column(m => m.UserCode).Name("会员编号").End()
+.Column(m => m.Total).Name("挂单金额").End()
+.Column(m => m.CXJ).Name("诚信金").End()
+.Column(m => m.CxjSendDate).Name("缴费日期").End()
+.ActionColumn(m => Html.ActionLink("通过", "CheckedCxj", new { tradeId = m.Id }, new { onclick = "return confirm('确认通过?')" }).Append(Html.ActionLink("撤销", "TradeListCancel", new { tradeListId = m.Id }, new { onclick = "return confirm('确认?')" }))).End()
+.Render())
+@Html.Page(Model)

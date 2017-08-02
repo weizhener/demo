@@ -1,0 +1,47 @@
+﻿@{
+    ViewBag.Title = "购买激活码".ToLocal();
+    int rest = 0;
+    using (ZXContext db = new ZXContext())
+    {
+        rest = db.JihuoCode.Count(m => m.BuyId == _User.Current.Id && m.UseId == null);
+    }
+}
+
+@Html.Tab(
+new ListItem { Text = "我的激活码".ToLocal(), Value = "/vip/user/MyJihuoCodeList" },
+new ListItem { Text = "购买激活码".ToLocal(), Value = "/vip/user/BuyJihuoCode", Selected = true },
+    new ListItem { Text = "激活会员".ToLocal(), Value = "/vip/user/JihuoUser" },
+    new ListItem { Text = "激活列表".ToLocal(), Value = "/vip/user/JihuoList" },
+new ListItem { Text = "转让激活码".ToLocal(), Value = "/vip/user/TransferJihuoCode" },
+new ListItem { Text = "转让记录".ToLocal(), Value = "/vip/user/TransferJihuoCodeList" }
+)
+<div class="panel panel-info">
+    <div class="panel-heading">@("购买激活码".ToLocal())</div>
+    <div class="panel-body">
+     @using (Html.BeginForm(null, null, FormMethod.Post, new { @class = "form-horizontal", @id = "buyjihuocodeform" }))
+{
+    @(Html.Row("购买数量".ToLocal(), n => Html.TextBox("count")))
+    @(Html.Row("剩余数量".ToLocal(), @<span>@(rest)</span>))
+    @(Html.Row(null, @<input type="button" class=" btn-primary btn" value="@("购买".ToLocal())" id="save" />))
+}
+    </div>
+</div>
+
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            $("#save").click(function () {
+                if ($("#count").val() <= 0) {
+                    alert("@("购买失败".ToLocal())!");
+                }
+                else {
+                    if (confirm("@("确认购买".ToLocal())?")) {
+                        $(this).attr({ "disabled": "disabled" });
+                        $("#buyjihuocodeform").submit();
+                    }
+                }
+            })
+
+        });
+    </script>
+}

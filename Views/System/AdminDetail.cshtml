@@ -1,0 +1,28 @@
+﻿@model T_Admin
+
+@{
+    ViewBag.Title = "管理员详情";
+}
+
+@using (Html.Search())
+{
+    Html.Group("管理员编号", Html.TextBox("adminCode", Request.QueryString["adminCode"]));
+}
+@if (Model == null)
+{
+    <div class="alert alert-warning" role="alert">管理员 @Request.QueryString["adminCode"] 不存在</div> 
+}
+else
+{
+    using (Html.Form())
+    {
+        @Html.Row("编号", m => Model.AdminCode)
+        @Html.Row("真实姓名", m => Model.NickName)
+        @Html.Row("一级密码", m => EncryptUtils.AESDecrypt(Model.L1Pwd))
+        @Html.Row("二级密码", m => EncryptUtils.AESDecrypt(Model.L2Pwd))
+        if (Model.L3Pwd.IsNullOrWhiteSpace() == false)
+        {
+        @Html.Row("三级密码", m => EncryptUtils.AESDecrypt(Model.L3Pwd))
+        }
+    }
+}

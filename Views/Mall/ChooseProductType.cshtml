@@ -1,0 +1,55 @@
+﻿@model ChooseProductTypeData
+@{
+    ViewBag.Title = "选择产品分类";
+}
+
+<ol class="breadcrumb">
+    @if (Model.Scope == null)
+    {
+        <li class="active">全部</li>
+    }
+    else
+    {
+        <li>@Html.ActionLink("全部", "ChooseProductType")</li>
+        foreach (var item in Model.Scope.Where(m => m.Id != Model.ParentId))
+        {
+        <li>@Html.ActionLink(item.Name, "ChooseProductType", new { parentId = item.Id, productTypeId = Model.ProductTypeId, returnUrl = Model.ReturnUrl })</li>
+        }
+        <li class="active">@Model.Scope.FirstOrDefault(m => m.Id == Model.ParentId).Name</li>
+    }
+</ol>
+
+@using (Html.Form())
+{
+    @Html.HiddenFor(m => m.ReturnUrl)
+    @Html.HiddenFor(m => m.ParentId)
+    <table class="table">
+        <tbody>
+            @foreach (var item in Model.ProductType)
+            {
+                <tr>
+                    <td>
+                        @if (Model.ProductTypeId == item.Id)
+                        { 
+                            <input type="radio" name="ProductTypeId" value="@item.Id" id="@item.Id" checked="checked" />
+                        }
+                        else
+                        {
+                            <input type="radio" name="ProductTypeId" value="@item.Id" id="@item.Id" />
+                        }
+                        <label for="@item.Id">@item.Name</label>
+                    </td>
+                    <td style="width: 150px;">
+                        @Html.ActionLink("进入子分类", "ChooseProductType", new { parentId = item.Id, productTypeId = Model.ProductTypeId, returnUrl = Model.ReturnUrl })
+                    </td>
+                </tr>
+            }
+            <tr>
+                <td></td>
+                <td style="width: 150px;">
+                    @Html.Submit()
+                </td>
+            </tr>
+        </tbody>
+    </table>
+}

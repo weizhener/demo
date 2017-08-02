@@ -1,0 +1,6 @@
+﻿@{
+    ViewBag.Title = "初始化系统";
+}
+
+<div class="alert alert-warning" role="alert">初始化数据库会导致系统所有数据清空，不可恢复，请谨慎操作</div>
+@Html.ActionLinkButton("确认初始化", "RunInitDatabase", "system", htmlAttributes: new { onclick="return confirm('确认执行？');"})

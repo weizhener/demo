@@ -1,0 +1,77 @@
+﻿@model BuyData
+@{
+    ViewBag.Title = "NavigationTop.Mall.Buy".ToLocal();
+    Layout = Config.Instance.LayoutForAnonymous;
+}
+
+
+
+@using (Html.Form())
+{
+    @Html.HiddenFor(m => m.ProductId)
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <h2>@("NavigationTop.Mall.Buy".ToLocal())</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <img class="img-responsive" alt="@("Mall.Buy.Image.Title".ToLocal())" src="@Model.Product.ImageUrl" />
+            </div>
+            <div class="col-md-8">
+                <div class="panel panel-default">
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="clo-md-10 col-md-offset-2">
+                                <h3>@Model.Product.ProductCode @Model.Product.ProductName</h3>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-2">
+                                <p class="text-right">@("Mall.Product.Price".ToLocal())：</p>
+                            </div>
+                            <div class="col-md-10">
+                                <p>@Model.Product.Price</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2">
+                                <p class="text-right">@("Mall.Product.GuiGe".ToLocal())：</p>
+                            </div>
+                            <div class="col-md-10">
+                                <p>@Model.Product.GuiGe</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2 text-right">
+                                @("Mall.Product.BuyCount".ToLocal())：
+                            </div>
+                            <div class="col-md-3">
+                                @Html.EditorFor(m => m.Count)
+                                @Html.ValidationMessageFor(m => m.Count)
+                            </div>
+                        </div>
+                        <div class="row" style="margin-top: 20px;">
+                            <div class="col-md-10 col-md-offset-2">
+                                <button class="btn btn-success">@("Mall.Product.AddToShoppingCart".ToLocal())</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="row" style="margin-top: 20px;">
+            <div class="col-md-12">
+                <ul class="nav nav-tabs">
+                    <li role="presentation" class="active"><a href="#">@("NavigationTop.Mall.Buy".ToLocal())</a></li>
+                </ul>
+                <div>
+                    @Html.Raw(Model.Product.Description)
+                </div>
+            </div>
+        </div>
+    </div>
+}

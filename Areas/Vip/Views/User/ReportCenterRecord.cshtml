@@ -1,0 +1,27 @@
+﻿@model Pager<T_ReportCenterRecord>
+@{
+    ViewBag.Title = "User.ReportCenterLevelRecord".ToLocal();
+}
+
+@Html.Tab(new ListItem { Text = "User.ReportCenterLevel".ToLocal(), Value = "/vip/user/ReportCenterForCreate" },
+new ListItem { Text = "User.ReportCenterLevelRecord".ToLocal(), Value = "/vip/user/ReportCenterRecord", Selected = true },
+new ListItem { Text = "团队成员".ToLocal(), Value = "/vip/user/ReportCenterUserList"})
+
+
+@(Grid.Create<T_ReportCenterRecord>().SetDataSource(Model.Data)
+.Column(m => m.ReportCenterLevelId).Name("摘要".ToLocal()).Value(m => ReportCenterHandler.Element(m.ReportCenterLevelId).Name).End()
+.Column(m => m.CreateDate).Name("申请日期".ToLocal()).End()
+.Column(m => m.Status).Name("状态".ToLocal()).Value(typeof(InstanceStatus)).End()
+.Column(m => m.CheckDate).Name("审核日期".ToLocal()).End()
+.ActionColumn(m =>{
+    if (m.Status == InstanceStatus.Checking)
+    {
+        return Html.ActionLink("撤销申请".ToLocal(), "ReportCenterForDel", new { rcId = m.Id }, new { onclick = "return confirm('确认撤销?')" });
+    }
+    else
+    {
+        return ""; 
+    }
+}).End()
+.Render()
+)

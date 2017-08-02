@@ -1,0 +1,161 @@
+﻿@{
+    var tradeId = new Guid(Request["tradeId"]);
+    var tradeList = new T_TradeList();
+    var tradeUser = new List<HomeTradeUserData>();
+
+    var user = new T_User();
+    using (ZXContext db = new ZXContext())
+    {
+        user = db.User.Find(_User.Current.Id);
+        tradeList = db.TradeList.Find(tradeId);
+        tradeUser = db.TradeUser.Where(m => m.BuyId == tradeList.Id || m.SellId == tradeList.Id)
+                                    .OrderByDescending(m => m.CreateDate)
+                                    .Select(m => new HomeTradeUserData
+                                    {
+                                        SerialNumber = m.SerialNumber,
+                                        Status = m.Status,
+                                        CreateDate = m.CreateDate,
+                                        BuyUserCode = m.BuyUserCode,
+                                        SellUserCode = m.SellUserCode,
+                                        LastDate = m.LastDate,
+                                        BuyUserId = m.BuyUserId,
+                                        Total = m.Total,
+                                        ImgPath = m.ImgPath,
+                                        BankName = m.Sell.User.BankName,
+                                        BankAddress = m.Sell.User.BankAddress,
+                                        BankCode = m.Sell.User.BankCode,
+                                        BankUserName = m.Sell.User.BankUserName,
+                                        Id = m.Id,
+                                        SellUserId = m.SellUserId,
+                                        MsgCount = m.TradeMessge.Count,
+                                        BuyUserMobile = m.Buy.User.Mobile,
+                                        SellUserMobile = m.Sell.User.Mobile,
+                                        JFTotal = user.JFTotal,
+                                        BuyStarId = m.Buy.User.StarId,
+                                        SellStarId = m.Sell.User.StarId,
+                                    }).ToList();
+    }
+    ViewBag.Title = tradeList.Type == TradeType.Buyer ? "申请提供帮助".ToLocal() : "申请接受帮助".ToLocal();
+}
+@section head{
+    <style type="text/css">
+        .table {
+            color: #000;
+        }
+    </style>
+}
+<div class="hpanel">
+    <div class="panel-body list">
+        <div class="table project-list">
+            <h3><a class="btn btn-danger btn-xs" href="@(Request.UrlReferrer.AbsoluteUri)">@("返回".ToLocal())</a></h3>
+            <div class="col-md-12" style="background-color: #debb3f; padding: 10px; padding-bottom: 0px;">
+                <h5 class="list-group-item-heading">@ViewBag.Title</h5>
+                <div style="margin-bottom: 1em; margin-right: 1em;">
+                    <font>@("参与者".ToLocal()):@(tradeList.UserCode)</font>
+                    <font>@("数额".ToLocal()):@(tradeList.Total)</font>
+                    <font>@("剩余".ToLocal()):@(tradeList.Rest)</font>
+                    <font>@("日期".ToLocal()):@(tradeList.CreateDate.ToString("yyyy-MM-dd HH:mm:ss"))</font>
+                    <font>@("状态".ToLocal()):
+                        @if (tradeList.Rest == 0 && tradeList.Status == TradeHandler.Wait.Id)
+                        {
+                            <span>@("匹配完成".ToLocal())</span> 
+                        }
+                        else
+                        {
+                          @(TradeHandler.Element(tradeList.Status).BuyerStatus)  
+                        }</font>
+                    @if (tradeList.Type == TradeType.Buyer && tradeList.Rest == 0 && tradeList.Status == TradeHandler.Complete.Id)
+                    {
+                         <font>@("本金加利息".ToLocal()):
+                          @(tradeList.BenJinLixi)  
+                        </font>
+                    }
+                    <br>
+                </div>
+            </div>
+            <table class="table table-striped" style="background-color: #debb3f">
+                @*     <thead>
+                    <tr>
+                        <th colspan="6"></th>
+                    </tr>
+                </thead>*@
+                <tbody>
+                    @foreach (var item in tradeUser)
+                    {
+                        <tr style="background-color: rgb(245,245,245); font-size: 14px;">
+                            <td>
+                                <p style="margin-top: 5px;"><strong>@(item.SerialNumber)</strong></p>
+                                <p>
+                                    <strong>@("状态".ToLocal()):@((user.Id == item.BuyUserId ?
+                                                    TradeHandler.Element(item.Status).BuyerStatus.ToLocal() :
+                                                    TradeHandler.Element(item.Status).SellerStatus.ToLocal()))
+                                    </strong>
+                                </p>
+                                <p>
+                                    <i class="fa fa-clock-o"></i>
+                                    @("配对时间".ToLocal())@(item.CreateDate.ToString("yyyy-MM-dd HH:mm:ss"))
+                                </p>
+
+                                @if (item.Status == TradeHandler.WaitBuyer.Id)
+                                {
+                                    <span class="text-danger" style="font-size: 14px;">@("倒计时".ToLocal())：<small data-time="@(item.LastDate.AddHours(Config.Instance.Single.LockBuyerHours).ToString("yyyy/MM/dd HH:mm:ss"))" class="time_countdown"></small>
+                                    </span>
+                                }
+                                else if (item.Status == TradeHandler.WaitSeller.Id)
+                                {
+                                    <span class="text-danger" style="font-size: 14px;">@("倒计时".ToLocal())：<small data-time="@(item.LastDate.AddHours(Config.Instance.Single.LockSellerHours).ToString("yyyy/MM/dd HH:mm:ss"))" class="time_countdown"></small>
+                                    </span>
+                                }
+                            </td>
+                            <td>@("申请帮助".ToLocal())<br />
+                                (@(item.BuyUserCode))<br />
+                                (@(item.BuyUserMobile))
+                            </td>
+                            <td>@("接受帮助".ToLocal())<br />
+                                (@(item.SellUserCode))<br />
+                                (@(item.SellUserMobile))
+                            </td>
+                            <td>@("人民币".ToLocal())<br />@(item.Total)<br />
+                                @if (item.ImgPath.IsNullOrWhiteSpace() == false)
+                                {
+                                    <a href="@(item.ImgPath)" target="_blank">
+                                      <img src="@item.ImgPath" class="product-image" style="width:30px;height:30px"/>
+                                    </a>
+                                }
+                            </td>
+                            <td>
+                                @if (item.Status == TradeHandler.WaitBuyer.Id && user.Id == item.BuyUserId)
+                                {
+                                    <button class="btn btn-success btn-xs BuyerPayment" value="@(item.Id)"data-toggle="modal" data-target="#BuyerPayment">
+                                        @("打款".ToLocal())
+                                    </button>
+                                }
+                                @if (item.Status == TradeHandler.WaitSeller.Id && user.Id == item.SellUserId)
+                                {
+                                    <button class="btn btn-success btn-xs SellerConfirm" value="@(item.Id)"data-toggle="modal" data-target="#SellerConfirm">
+                                        @("确认收款".ToLocal())
+                                    </button>
+                                }
+@*             <button class="btn btn-info btn-xs addmsg" value="@(item.Id)">
+                                    @("留言".ToLocal()):<span style="color: red">（@(item.MsgCount)）</span>
+                                </button>*@
+                                <br />
+                                <!--判断买家虚假打款，卖家进行投诉-->
+                                @if (item.Status == TradeHandler.Sellfreeze.Id &&
+                                            item.SellUserId == _User.Current.Id)
+                                {
+                                    <button class="btn btn-danger btn-xs TradeLock" style="margin-top:5px;" value="@(item.Id)"data-toggle="modal" data-target="#TradeLock">
+                                        @("投诉".ToLocal())
+                                    </button>
+                                }
+                                <button type="button" class="btn_detail btn-primary btn-xs TradeInfo" value="@(item.Id)"data-toggle="modal" data-target="#TradeInfo">
+                                    @("详细资料".ToLocal())&gt;&gt;
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

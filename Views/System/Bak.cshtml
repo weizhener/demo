@@ -1,0 +1,17 @@
+﻿@using System.IO
+@model IEnumerable<FileInfo>
+@{
+    ViewBag.Title = "备份文件";
+}
+
+@Html.Tab(new ListItem { Text = "备份数据库".ToLocal(), Value = "/system/Backup" },
+new ListItem { Text = "还原数据库".ToLocal(), Value = "/system/Bak", Selected = true })
+
+@(Grid.Create<FileInfo>().SetDataSource(Model)
+.Column(m => m.Name).Name("名称").End()
+.Column(m => m.Length).Name("大小").Value(m => { return "{0}M".FormatString(decimal.Round(m.Length / 1024m / 1024m, 2)); }).End()
+.Column(m => m.CreationTime).Name("日期").End()
+.ActionColumn(m => Html.ActionLink("下载", "DownLoadBak", new { fileName = m.Name }),
+m => Html.ActionLink("还原", "Restore", new { fileName = m.Name }, new { onclick = "return confirm('还原数据库可能会造成数据不可恢复性丢失，建议联系管理员操作还原，确认还原？')" }),
+m => Html.ActionLink("删除", "DeleteBak", new { fileName = m.Name }, new { onclick = "return confirm('确认删除？')" })).End()
+.Render())

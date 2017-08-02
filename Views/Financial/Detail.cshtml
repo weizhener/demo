@@ -1,0 +1,50 @@
+﻿@model Pager<T_FinancialDetail>
+@{
+    ViewBag.Title = "财务明细";
+}
+
+@using (Html.Search())
+{
+    Html.Group("会员帐号", Html.TextBox("userCode", Request.QueryString["userCode"]));
+
+    var financialIdCollection = new List<SelectListItem> { new SelectListItem { Text = "==全部==", Value = "" } };
+    financialIdCollection.AddRange(FinancialHandler.Collection.Select(m => new SelectListItem { Text = m.Name, Value = m.Id.ToString(), Selected = Request.QueryString["financialId"].AsInt() == m.Id }));
+
+    Html.Group("操作类型", Html.DropDownList("financialId", financialIdCollection));
+
+    using (Html.Group("日期"))
+    {
+    @Html.TextBox("minDate", Request.QueryString["minDate"]) <span>-</span>   
+    @Html.TextBox("maxDate", Request.QueryString["maxDate"])    
+    }
+
+    var currencylIdCollection = new List<SelectListItem> { new SelectListItem { Text = "==全部==", Value = "" } };
+    currencylIdCollection.AddRange(CurrencyHandler.Collection.Select(m => new SelectListItem { Text = m.Name, Value = m.Id.ToString(), Selected = Request.QueryString["currencyId"].AsInt() == m.Id }));
+
+    Html.Group("货币类型", Html.DropDownList("currencyId", currencylIdCollection));
+    Html.Group("描述", Html.TextBox("description", Request.QueryString["description"]));
+}
+
+@(Grid.Create<T_FinancialDetail>().SetDataSource(Model.Data)
+.Column(m => m.UserCode).Name("会员帐号").End()
+.Column(m => m.FinancialId).Name("操作类型").Value(m => FinancialHandler.Element(m.FinancialId).Name).End()
+.Column(m => m.CurrencyId).Name("货币类型").Value(m => CurrencyHandler.Element(m.CurrencyId).Name).End()
+.Column(m => m.Amount).Name("收入").Value(m => m.Amount > 0 ? m.Amount.ToString() : "").End()
+.Column(m => m.Amount).Name("支出").Value(m => m.Amount < 0 ? m.Amount.ToString() : "").End()
+.Column(m => m.AfterWalletAmount).Name("余额").End()
+.Column(m => m.CreateDate).Name("日期").End()
+.Column(m => m.Description).Name("描述").End()
+.Render())
+
+@Html.Page(Model)
+
+@section foot{
+    <script src="/Scripts/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#minDate,#maxDate").click(function () {
+                WdatePicker({ dateFmt: 'yyyy/MM/dd HH:mm:ss' });
+            });
+        });
+    </script>
+}

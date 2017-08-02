@@ -1,0 +1,25 @@
+﻿@model Pager<T_ReportCenterRecord>
+@{
+    ViewBag.Title = "审核服务中心";
+}
+
+@Html.Tab(new ListItem { Text = "服务中心".ToLocal(), Value = "/user/ReportCenter" },
+new ListItem { Text = "审核服务中心".ToLocal(), Value = "/user/ReportCenterRecord", Selected = true })
+
+@(Grid.Create<T_ReportCenterRecord>().SetDataSource(Model.Data)
+.Column(m => m.UserCode).Name("会员帐号").End()
+.Column(m => m.ReportCenterLevelId).Name("摘要").Value(m => ReportCenterHandler.Element(m.ReportCenterLevelId).Name).End()
+.Column(m => m.Status).Name("状态").Value(typeof(InstanceStatus)).End()
+.Column(m => m.CreateDate).Name("申请日期").End()
+.ActionColumn(m =>
+{
+    if (m.Status == InstanceStatus.Checking)
+    {
+        return Html.ActionLink("通过", "CheckedReportCenter", new { rcId = m.Id }, new { @onclick = "return confirm('确认通过?')" });
+    }
+    else
+    {
+        return "";
+    }
+}, m => Html.ActionLink("删除", "DelReportCenter", new { rcId = m.Id }, new { @onclick = "return confirm('确认删除?')" })).End()
+.Render())

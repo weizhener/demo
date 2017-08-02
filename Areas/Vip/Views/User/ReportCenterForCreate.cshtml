@@ -1,0 +1,12 @@
+﻿@model ChangeReportCenterLevelForUserData
+@{
+    ViewBag.Title = "User.ReportCenterLevel".ToLocal();
+}
+
+@Html.Tab(new ListItem { Text = "User.ReportCenterLevel".ToLocal(), Value = "/vip/user/ReportCenterForCreate", Selected = true  },
+new ListItem { Text = "User.ReportCenterLevelRecord".ToLocal(), Value = "/vip/user/ReportCenterRecord"},
+new ListItem { Text = "团队成员".ToLocal(), Value = "/vip/user/ReportCenterUserList"})
+@using(Html.Form())
+{
+    @Html.EditorForModel()
+}

@@ -1,0 +1,127 @@
+﻿@{
+    IEnumerable<T_News> news = null;
+    T_User user = null;
+     int tjcount = 0;
+    using (ZXContext db = new ZXContext())
+    {
+        news = db.News.OrderByDescending(m => m.Type).ThenByDescending(m => m.LastModifyDate).Take(8).ToList();
+        user = db.User.Find(_User.Current.Id);
+            tjcount = db.User.Where(m => m.TJUserId == user.Id).Count();
+    }
+    string url = "http://{0}{1}/vip/user/register?tj={2}".FormatString(Request.Url.Host, (Request.Url.Port != 80 ? ":" + Request.Url.Port.ToString() : ""), _User.Current.Code);
+}
+<ul class="walletNav clearfix">
+                        <li class="clearfix  area area-a">
+                            
+                            <span class="wallet">
+                                本金钱包<br>
+                                <strong class="wallet-color">可用:0.00RMB</strong><br />
+                                <strong class="wallet-color" >待提现:0RMB</strong>
+                            </span>
+                        </li>
+
+
+                        <li class="clearfix area area-b">
+                           
+                            <span class="wallet">
+                                动态钱包<br>
+                                <strong class="wallet-color">可用:0.00RMB</strong><br/>
+                                <strong class="wallet-color" >不可用:0RMB</strong>
+                            </span>
+                        </li>
+
+                        <li class="clearfix area area-c">
+                           
+                            <span class="wallet">
+                                排单币钱包<br>
+                                <strong class="wallet-color">0个</strong>
+                            </span>
+                        </li>
+                        <li class="clearfix area area-c">
+
+                            <span class="wallet">
+                                激活码钱包<br>
+                                <strong class="wallet-color">
+                                    可用:0
+                                </strong><br />
+                                    <strong class="wallet-color">不可用:0</strong>
+</span>
+                        </li>
+
+                       
+                    </ul>
+
+<div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                
+<script src="/js/jquery.form.js"></script>
+<script src="/theme/mmm/js/box.js"></script>
+<script type="/text/javascript" src="scripts/MvcPager.js"></script>
+
+<div class="innerContent">
+    <div id="donationWrap">
+
+                <div class="col-sm-6 padding0">
+                    <a class="btn btn-block pdBtn area area-x" id="pdBtn" data-toggle="modal" data-target="#CreateBuy">
+                        <i><img src="/theme/mmm/images/coin.png" /></i>
+                        申请提供帮助
+                    </a>
+                </div>
+                <div class="col-sm-6 padding0">
+                    <button class="btn btn-block pdBtn area area-x" id="gdBtn"data-toggle="modal" data-target="#CreateSell">
+                        <i><img src="/theme/mmm/images/coin.png" /></i>
+                        申请接受帮助
+                    </button>
+                </div>
+        
+     @*   <div class="">
+            <div class="col-md-12" id="pdWrap" style="">
+                <div class="widget widget-body-white">
+                    
+<!-- 提供帮助 -->
+                    </div>
+                </div>
+            </div>
+        <div class="">
+            <div class="col-md-12" id="gdWrap" style="">
+                <div class="widget widget-body-white">
+                    
+
+                </div>
+            </div>
+        </div>*@
+                </div>
+            </div>
+            <div class="mt10" id="context">
+    <div class="col-md-9 padding0 pr10" id="ListContent">
+        
+<link href="/Plugin/countdown/jquery.countdown.css" rel="stylesheet">
+<script src="/Plugin/countdown/jquery.countdown.js"></script>
+<!-- 匹配列表 -->
+
+
+
+
+<!--S 翻页页码  -->
+        <!--S 翻页页码  -->
+@*<div>
+    
+    <div class="pagination pagination-small pull-right">
+        
+<!--MvcPager v3.0.1 for ASP.NET MVC 4.0+ © 2009-2015 Webdiyer (http://en.webdiyer.com)-->
+<ul class="pagination" data-ajax="true" data-ajax-dataformid="#searchForm" data-ajax-method="Post" data-ajax-update="#ListContent" data-gotobutton="#goToBtn2" data-invalidpageerrmsg="Page index is invalid" data-outrangeerrmsg="Page index is out of range" data-pagecount="1" data-pageindexbox="#pageIndexBox2" data-pageparameter="page" data-pagerid="Webdiyer.MvcPager" data-urlformat="/UserCenter/Home?adminloginname=13&amp;page=__page__"></ul>
+<!--MvcPager v3.0.1 for ASP.NET MVC 4.0+ © 2009-2015 Webdiyer (http://en.webdiyer.com)-->
+
+    </div>
+
+</div>*@
+<!--E 翻页页码  -->
+              
+    </div>
+</div>
+
+
+                    </div>
+            </div>
+        </div>

@@ -1,0 +1,49 @@
+﻿@model CreateTransferOutData
+@{
+    ViewBag.Title = "NavigationTop.Financial.Transfer".ToLocal();
+}
+
+@Html.Tab(new ListItem { Value = "/vip/financial/CreateTransfer", Text = "NavigationTop.Financial.Transfer".ToLocal(), Selected = true },
+new ListItem { Value = "/vip/financial/TransferOut", Text = "NavigationTop.Financial.TransferOutRecord".ToLocal() },
+new ListItem { Value = "/vip/financial/TransferIn", Text = "NavigationTop.Financial.TransferInRecord".ToLocal() })
+
+
+        @using (Html.Form())
+        {
+            @Html.EditorForModel()
+        }
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            $("#ToUserCode").change(function () {
+                $.post("/user/GetNickName", { userCode: $(this).val() }, function (result) {
+                    if (result.IsSuccess) {
+                        $("#__extension__ToUserCode").text(result.Data);
+                    }
+                    else {
+                        alert(result.Error);
+                        $("#__extension__ToUserCode").text("");
+                    }
+                });
+            });
+            $("#CurrencyId").change(function () {
+                $.post("/vip/financial/QueryWalletAmount", { currencyId: $(this).val(), userId: '@_User.Current.Id' }, function (result) {
+                    $("#__WalletAmount").text(result);
+                });
+            });
+
+            $("#Total").change(function () {
+                $.post("/vip/financial/CalcTransfer", { total: $(this).val() }, function (result) {
+                    if (result.IsSuccess) {
+                        $("#__ServiceFee").text(result.Data.ServiceFee);
+                        $("#__Amount").text(result.Data.Amount);
+                    }
+                    else {
+                        $("#__ServiceFee").text("");
+                        $("#__Amount").text("");
+                    }
+                });
+            });
+        });
+    </script>
+    }

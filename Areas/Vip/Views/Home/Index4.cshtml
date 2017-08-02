@@ -1,0 +1,565 @@
+﻿@using ZMZ.ZX.Core
+@{
+    Layout = "~/Areas/Vip/Views/Shared/_Layout3.cshtml";
+    T_User user = null;
+    List<T_News> News = new List<T_News>();
+    List<T_Wallet> walletes = new List<T_Wallet>();
+    var TJCnt = 0;
+    var JDCnt = 0;
+    using(ZXContext db = new ZXContext())
+    {
+        user = db.User.Find(_User.Current.Id);
+        News = db.News.ToList();
+        walletes = db.Wallet.Where(m => m.UserId == _User.Current.Id).ToList();
+       // walletes = db.Wallet.Where(m => m.UserId == _User.Current.Id).OrderBy(m => m.CurrencyId).ToList();
+        TJCnt = db.User.Where(m => m.TJUserId == _User.Current.Id && m.IsValid).Count();
+        JDCnt = db.User.Where(m => m.JDUserId == _User.Current.Id && m.IsValid).Count();
+    }
+}
+@section head{
+    <style type="text/css">
+        .dashboard-stat .details .number {
+            font-size:24px;
+        }
+    </style>
+    }
+<!-- BEGIN CONTAINER -->
+	<!-- BEGIN CONTENT -->
+
+
+<div class="row" style="margin-bottom:20px;margin-top:0px">
+    <div class="col-xs-6">
+        <div class="hpanel">
+            <div class="panel-body" style="background: url(/Theme/Home/2/buy.jpg) no-repeat right bottom #fff; color: #fff; background-size: cover;">
+                <div class="text-right">
+                    <div class="m" style="height: 40px;">
+                    </div>
+                    <p class="small" style="height: 60px;">
+                    </p>
+                    <button class="btn btn-warning  btn-lg" style="background: #6f4615; border-color: #6f4615;" data-toggle="modal" data-target="#CreateBuy">
+                        @("申请提供帮助".ToLocal())
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-6">
+        <div class="hpanel">
+            <div class="panel-body" style="background: url(/Theme/Home/2/sell.jpg) no-repeat center bottom #fff; color: #fff; background-size: cover;">
+                <div class="text-right">
+                    <div class="m" style="height: 40px;">
+                    </div>
+                    <p class="small" style="height: 60px;">
+                    </p>
+                    <button class="btn btn-success btn-lg" style="background: #04395c; border-color: #04395c;" data-toggle="modal" data-target="#CreateSell">
+                        @("申请接受帮助".ToLocal())
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+			<div class="row">
+				<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+					<div class="dashboard-stat blue">
+						<div class="visual">
+							<i class="fa fa-comments"></i>
+						</div>
+						<div class="details">
+							<div class="number">
+								 @("注册会员".ToLocal())
+							</div>
+						</div>
+						<a class="more" href="/Vip/User/Register">
+							 @("点击注册会员".ToLocal()) <i class="m-icon-swapright m-icon-white"></i>
+						</a>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+					<div class="dashboard-stat green">
+						<div class="visual">
+							<i class="fa fa-shopping-cart"></i>
+						</div>
+						<div class="details">
+							<div class="number">
+								 @("提供记录".ToLocal())
+							</div>
+						</div>
+						<a class="more" href="/vip/trade/BuyList">
+							 @("点击查看提供记录".ToLocal()) <i class="m-icon-swapright m-icon-white"></i>
+						</a>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+					<div class="dashboard-stat purple">
+						<div class="visual">
+							<i class="fa fa-globe"></i>
+						</div>
+						<div class="details">
+							<div class="number">
+                                 @("接受记录".ToLocal())
+							</div>
+						</div>
+						<a class="more" href="/vip/trade/SellList">
+							 @("点击查看接受记录".ToLocal()) <i class="m-icon-swapright m-icon-white"></i>
+						</a>
+					</div>
+				</div>
+				<div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
+					<div class="dashboard-stat yellow">
+						<div class="visual">
+							<i class="fa fa-bar-chart-o"></i>
+						</div>
+						<div class="details">
+							<div class="desc" style="font-size:25px; margin-top:15px;">
+								 @("奖金明细".ToLocal())
+							</div>
+						</div>
+						<a class="more" href="/Vip/Financial/PrizeDetail">
+							 @("点击查看奖金明细".ToLocal()) <i class="m-icon-swapright m-icon-white"></i>
+						</a>
+					</div>
+				</div>
+			</div>
+			<!-- END DASHBOARD STATS -->
+			<div class="clearfix">
+			</div>
+			<div class="row">
+				<div class="col-md-6 col-sm-6">
+					<!-- BEGIN PORTLET-->
+					<div class="portlet solid bordered light-grey">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="fa fa-bar-chart-o"></i>@("账户信息".ToLocal())</div>
+							<div class="tools">
+								<div class="btn-group" data-toggle="buttons"></div>
+							</div>
+						</div>
+						<div class="portlet-body">
+                            <table class="table table-hover">
+                                <tbody>
+                                    <tr>
+                                        <td>@("会员编号".ToLocal()):@user.UserCode</td>
+                                        <td>@("昵称".ToLocal()):@user.NickName</td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>@("动态钱包".ToLocal()):@walletes.First(m=>m.CurrencyId==CurrencyHandler.Dianzibi.Id).Amount</td>
+                                        <td>@("静态钱包".ToLocal()):@walletes.First(m=>m.CurrencyId==CurrencyHandler.Benjin.Id).Amount</td>
+                                    </tr>
+                                     <tr>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>@("诚信币钱包".ToLocal()):@walletes.First(m=>m.CurrencyId==CurrencyHandler.JiHuobi.Id).Amount</td>
+                                       <td></td>
+                                    </tr>
+                                    @*<tr>
+                                        <td>@CurrencyHandler.Collection.First(m => m.Id == walletes[0].CurrencyId).Name.ToLocal():@(Math.Abs(walletes[0].Amount))</td>
+                                        <td>@CurrencyHandler.Collection.First(m => m.Id == walletes[1].CurrencyId).Name.ToLocal():@(Math.Abs(walletes[1].Amount))</td>
+                                    </tr>
+                                    <tr>
+                                        <td>@CurrencyHandler.Collection.First(m => m.Id == walletes[2].CurrencyId).Name.ToLocal():@(Math.Abs(walletes[2].Amount))</td>
+                                        <td>@CurrencyHandler.Collection.First(m => m.Id == walletes[3].CurrencyId).Name.ToLocal():@(Math.Abs(walletes[3].Amount))</td>
+                                    </tr>
+                                    <tr>
+                                        <td>@CurrencyHandler.Collection.First(m => m.Id == walletes[4].CurrencyId).Name.ToLocal():@(Math.Abs(walletes[4].Amount))</td>
+                                        <td>@CurrencyHandler.Collection.First(m => m.Id == walletes[5].CurrencyId).Name.ToLocal():@(Math.Abs(walletes[5].Amount))</td>
+                                    </tr>*@
+                                </tbody>
+                            </table>
+						</div>
+					</div>
+					<!-- END PORTLET-->
+				</div>
+				<div class="col-md-6 col-sm-6">
+                    <div class="portlet solid bordered light-grey"  style="height:180px;">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="fa fa-bar-chart-o"></i>@("市场信息".ToLocal())</div>
+							<div class="tools">
+								<div class="btn-group" data-toggle="buttons"></div>
+							</div>
+						</div>
+						<div class="portlet-body">
+                            <table class="table table-hover">
+                                <tbody>
+                                    <tr>
+                                    </tr>
+                                     <tr>
+                                        <td>@("推荐人数".ToLocal()): &nbsp &nbsp  &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp &nbsp @TJCnt @("安置人数".ToLocal()): @JDCnt</td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                          @("推广链接:")@(Config.Instance.DomainForUser.FirstOrDefault().Host.ToString() + "/vip/user/register?tjUserId=" + user.Id)
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- END DASHBOARD STATS -->
+			<div class="clearfix">
+			</div>
+			<div class="row">
+				<div class="col-md-6 col-sm-6">
+					<!-- BEGIN PORTLET-->
+					<div class="portlet solid bordered light-grey">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="fa fa-bar-chart-o"></i>@("项目走势".ToLocal())</div>
+							<div class="tools">
+								<div class="btn-group" data-toggle="buttons"></div>
+							</div>
+						</div>
+						<div class="portlet-body">
+							<div id="site_statistics_loading">
+								<img src="assets/img/loading.gif" alt="loading"/>
+							</div>
+							<div id="site_statistics_content" class="display-none">
+								<div id="site_statistics" class="chart">
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- END PORTLET-->
+				</div>
+				<div class="col-md-6 col-sm-6">
+					<!-- BEGIN PORTLET-->
+					<div class="portlet solid light-grey bordered">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="fa fa-bullhorn"></i>@("市场走势".ToLocal())
+							</div>
+							<div class="tools">
+								<div class="btn-group pull-right" data-toggle="buttons"></div>
+							</div>
+						</div>
+						<div class="portlet-body">
+							<div id="site_activities_loading">
+								<img src="assets/img/loading.gif" alt="loading"/>
+							</div>
+							<div id="site_activities_content" class="display-none">
+								<div id="site_activities" style="height: 100px;">
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- END PORTLET-->
+					<!-- BEGIN PORTLET-->
+					<div class="portlet solid bordered light-grey">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="fa fa-signal"></i>@("盈利走势".ToLocal())
+							</div>
+							<div class="tools">
+								<div class="btn-group pull-right" data-toggle="buttons"></div>
+							</div>
+						</div>
+						<div class="portlet-body">
+							<div id="load_statistics_loading">
+								<img src="assets/img/loading.gif" alt="loading"/>
+							</div>
+							<div id="load_statistics_content" class="display-none">
+								<div id="load_statistics" style="height: 108px;">
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- END PORTLET-->
+				</div>
+			</div>
+            <div class="clearfix">
+			</div>
+			<div class="row ">
+				<div class="col-md-6 col-sm-6">
+					<div class="portlet box purple">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="fa fa-calendar"></i>@("利润比率".ToLocal())
+							</div>
+							<div class="actions">
+								<a href="javascript:;" class="btn btn-sm yellow easy-pie-chart-reload">
+									<i class="fa fa-repeat"></i> 刷新
+								</a>
+							</div>
+						</div>
+						<div class="portlet-body">
+							<div class="row">
+								<div class="col-md-4">
+									<div class="easy-pie-chart">
+										<div class="number transactions" data-percent="55">
+											<span>
+												 +55
+											</span>
+											 %
+										</div>
+										<a class="title" href="#">
+											 @("项目收益".ToLocal()) <i class="m-icon-swapright"></i>
+										</a>
+									</div>
+								</div>
+								<div class="margin-bottom-10 visible-sm">
+								</div>
+								<div class="col-md-4">
+									<div class="easy-pie-chart">
+										<div class="number visits" data-percent="85">
+											<span>
+												 +85
+											</span>
+											 %
+										</div>
+										<a class="title" href="#">
+											 @("产业收益".ToLocal()) <i class="m-icon-swapright"></i>
+										</a>
+									</div>
+								</div>
+								<div class="margin-bottom-10 visible-sm">
+								</div>
+								<div class="col-md-4">
+									<div class="easy-pie-chart">
+										<div class="number bounce" data-percent="46">
+											<span>
+												 46
+											</span>
+											 %
+										</div>
+										<a class="title" href="#">
+											 @("投资收益".ToLocal()) <i class="m-icon-swapright"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 col-sm-6">
+					<div class="portlet box blue">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="fa fa-calendar"></i>@("利润来源".ToLocal())
+							</div>
+							<div class="tools">
+								<a href="javascript:void(0);" class="collapse">
+								</a>
+								<a href="#portlet-config" data-toggle="modal" class="config">
+								</a>
+								<a href="javascript:void(0);" class="reload">
+								</a>
+								<a href="javascript:void(0);" class="remove">
+								</a>
+							</div>
+						</div>
+						<div class="portlet-body">
+							<div class="row">
+								<div class="col-md-4">
+									<div class="sparkline-chart">
+										<div class="number" id="sparkline_bar">
+										</div>
+										<a class="title" href="#">
+											 @("产业盈利".ToLocal()) <i class="m-icon-swapright"></i>
+										</a>
+									</div>
+								</div>
+								<div class="margin-bottom-10 visible-sm">
+								</div>
+								<div class="col-md-4">
+									<div class="sparkline-chart">
+										<div class="number" id="sparkline_bar2">
+										</div>
+										<a class="title" href="#">
+											 @("项目订单".ToLocal()) <i class="m-icon-swapright"></i>
+										</a>
+									</div>
+								</div>
+								<div class="margin-bottom-10 visible-sm">
+								</div>
+								<div class="col-md-4">
+									<div class="sparkline-chart">
+										<div class="number" id="sparkline_line">
+										</div>
+										<a class="title" href="#">
+											 @("投资回报".ToLocal()) <i class="m-icon-swapright"></i>
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+           <div class="clearfix">
+			</div>
+			<div class="row ">
+				<div class="col-md-6 col-sm-6">
+					<!-- BEGIN REGIONAL STATS PORTLET-->
+					<div class="portlet">
+						<div class="portlet-title">
+							<div class="caption">
+								<i class="fa fa-globe"></i>@("区域统计".ToLocal())
+							</div>
+							<div class="tools">
+								<a href="javascript:void(0);" class="collapse">
+								</a>
+								<a href="#portlet-config" data-toggle="modal" class="config">
+								</a>
+								<a href="javascript:void(0);" class="reload">
+								</a>
+								<a href="javascript:void(0);" class="remove">
+								</a>
+							</div>
+						</div>
+						<div class="portlet-body">
+							<div id="region_statistics_loading">
+								<img src="assets/img/loading.gif" alt="loading"/>
+							</div>
+							<div id="region_statistics_content" class="display-none">
+								<div class="btn-toolbar margin-bottom-10">
+									<div class="btn-group" data-toggle="buttons">
+										<a href="" class="btn default btn-sm active">
+											 @("会员".ToLocal())
+										</a>
+										<a href="" class="btn default btn-sm">
+											 @("订单".ToLocal())
+										</a>
+									</div>
+									<div class="btn-group pull-right">
+										<a href="" class="btn default btn-sm dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
+											 @("选择区域".ToLocal())
+											<span class="fa fa-angle-down">
+											</span>
+										</a>
+										<ul class="dropdown-menu pull-right">
+											<li>
+												<a href="javascript:;" id="regional_stat_world">
+													 @("全球".ToLocal())
+												</a>
+											</li>
+											<li>
+												<a href="javascript:;" id="regional_stat_usa">
+													 @("美国".ToLocal())
+												</a>
+											</li>
+											<li>
+												<a href="javascript:;" id="regional_stat_europe">
+													 @("欧洲 ".ToLocal())
+												</a>
+											</li>
+											<li>
+												<a href="javascript:;" id="regional_stat_russia">
+													 @("俄罗斯".ToLocal())
+												</a>
+											</li>
+											<li>
+												<a href="javascript:;" id="regional_stat_germany">
+													 @("德国".ToLocal())
+												</a>
+											</li>
+										</ul>
+									</div>
+								</div>
+								<div id="vmap_world" class="vmaps display-none">
+								</div>
+								<div id="vmap_usa" class="vmaps display-none">
+								</div>
+								<div id="vmap_europe" class="vmaps display-none">
+								</div>
+								<div id="vmap_russia" class="vmaps display-none">
+								</div>
+								<div id="vmap_germany" class="vmaps display-none">
+								</div>
+							</div>
+						</div>
+					</div>
+					<!-- END REGIONAL STATS PORTLET-->
+				</div>
+                <div class="col-md-6 col-sm-6">
+					<div class="portlet paddingless">
+						<div class="portlet-title line">
+							<div class="caption">
+								<i class="fa fa-bell-o"></i>@("新闻公告".ToLocal())
+							</div>
+							<div class="tools">
+								<a href="javascript:void(0);" class="collapse">
+								</a>
+								<a href="#portlet-config" data-toggle="modal" class="config">
+								</a>
+								<a href="javascript:void(0);" class="reload">
+								</a>
+								<a href="javascript:void(0);" class="remove">
+								</a>
+							</div>
+						</div>
+						<div class="portlet-body">
+							<div class="tabbable tabbable-custom">
+								<ul class="nav nav-tabs">
+									<li class="active">
+										<a href="#tab_1_1" data-toggle="tab">
+											 @("系统".ToLocal())
+										</a>
+									</li>
+								</ul>
+								<div class="tab-content">
+									<div class="tab-pane active" id="tab_1_1">
+										<div class="scroller" style="height: 290px;" data-always-visible="1" data-rail-visible="0">
+											<ul class="feeds">
+                                                @foreach (var item in News.OrderByDescending(m => m.CreateDate).Take(20))
+                                                {
+												<li>
+													<div class="col1">
+														<div class="cont">
+															<div class="cont-col1">
+																<div class="label label-sm label-success">
+																	<i class="fa fa-bell-o"></i>
+																</div>
+															</div>
+															<div class="cont-col2">
+																<div class="desc">
+																	 @item.Title
+																</div>
+															</div>
+														</div>
+													</div>
+													<div class="col2">
+														<div class="date">
+															 @item.CreateDate
+														</div>
+													</div>
+												</li>
+                                                }
+											</ul>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+                </div>
+	 
+@section foot
+    {
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            //App.init(); // initlayout and core plugins
+            Index.init();
+            Index.initJQVMAP(); // init index page's custom scripts
+            //Index.initCalendar(); // init index page's custom scripts
+            Index.initCharts(); // init index page's custom scripts
+            //Index.initChat();
+            Index.initMiniCharts();
+            //Index.initDashboardDaterange();
+            //Index.initIntro();
+            //Tasks.initDashboardWidget();
+        });
+</script>
+    }
+
+<!-- END JAVASCRIPTS -->
+			

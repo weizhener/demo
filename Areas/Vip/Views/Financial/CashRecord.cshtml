@@ -1,0 +1,30 @@
+﻿@model Pager<T_Cash>
+@{
+    ViewBag.Title = "NavigationTop.Financial.CashRecord".ToLocal();
+}
+
+@Html.Tab(new ListItem { Text = "NavigationTop.Financial.Cash".ToLocal(), Value = "/vip/financial/CreateCash" },
+new ListItem { Text = "NavigationTop.Financial.CashRecord".ToLocal(), Value = "/vip/financial/CashRecord", Selected = true })
+
+
+@(Grid.Create<T_Cash>().SetDataSource(Model.Data)
+.Column(m => m.UserBankAccount).Name("Financial.CurrencyChange.BankAccount".ToLocal()).End()
+.Column(m => m.CurrencyId).Name(Resources.Cash_Currency).Value(m => CurrencyHandler.Element(m.CurrencyId).Name).End()
+.Column(m => m.Amount).Name(Resources.Cash_Amount).End()
+.Column(m => m.BLText).Name(Resources.Financial_HuiLv).End()
+.Column(m => m.RealCurrencyId).Name("Financial.CurrencyChange.RealCurrency".ToLocal()).Value(m => RealCurrencyHandler.Element(m.RealCurrencyId).Name).End()
+.Column(m => m.ServiceFee).Name(Resources.ServiceFee).End()
+.Column(m => m.RealAmount).Name(Resources.Cash_RealAmount).End()
+.Column(m => m.Status).Name(Resources.Status).Value(typeof(CashStatus)).End()
+.Column(m => m.CreateDate).Name(Resources.Date).End()
+.ActionColumn(m =>
+{
+    if (m.Status == CashStatus.Checking)
+    {
+        return Html.ActionLink(Resources.Delete, "DeleteCash", new { cashId = m.Id }, new { onclick = "return confirm('{0}')".FormatString(Resources.ConfirmDelete) });
+    }
+    return "";
+}).End()
+.Render())
+
+@Html.Page(Model)

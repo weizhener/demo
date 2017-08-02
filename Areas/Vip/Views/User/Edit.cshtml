@@ -1,0 +1,48 @@
+﻿@model EditForUserData
+@{
+    ViewBag.Title = "NavigationTop.Account.Edit".ToLocal();
+}
+
+
+        @using (Html.Form())
+{
+    @(Html.HiddenFor(m => m.UserCode))
+    @(Html.HiddenFor(m => m.NickName))
+    @(Html.HiddenFor(m => m.Mobile))
+    
+    @(Html.RowForDisplay(m => m.UserCode))
+    @(Html.RowForDisplay(m => m.NickName))
+    @(Html.RowForDisplay(m => m.Mobile))
+    @(Html.RowForEdit(m => m.Email))
+    @(Html.RowForEdit(m => m.ID_Number))
+    @(Html.RowForEdit(m => m.SecretSecurityId))
+    @(Html.RowForEdit(m => m.SecretSecurityMatchText))
+ 
+    @(Html.HiddenFor(m => m.BankName))
+    @(Html.HiddenFor(m => m.BankAddress))
+    @(Html.HiddenFor(m => m.BankCode))
+    @(Html.HiddenFor(m => m.BankUserName))
+
+    if (Config.Instance.Single.HideWeixin)
+    {
+    @(Html.HiddenFor(m => m.WeiXinCode))
+    }
+    else
+    {
+    @(Html.RowForEdit(m => m.WeiXinCode))
+    }
+
+    if (Config.Instance.Single.HideAlipay)
+    {
+    @(Html.HiddenFor(m => m.AlipyUserName))
+    @(Html.HiddenFor(m => m.AlipyCode))
+    }
+    else
+    {
+    @(Html.RowForEdit(m => m.AlipyUserName))
+    @(Html.RowForEdit(m => m.AlipyCode))
+    }
+    @(Html.Row(null, m => Html.Submit()))
+}
+
+

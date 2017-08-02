@@ -1,0 +1,47 @@
+﻿@{
+    ViewBag.Title = "加密解密";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-2">
+            <label style="text-align:right;">ASE</label>
+        </div>
+        <div class="col-md-4">@Html.TextBox("ASE_value", null, new { placeholder="源字符串",@class="form-control"})</div>
+        <div class="col-md-4">@Html.TextBox("ASE_result", null, new { placeholder="加密/解密后字符串",@class="form-control"})</div>
+        <div class="col-md-2">@Html.Button("加密","btnASEEncrypt")
+            @Html.Button("解密","btnASEDecrypt")
+        </div>
+    </div>
+</div>
+
+
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            //ASE加密
+            $("#btnASEEncrypt").click(function () {
+                $.post("/system/ASEEncrypt", { value: $("#ASE_value").val() }, function (result) {
+                    if (result.IsSuccess) {
+                        $("#ASE_result").val(result.Data);
+                    }
+                    else {
+                        alert(result.Error);
+                    }
+                })
+            });
+            //ASE解密
+            $("#btnASEDecrypt").click(function () {
+                $.post("/system/ASEDecrypt", { value: $("#ASE_value").val() }, function (result) {
+                    if (result.IsSuccess) {
+                        $("#ASE_result").val(result.Data);
+                    }
+                    else {
+                        alert(result.Error);
+                    }
+                })
+            });
+        });
+    </script>
+    }
+

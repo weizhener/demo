@@ -1,0 +1,46 @@
+﻿.jqOrgchart {
+    border: 0;
+    border-collapse:collapse;
+}
+
+    .jqOrgchart td {
+        text-align: center;
+        vertical-align: top;
+        white-space:nowrap; 
+    }
+
+    .jqOrgchart .node {
+        
+        background-color: #35363B;
+        border-radius: 8px;
+        border: 5px solid white;
+        color: #F38630;
+        display: inline-block;
+        width: 96px;
+        height: 60px;
+        z-index: 10;
+        margin: 0 2px;
+        text-align: center;
+    }
+
+    .jqOrgchart .down {
+        background-color: #808080;
+        margin: 0px auto;
+    }
+
+    .jqOrgchart .line {
+        width: 2px;
+        height: 20px;
+    }
+
+    .jqOrgchart .right {
+        border-right: 2px solid #808080;
+    }
+
+    .jqOrgchart .left {
+        border-left: 2px solid #808080;
+    }
+
+    .jqOrgchart .top {
+        border-top: 2px solid #808080;
+    }

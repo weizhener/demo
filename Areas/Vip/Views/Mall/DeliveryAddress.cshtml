@@ -1,0 +1,29 @@
+﻿@model IEnumerable<T_DeliveryAddress>
+
+@{
+    ViewBag.Title = "NavigationTop.Mall.Address".ToLocal();
+}
+
+@Html.Tab(new ListItem { Text = "NavigationTop.Mall.CreateAddress".ToLocal(), Value = "/vip/mall/CreateDeliveryAddress" },
+new ListItem { Text = "NavigationTop.Mall.Address".ToLocal(), Value = "/vip/mall/EditDeliveryAddress", Selected = true })
+
+@(Grid.Create<T_DeliveryAddress>().SetDataSource(Model)
+.Column(m => m.Address).Name(Resources.DeliveryAddress_Address).End()
+.Column(m => m.Mobile).Name(Resources.DeliveryAddress_Mobile).End()
+.Column(m => m.Recipient).Name(Resources.DeliveryAddress_Recipient).End()
+.Column(m => m.ZipCode).Name(Resources.DeliveryAddress_ZipCode).End()
+.Column(m => m.IsDefault).Name("DeliveryAddress.IsDefault".ToLocal()).Value(Resources.Yes, Resources.No).End()
+.ActionColumn(m => Html.ActionLink(Resources.Edit, "EditDeliveryAddress", new { deliveryAddressId = m.Id }),
+m =>
+{
+    if (m.IsDefault == false)
+    {
+        return Html.ActionLink("DeliveryAddress.SetDefault".ToLocal(), "SetDefaultDeliveryAddress", new { deliveryAddressId = m.Id });
+    }
+    else
+    {
+        return "";
+    }
+},
+m => Html.ActionLink(Resources.Delete, "DeleteDeliveryAddress", new { deliveryAddressId = m.Id }, new { onclick = "return confirm('{0}')".FormatString(Resources.ConfirmDelete) })).End()
+.Render())

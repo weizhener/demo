@@ -1,0 +1,24 @@
+﻿@model Pager<T_News>
+@{
+    ViewBag.Title = "NavigationTop.Content.News".ToLocal();
+}
+
+
+
+<div class="panel panel-info">
+    <div class="panel-heading">@("NavigationTop.Content.News".ToLocal())</div>
+    <div class="panel-body">
+       <div class="list-group">
+    @foreach (var item in Model.Data)
+    {
+        <a href="/vip/content/newsDetail?newsId=@item.Id" class="list-group-item">
+            <span class="badge">@("Content.News.Top".ToLocal())</span>
+            <h4 class="list-group-item-heading">@item.Title</h4>
+            <p class="list-group-item-text">@item.LastModifyDate</p>
+        </a>
+    }
+</div>
+
+@Html.Page(Model)
+    </div>
+</div>

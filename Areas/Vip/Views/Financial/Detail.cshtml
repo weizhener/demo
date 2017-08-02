@@ -1,0 +1,49 @@
+﻿@model Pager<T_FinancialDetail>
+@{
+    ViewBag.Title = "NavigationTop.Financial.Detail".ToLocal();
+}
+
+      @using (Html.Search())
+{
+    var financialIdCollection = new List<SelectListItem> { new SelectListItem { Text = "=={0}==".FormatString(Resources.All), Value = "" } };
+    financialIdCollection.AddRange(FinancialHandler.Collection.Select(m => new SelectListItem { Text = m.Name, Value = m.Id.ToString(), Selected = Request.QueryString["financialId"].AsInt() == m.Id }));
+
+    Html.Group("Financial.ActionType".ToLocal(), Html.DropDownList("financialId", financialIdCollection));
+
+    using (Html.Group(Resources.Date))
+    {
+    @Html.TextBox("minDate", Request.QueryString["minDate"]) <span>-</span>   
+    @Html.TextBox("maxDate", Request.QueryString["maxDate"])    
+    }
+
+    var currencylIdCollection = new List<SelectListItem> { new SelectListItem { Text = "=={0}==".FormatString(Resources.All), Value = "" } };
+    currencylIdCollection.AddRange(CurrencyHandler.Collection.Select(m => new SelectListItem { Text = m.Name, Value = m.Id.ToString(), Selected = Request.QueryString["currencyId"].AsInt() == m.Id }));
+
+    Html.Group(Resources.Currency, Html.DropDownList("currencyId", currencylIdCollection));
+    Html.Group(Resources.Desciption, Html.TextBox("description", Request.QueryString["description"]));
+}
+
+@(Grid.Create<T_FinancialDetail>().SetDataSource(Model.Data)
+.Column(m => m.FinancialId).Name("Financial.ActionType".ToLocal()).Value(m => FinancialHandler.Element(m.FinancialId).Name).End()
+.Column(m => m.CurrencyId).Name(Resources.Currency).Value(m => CurrencyHandler.Element(m.CurrencyId).Name).End()
+.Column(m => m.Amount).Name("收入".ToLocal()).Value(m => m.Amount > 0 ? m.Amount.ToString() : "").End()
+.Column(m => m.Amount).Name("支出".ToLocal()).Value(m => m.Amount < 0 ? m.Amount.ToString() : "").End()
+.Column(m => m.AfterWalletAmount).Name("余额".ToLocal()).End()
+.Column(m => m.CreateDate).Name(Resources.Date).End()
+.Column(m => m.Description).Name(Resources.Desciption).End()
+.Render())
+
+@Html.Page(Model)
+
+
+
+@section foot{
+    <script src="/Scripts/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#minDate,#maxDate").click(function () {
+                WdatePicker({ dateFmt: 'yyyy/MM/dd HH:mm:ss' });
+            });
+        });
+    </script>
+    }

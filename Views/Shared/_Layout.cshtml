@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>@ViewBag.Title</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link href="/Content/Site.css?timespan=@DateTime.Now.ToOADate()" rel="stylesheet" type="text/css" />
+    <!-- bootstrap -->
+    <link href="@Url.Content("~/Content/bootstrap.min.css")" rel="stylesheet" />
+    <!-- WARNING: Respond.js doesn't work if you view the page via  -->
+    <!--[if lt IE 9]>
+      <script src="@Url.Content("~/Scripts/html5shiv.min.js")"></script>
+      <script src="@Url.Content("~/Scripts/respond.min.js")"></script>
+    <![endif]-->
+
+    <!-- alertify -->
+    <link href="/Content/alertify/alertify.core.css" rel="stylesheet" />
+    <link href="/Content/alertify/alertify.bootstrap.css" rel="stylesheet" />
+
+    <style type="text/css">
+        body {
+            padding: 5px;
+            margin: 0;
+            font-family: 'Microsoft YaHei';
+            font-size: 14px;
+        }
+
+        table {
+            word-break: break-all;
+            word-wrap: break-word;
+        }
+    </style>
+    @RenderSection("head", false)
+</head>
+
+<body style="padding-top: 60px; padding-bottom: 50px;">
+    <div id="page-operating">
+        <div class="pull-left">
+            <span style="font-size: 14px; padding-right: 20px;">
+                <span class="glyphicon glyphicon-info-sign"></span>
+                @ViewBag.Title
+            </span>
+        </div>
+        <div class="pull-right">
+            @RenderSection("buttonGroup", false)
+            <a href="@Html.GenerateUrl()" class="btn btn-default btn-sm"><span class="glyphicon glyphicon-refresh"></span>刷新</a>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+
+    <div id="sys_message">
+        @if (ViewContext.TempData[AlertEntity.ALERT_ENTITY] != null)
+        {
+            var alertEntity = ViewContext.TempData[AlertEntity.ALERT_ENTITY] as AlertEntity;
+            @Html.Partial("Alert", new AlertEntity(alertEntity.Message, alertEntity.Type, alertEntity.CanClose))
+        }
+    </div>
+
+    @RenderBody()
+
+    <!--引入bootstrap-->
+    <script type="text/javascript" src="/Scripts/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/Scripts/json2.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript" src="/Scripts/alertify/alertify.min.js"></script>
+    <script type="text/javascript" src="/Scripts/localization.js"></script>
+    <script type="text/javascript" src="/Scripts/common.js"></script>
+    @RenderSection("foot", false)
+</body>
+</html>

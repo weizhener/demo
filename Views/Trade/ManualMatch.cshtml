@@ -1,0 +1,9 @@
+﻿@{
+    ViewBag.Title = "手动匹配";
+}
+@using (Html.Form())
+{
+    @(Html.Row("买家编号", n => Html.TextBox("buyUserCode"))) 
+    @(Html.Row("卖家编号", n => Html.TextBox("sellUserCode"))) 
+    @(Html.Row(null, n => Html.Submit("开始匹配")))
+}

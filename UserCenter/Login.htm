@@ -1,0 +1,136 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>å¼€æºç¤¾åŒº</title>
+<link href="Content/login.css" tppabs="http://hl16082801.gxwlx168.com/UserCenter/Content/login.css" rel="stylesheet" type="text/css" />
+<link rel=stylesheet type=text/css href="../Theme/Public/css/login20.css" tppabs="http://hl16082801.gxwlx168.com/Theme/Public/css/login20.css">
+
+</head>  
+<body>
+
+        
+
+    <form action="http://hl16082801.gxwlx168.com/user/login/logins" method="post" id="frmLogin">
+        <div id="login_layout">
+
+
+            <img src="../Theme/Public/logo.png" tppabs="http://hl16082801.gxwlx168.com/Theme/Public/logo.png" />
+            <div class="login_01">
+                <ul>
+
+                    <li>
+                        <span>ç”¨æˆ·å</span>
+                        <input value="" name="username" id="username" type="text" maxlength="20" class="input_0 ipt_text ipt_style" />
+                    </li>
+                    <li>
+                        <span>å¯†ç </span>
+                        <input value="" name="password" id="password" type="password" maxlength="20" class="input_0 ipt_text ipt_style" />
+                    </li>
+                    <li>
+                        <span>éªŒè¯ç </span>
+                        <input value="" name="code" id="user_ck" type="text" check="Require" warning="è¯·è¾“å…¥éªŒè¯ç " maxlength="6" class="input_0  ipt_text" style="width:100px;" />
+                        <input type="hidden" name="ajax" value="1" />
+                        <img id="imgCode" src="Login/GetCodeImage-id=1.jpg" tppabs="http://hl16082801.gxwlx168.com/UserCenter/Login/GetCodeImage?id=1" onclick="ChangeCheckCode();return false;" border="0" alt="ç‚¹å‡»åˆ·æ–°éªŒè¯ç " style="cursor:pointer;" align="absmiddle" width="90" />
+                        <!--<img id="verifyImg" src="Public/yam.png" width="90" onClick="freshVerify()" border="0" alt="ç‚¹å‡»åˆ·æ–°éªŒè¯ç " style="cursor:pointer;" align="absmiddle" />-->
+                    </li>
+                    <li>
+                        <input type="button" name="" value="" class="btn_0" id="btnlogin" />
+
+                    </li>
+                </ul>
+                <div class="for_m">
+
+                    <a class="forget" href="javascript:if(confirm('http://hl16082801.gxwlx168.com/UserCenter/Login/GetPwd  \n\n¸ÃÎÄ¼şÎŞ·¨ÓÃ Teleport Ultra ÏÂÔØ, ÒòÎª ËüÊÇÒ»¸öÓò»òÂ·¾¶Íâ²¿±»ÉèÖÃÎªËüµÄÆôÊ¼µØÖ·µÄµØÖ·¡£  \n\nÄãÏëÔÚ·şÎñÆ÷ÉÏ´ò¿ªËü?'))window.location='http://hl16082801.gxwlx168.com/UserCenter/Login/GetPwd'" tppabs="http://hl16082801.gxwlx168.com/UserCenter/Login/GetPwd" target="_blank">å¿˜è®°å¯†ç ?</a>
+                </div>
+            </div>
+
+
+
+            <div class="error"><span id="result"></span></div>
+
+        </div>
+    </form> 
+
+    <script type="text/javascript" src="../theme/mmm/js/roud.js" tppabs="http://hl16082801.gxwlx168.com/theme/mmm/js/roud.js"></script>
+    <script type="text/javascript" src="../theme/mmm/js/roud1.js" tppabs="http://hl16082801.gxwlx168.com/theme/mmm/js/roud1.js"></script>
+
+
+
+    <!-- Vendor scripts -->
+
+    <script type="text/javascript" async="" src="../theme/mmm/js/_Incapsula_Resource" tppabs="http://hl16082801.gxwlx168.com/theme/mmm/js/_Incapsula_Resource"></script>
+
+
+
+    <script src="../theme/mmm/js/jquery-ui.min.js" tppabs="http://hl16082801.gxwlx168.com/theme/mmm/js/jquery-ui.min.js"></script>
+
+    <script src="../theme/mmm/js/jquery.slimscroll.min.js" tppabs="http://hl16082801.gxwlx168.com/theme/mmm/js/jquery.slimscroll.min.js"></script>
+
+    <script src="../theme/mmm/js/bootstrap.min.js" tppabs="http://hl16082801.gxwlx168.com/theme/mmm/js/bootstrap.min.js"></script>
+
+    <script src="../theme/mmm/js/metisMenu.min.js" tppabs="http://hl16082801.gxwlx168.com/theme/mmm/js/metisMenu.min.js"></script>
+
+    <script src="../theme/mmm/js/icheck.min.js" tppabs="http://hl16082801.gxwlx168.com/theme/mmm/js/icheck.min.js"></script>
+
+    <script src="../theme/mmm/js/index.js" tppabs="http://hl16082801.gxwlx168.com/theme/mmm/js/index.js"></script>
+
+    <script src="../theme/mmm/js/toastr.min.js" tppabs="http://hl16082801.gxwlx168.com/theme/mmm/js/toastr.min.js"></script>
+
+    <script src="../theme/mmm/js/alert.js" tppabs="http://hl16082801.gxwlx168.com/theme/mmm/js/alert.js"></script>
+    <!-- App scripts -->
+
+    <script src="../theme/mmm/js/homer.js" tppabs="http://hl16082801.gxwlx168.com/theme/mmm/js/homer.js"></script>
+
+    <script src="../js/jquery.form.js" tppabs="http://hl16082801.gxwlx168.com/js/jquery.form.js"></script>
+    <script type="text/javascript">
+        function ChangeCheckCode() {
+            var oldUrl = $('#imgCode').attr("src");
+            $('#imgCode').attr("src", oldUrl + '1');
+        }
+
+        jQuery(function ($) {
+            $("#btnlogin").click(function () {
+                $("#frmLogin").ajaxSubmit({
+                    url: "/UserCenter/Login",
+                    type: "post",
+                success: function (data) {
+                    if (data.Status == 200) {
+                        alert("ç™»å½•æˆåŠŸï¼Œå³å°†ä¸ºæ‚¨è·³è½¬ï¼");
+                        location.href = data.Message;
+                    } else {
+                        alert("ç™»å½•å¤±è´¥ï¼š" + data.Message);
+                        ChangeCheckCode();
+                    }
+                },
+                error: function (error) {
+                    alert(error);
+                }
+            });
+        });
+        });
+
+    </script>
+
+    <!-- å¸‚åœºè´­ä¹°å®å†µ scripts -->
+    <script src="../Scripts/jquery.js" tppabs="http://hl16082801.gxwlx168.com/Scripts/jquery.js"></script>
+    <script src="../Scripts/scroll.js" tppabs="http://hl16082801.gxwlx168.com/Scripts/scroll.js"></script>
+    <script type="text/javascript">
+        //$(document).ready(function () {
+        //    $('.list_lh li:even').addClass('lieven');
+        //})
+        $(function () {
+            $("div.list_lh").myScroll({
+                speed: 40, //æ•°å€¼è¶Šå¤§ï¼Œé€Ÿåº¦è¶Šæ…¢
+                rowHeight: 100 //liçš„é«˜åº¦
+            });
+        });
+
+    </script>
+
+
+
+</body>
+
+</html>

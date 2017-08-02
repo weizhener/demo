@@ -1,0 +1,81 @@
+2016/8/15 14:01:55==================================================
+发放完成
+2016/8/15 14:01:55==================================================
+基础提供程序在 Open 上失败。
+2016/8/15 14:01:55==================================================
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.FaFangJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\FaFangJob.cs:行号 18
+2016/8/15 14:01:55==================================================
+System.Data.Entity.Core.EntityException: 基础提供程序在 Open 上失败。 ---> System.Data.SqlClient.SqlException: 无法打开登录所请求的数据库 "L2"。登录失败。
+用户 'sa' 登录失败。
+   在 System.Data.SqlClient.SqlInternalConnectionTds..ctor(DbConnectionPoolIdentity identity, SqlConnectionString connectionOptions, SqlCredential credential, Object providerInfo, String newPassword, SecureString newSecurePassword, Boolean redirectedUserInstance, SqlConnectionString userConnectionOptions, SessionData reconnectSessionData, DbConnectionPool pool, String accessToken, Boolean applyTransientFaultHandling)
+   在 System.Data.SqlClient.SqlConnectionFactory.CreateConnection(DbConnectionOptions options, DbConnectionPoolKey poolKey, Object poolGroupProviderInfo, DbConnectionPool pool, DbConnection owningConnection, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionFactory.CreatePooledConnection(DbConnectionPool pool, DbConnection owningObject, DbConnectionOptions options, DbConnectionPoolKey poolKey, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionPool.CreateObject(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   在 System.Data.ProviderBase.DbConnectionPool.UserCreateRequest(DbConnection owningObject, DbConnectionOptions userOptions, DbConnectionInternal oldConnection)
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, UInt32 waitForMultipleObjectsTimeout, Boolean allowCreate, Boolean onlyOneCheckConnection, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionPool.TryGetConnection(DbConnection owningObject, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionFactory.TryGetConnection(DbConnection owningConnection, TaskCompletionSource`1 retry, DbConnectionOptions userOptions, DbConnectionInternal oldConnection, DbConnectionInternal& connection)
+   在 System.Data.ProviderBase.DbConnectionInternal.TryOpenConnectionInternal(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.ProviderBase.DbConnectionClosed.TryOpenConnection(DbConnection outerConnection, DbConnectionFactory connectionFactory, TaskCompletionSource`1 retry, DbConnectionOptions userOptions)
+   在 System.Data.SqlClient.SqlConnection.TryOpenInner(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.TryOpen(TaskCompletionSource`1 retry)
+   在 System.Data.SqlClient.SqlConnection.Open()
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.<Open>b__36(DbConnection t, DbConnectionInterceptionContext c)
+   在 System.Data.Entity.Infrastructure.Interception.InternalDispatcher`1.Dispatch[TTarget,TInterceptionContext](TTarget target, Action`2 operation, TInterceptionContext interceptionContext, Action`3 executing, Action`3 executed)
+   在 System.Data.Entity.Infrastructure.Interception.DbConnectionDispatcher.Open(DbConnection connection, DbInterceptionContext interceptionContext)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.<Open>b__2()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.<>c__DisplayClass1.<Execute>b__0()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute(Action operation)
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Core.EntityClient.EntityConnection.Open()
+   在 System.Data.Entity.DbContextTransaction.EnsureOpenConnection()
+   在 System.Data.Entity.DbContextTransaction..ctor(EntityConnection connection)
+   在 System.Data.Entity.Database.BeginTransaction()
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\L\L2\ZMZ.ZX.Core\Db\ZXContext.cs:行号 62
+   在 ZMZ.ZX.Core.FaFangJob.Run() 位置 d:\woork\L\L2\ZMZ.ZX.Core\SchedulerJob\Jobs\FaFangJob.cs:行号 18
+2016/8/15 14:01:55==================================================
+*********************************************
+2017/6/25 11:50:11==================================================
+发放完成
+2017/6/25 11:50:12==================================================
+Store update, insert, or delete statement affected an unexpected number of rows (0). Entities may have been modified or deleted since entities were loaded. See http://go.microsoft.com/fwlink/?LinkId=472540 for information on understanding and handling optimistic concurrency exceptions.
+2017/6/25 11:50:12==================================================
+   在 System.Data.Entity.Internal.InternalContext.SaveChanges()
+   在 System.Data.Entity.Internal.LazyInternalContext.SaveChanges()
+   在 System.Data.Entity.DbContext.SaveChanges()
+   在 ZMZ.ZX.Core.ZXContext.SaveChanges() 位置 d:\woork\A\a37\ZMZ.ZX.Core\Db\ZXContext.cs:行号 21
+   在 ZMZ.ZX.Core.FaFangJob.<Run>b__3(ZXContext db) 位置 d:\woork\A\a37\ZMZ.ZX.Core\SchedulerJob\Jobs\FaFangJob.cs:行号 33
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\A\a37\ZMZ.ZX.Core\Db\ZXContext.cs:行号 64
+   在 ZMZ.ZX.Core.FaFangJob.Run() 位置 d:\woork\A\a37\ZMZ.ZX.Core\SchedulerJob\Jobs\FaFangJob.cs:行号 18
+2017/6/25 11:50:12==================================================
+System.Data.Entity.Infrastructure.DbUpdateConcurrencyException: Store update, insert, or delete statement affected an unexpected number of rows (0). Entities may have been modified or deleted since entities were loaded. See http://go.microsoft.com/fwlink/?LinkId=472540 for information on understanding and handling optimistic concurrency exceptions. ---> System.Data.Entity.Core.OptimisticConcurrencyException: Store update, insert, or delete statement affected an unexpected number of rows (0). Entities may have been modified or deleted since entities were loaded. See http://go.microsoft.com/fwlink/?LinkId=472540 for information on understanding and handling optimistic concurrency exceptions.
+   在 System.Data.Entity.Core.Mapping.Update.Internal.UpdateTranslator.ValidateRowsAffected(Int64 rowsAffected, UpdateCommand source)
+   在 System.Data.Entity.Core.Mapping.Update.Internal.UpdateTranslator.Update()
+   在 System.Data.Entity.Core.EntityClient.Internal.EntityAdapter.<Update>b__2(UpdateTranslator ut)
+   在 System.Data.Entity.Core.EntityClient.Internal.EntityAdapter.Update[T](T noChangesResult, Func`2 updateFunction)
+   在 System.Data.Entity.Core.EntityClient.Internal.EntityAdapter.Update()
+   在 System.Data.Entity.Core.Objects.ObjectContext.<SaveChangesToStore>b__d()
+   在 System.Data.Entity.Core.Objects.ObjectContext.ExecuteInTransaction[T](Func`1 func, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction, Boolean releaseConnectionOnSuccess)
+   在 System.Data.Entity.Core.Objects.ObjectContext.SaveChangesToStore(SaveOptions options, IDbExecutionStrategy executionStrategy, Boolean startLocalTransaction)
+   在 System.Data.Entity.Core.Objects.ObjectContext.<>c__DisplayClassb.<SaveChangesInternal>b__8()
+   在 System.Data.Entity.SqlServer.DefaultSqlExecutionStrategy.Execute[TResult](Func`1 operation)
+   在 System.Data.Entity.Core.Objects.ObjectContext.SaveChangesInternal(SaveOptions options, Boolean executeInExistingTransaction)
+   在 System.Data.Entity.Core.Objects.ObjectContext.SaveChanges(SaveOptions options)
+   在 System.Data.Entity.Internal.InternalContext.SaveChanges()
+   --- 内部异常堆栈跟踪的结尾 ---
+   在 System.Data.Entity.Internal.InternalContext.SaveChanges()
+   在 System.Data.Entity.Internal.LazyInternalContext.SaveChanges()
+   在 System.Data.Entity.DbContext.SaveChanges()
+   在 ZMZ.ZX.Core.ZXContext.SaveChanges() 位置 d:\woork\A\a37\ZMZ.ZX.Core\Db\ZXContext.cs:行号 21
+   在 ZMZ.ZX.Core.FaFangJob.<Run>b__3(ZXContext db) 位置 d:\woork\A\a37\ZMZ.ZX.Core\SchedulerJob\Jobs\FaFangJob.cs:行号 33
+   在 ZMZ.ZX.Core.ZXContext.UseTransaction(Func`2 action) 位置 d:\woork\A\a37\ZMZ.ZX.Core\Db\ZXContext.cs:行号 64
+   在 ZMZ.ZX.Core.FaFangJob.Run() 位置 d:\woork\A\a37\ZMZ.ZX.Core\SchedulerJob\Jobs\FaFangJob.cs:行号 18
+2017/6/25 11:50:12==================================================
+*********************************************

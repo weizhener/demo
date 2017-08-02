@@ -1,0 +1,18 @@
+﻿@model Pager<T_ChargeOnlineV1>
+@{
+    ViewBag.Title = "在线充值记录";
+}
+
+
+@using (Html.Search())
+{
+    Html.Group("流水号", Html.TextBox("no", Request.QueryString["no"]));
+}
+@(Grid.Create<T_ChargeOnlineV1>().SetDataSource(Model.Data)
+.Column(m => m.UserCode).Name("会员编号").End()
+.Column(m => m.CreateDate).Name("日期").End()
+.Column(m => m.RMB).Name("银联支付").End()
+.Column(m => m.Amount).Name("注册币").End()
+.Column(m => m.Status).Name("状态").Value(typeof(ChargeOnlineV1Status)).End()
+.Render())
+@Html.Page(Model)

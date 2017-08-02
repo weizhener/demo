@@ -1,0 +1,24 @@
+﻿@model Pager<InvalidUserData>
+@{
+    ViewBag.Title = "NavigationTop.Team.Invalid".ToLocal();
+}
+
+
+
+        @(Grid.Create<InvalidUserData>().SetDataSource(Model.Data)
+.Column(m => m.UserCode).Name(Resources.UserCode).End()
+.Column(m => m.NickName).Name("会员名称").End()
+.Column(m => m.RegisterDate).Name("注册日期".ToLocal()).End()
+.Column(m => m.JihuoDate).Name("激活日期".ToLocal()).End()
+.ActionColumn(@<div>
+    @if (!item.IsValid)
+    {
+        <a href="/vip/user/JiHuo?userId=@(item.Id)">@("User.JiHuo".ToLocal())</a>
+        <a href="/vip/user/deleteinvalid?userId=@(item.Id)" onclick="return confirm('@(Resources.ConfirmDelete)')">@(Resources.Delete)</a>
+    }
+</div>).End()
+//.ActionColumn(m => Html.ActionLink("User.JiHuo".ToLocal() + "   ", "JiHuo", new { userId = m.Id }),
+//m => Html.ActionLink(Resources.Delete, "DeleteInvalid", new { userId = m.Id }, new { onclick = "return confirm('{0}')".FormatString(Resources.ConfirmDelete) })).End()
+.Render())
+
+@Html.Page(Model)

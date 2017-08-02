@@ -1,0 +1,20 @@
+﻿@model Pager<T_Article>
+
+@{
+    ViewBag.Title = "文章列表";
+}
+
+@Html.Tab(new ListItem[]{ new ListItem { Text = "添加文章", Value = "/Content/CreateArticle" },
+new ListItem { Selected = true, Text = "文章列表", Value = "/Content/ArticleList" }})
+
+@(Grid.Create<T_Article>().SetDataSource(Model.Data)
+.Column(m => m.SequenceNum).Name("序号").End()
+.Column(m => m.Title).Name("标题").End()
+.Column(m => m.CreateDate).Name("添加日期").End()
+.ActionColumn( 
+ m => Html.ActionLink("编辑", "EditArticle", new { articleId = m.Id }),
+ m => Html.ActionLink("删除", "DeleteArticle", new { articleId = m.Id }, new { onclick = "return confirm('确认删除？')" })
+).End()
+.Render())
+
+@Html.Page(Model)

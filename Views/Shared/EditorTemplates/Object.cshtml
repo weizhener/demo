@@ -1,0 +1,83 @@
+﻿@using ZMZ.Common
+@model object
+@if (ViewData.TemplateInfo.TemplateDepth > 1)
+{
+    @ViewData.ModelMetadata.SimpleDisplayText;
+}
+else
+{
+    @Html.AntiForgeryToken()
+    @Html.ValidationSummary(true)
+    foreach (var prop in ViewData.ModelMetadata.Properties.Where(pm => pm.ShowForEdit && !ViewData.TemplateInfo.Visited(pm)))
+    {
+        if (prop.HideSurroundingHtml)
+        {
+    @Html.Editor(prop.PropertyName)
+        }
+        else
+        {
+
+            //只读属性
+            var displayOnlyAttribute = prop.ContainerType.GetProperty(prop.PropertyName).GetCustomAttributes(typeof(DisplayOnlyAttribute), false);
+            if (displayOnlyAttribute.Any())
+            {
+    <div class="form-group">
+        <label class="col-sm-2 control-label">@Html.Label(prop.PropertyName)：</label>
+        <div class="col-sm-10">
+            <p class="form-control-static" id="@("__{0}".FormatString(prop.PropertyName))">@Html.Display(prop.PropertyName)</p>
+        </div>
+
+        @if ((displayOnlyAttribute.First() as DisplayOnlyAttribute).HideValue)
+        {
+            @Html.Hidden(prop.PropertyName)
+        }
+    </div>                
+        continue;
+            }
+            
+    
+    <div class="form-group">
+        <label class="col-sm-2 control-label">@Html.Label(prop.PropertyName)：
+            @{
+            var isRequired = prop.ContainerType.GetProperty(prop.PropertyName).GetCustomAttributes(typeof(IsRequiredAttribute), false);
+            if(prop.IsRequired || (isRequired.Any()&& (isRequired.First() as IsRequiredAttribute).IsRequired))
+            {
+                <span class="input-required">*</span>
+            }
+                }
+            
+        </label>
+        <div class="col-sm-3">
+            @Html.Editor(prop.PropertyName)
+            @Html.ValidationMessage(prop.PropertyName)
+
+             @{
+            var htmlTooltip = "";
+            var tooltipAttribute = prop.ContainerType.GetProperty(prop.PropertyName).GetCustomAttributes(typeof(TooltipAttribute), false);
+            if (tooltipAttribute.Any())
+            {
+                htmlTooltip = (tooltipAttribute.First() as TooltipAttribute).Text;
+            }
+                }
+
+            @if(string.IsNullOrWhiteSpace(htmlTooltip)==false)
+            {
+            <p id="@("_htmlExtension_" + prop.PropertyName)" class="form-control-static">
+               
+                @htmlTooltip
+            </p>
+            }
+        </div>
+        <div class="col-sm-7">
+            <p class="form-control-static" id="@("{0}{1}".FormatString(Service.EXTENSION_ID,prop.PropertyName))"></p>
+        </div>
+    </div>
+        }
+    }
+    <div class="form-group">
+        <div class="col-sm-10 col-sm-offset-2">
+            @Html.Submit(ViewData.ContainsKey(HtmlValue.SUBMIT_ID) ? Html.ViewData[HtmlValue.SUBMIT_ID].ToString() : Resources.Submit)
+        </div>
+    </div>
+}
+

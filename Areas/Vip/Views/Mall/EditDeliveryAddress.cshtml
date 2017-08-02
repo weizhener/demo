@@ -1,0 +1,15 @@
+﻿@model EditDeliveryAddressData
+
+@{
+    ViewBag.Title = "Mall.EditDeliveryAddress".ToLocal();
+}
+
+@using (Html.Form())
+{
+    @Html.HiddenFor(m => m.Id)
+    @Html.RowForEdit(m => m.Address)
+    @Html.RowForEdit(m => m.Mobile)
+    @Html.RowForEdit(m => m.Recipient)
+    @Html.RowForEdit(m => m.ZipCode)
+    @Html.Row("", m => Html.Submit())
+}

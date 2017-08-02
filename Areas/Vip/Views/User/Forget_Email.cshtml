@@ -1,0 +1,27 @@
+﻿@model FindPassword_Validate_User_Data
+@{
+    Layout = Config.Instance.LayoutForAnonymous;
+    ViewBag.Title = "User.ForgetPassword".ToLocal();
+}
+
+@section head{
+    <style type="text/css">
+        body{width:70%;margin:auto;}
+    </style>
+    }
+
+<div style=" margin: auto;">
+    @Html.Tab(new ListItem { Text = "User.ForgetPassword.Email".ToLocal(), Value = "/vip/user/Forget_Email", Selected = true },
+                    new ListItem { Text = "User.ForgetPassword.SecretSecurity".ToLocal(), Value = "/vip/user/Forget_SecretSecurity" })
+
+    <div class="panel panel-info">
+        <div class="panel-heading">@("User.ForgetPassword.Email.UserCode".ToLocal())</div>
+        <div class="panel-body">
+
+            @using (Html.Form())
+            {
+                @Html.EditorForModel()
+            }
+        </div>
+    </div>
+</div>

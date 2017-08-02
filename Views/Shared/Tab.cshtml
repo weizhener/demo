@@ -1,0 +1,15 @@
+﻿@model IEnumerable<ListItem>
+
+<ul class="nav nav-tabs" style="margin-bottom:20px;">
+    @foreach (var item in Model)
+    {
+        if (item.Selected == true)
+        {
+             <li class="active"><a href="#">@item.Text</a></li>
+        }
+        else
+        {
+            <li><a href="@item.Value">@item.Text</a></li>
+        }
+    }
+</ul>

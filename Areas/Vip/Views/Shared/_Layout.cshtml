@@ -1,0 +1,148 @@
+﻿@{
+    T_User user = null;
+    using (ZXContext db = new ZXContext())
+    {
+        user = db.User.Find(_User.Current.Id);
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <link href="/Theme/Home/1/css/css.css" rel="stylesheet" type="text/css" />
+    <link href="/Content/Site.css?timespan=@DateTime.Now.ToOADate()" rel="stylesheet" type="text/css" />
+    <!-- bootstrap -->
+    <link href="@Url.Content("~/Content/bootstrap.min.css")" rel="stylesheet" />
+    <!-- WARNING: Respond.js doesn't work if you view the page via  -->
+    <!--[if lt IE 9]>
+      <script src="@Url.Content("~/Scripts/html5shiv.min.js")"></script>
+      <script src="@Url.Content("~/Scripts/respond.min.js")"></script>
+    <![endif]-->
+
+    <!-- alertify -->
+    <link href="/Content/alertify/alertify.core.css" rel="stylesheet" />
+    <link href="/Content/alertify/alertify.bootstrap.css" rel="stylesheet" />
+
+    <style type="text/css">
+        body {
+            padding: 5px;
+            margin: 0;
+            font-family: 'Microsoft YaHei';
+            font-size: 14px;
+        }
+
+        table {
+            word-break: break-all;
+            word-wrap: break-word;
+            
+        }
+        .l{color:#fff;font-size:14px;}
+        .l img{width:20px;height:20px;margin-right:5px;}
+    </style>
+    @RenderSection("head", false)
+    <!--下啦-->
+    <script src="/Theme/Home/1/js/stuHover.js" type="text/javascript"></script>
+    <!--左侧导航-->
+    <script type="text/javascript" src="/Theme/Home/1/js/dbdh.js"></script>
+    <title>Index</title>
+</head>
+<body>
+    <div class="h-top">
+        <div class="logo_2 pull-left">
+            <a href="/vip/home/index">
+                <img src="/Theme/Home/1/images/logo.jpg" /></a>
+        </div>
+        <div class="top_word pull-left">Creator  of  future value | 未来价值的创造者
+            <a class="l" href="/system/SetCulture?culture=zh-CN&returnUrl=@Server.UrlEncode(Html.GenerateUrl())"><img class="l-icon" src="/Images/cn.jpg" />简体</a>
+            <a class="l" href="/system/SetCulture?culture=zh-Hant&returnUrl=@Server.UrlEncode(Html.GenerateUrl())"><img class="l-icon" src="/Images/hk.jpg" />繁体</a>
+            <a class="l" href="/system/SetCulture?culture=en-US&returnUrl=@Server.UrlEncode(Html.GenerateUrl())"><img class="l-icon" src="/Images/en.jpg" />English</a>
+        </div>
+        <div class="yhxx pull-right">
+            <div class="pull-left">
+                <p style="text-align: right; padding-right: 5px; color: #fff; height: 60px; line-height: 60px;">
+                    <span id="localtime"></span>
+                    <script src="/Theme/Home/1/js/time.js" type="text/javascript"></script>
+                </p>
+            </div>
+            <div class="menu pull-left">
+                <ul id="nav">
+
+                    <li class="top1"><a href="#" class="top_link">
+                        <p>
+                            <img src="/Theme/Home/1/images/yhm.jpg" /><span class="down">@_User.Current.Code</span>
+                        </p>
+                    </a>
+                        @{
+                            IEnumerable<T_Wallet> wallet = null;
+                            using (ZXContext db = new ZXContext())
+                            {
+                                wallet = db.Wallet.Where(m => m.UserId == _User.Current.Id).ToList();
+                            }
+                        }
+                        <ul class="sub">
+                            <li><a href="#">@Resources.UserCode：@_User.Current.Code  </a></li>
+                            @foreach (var currency in CurrencyHandler.Collection)
+                            {
+                                <li><a href="#">@currency.Name：@wallet.First(m => m.CurrencyId == currency.Id).Amount </a></li>
+                            }
+                            <li class="tuichu"><a href="/system/logout">@Resources.Logout</a></li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="h-content">
+        <div class=" con_left pull-left">
+            <p class="web"><em>@Config.Instance.DomainForUser.First().Host</em></p>
+            <!--This is the first division of left-->
+            @{
+                var topId = Session[Navigation.TOP_KEY] == null ? Navigation.Instance.NavigationTopCollection().First().Id : Session[Navigation.TOP_KEY] as int?;
+                var itemId = Session[Navigation.ITEM_KEY] == null ? null : Session[Navigation.ITEM_KEY] as int?;
+            }
+            <div id="firstpane" class="menu_list">
+                <!--Code for menu starts here-->
+                @foreach (var top in Navigation.Instance.NavigationTopCollection().Where(m => m.NavigationItemCollection().Any(n => n.Enable(user))))
+                {
+                    <p class="menu_head"><b class="b1">@top.Name.ToLocal()</b></p>
+                    <div class="menu_body" style="display:@((topId == top.Id) ? "block" : "none")">
+                        @foreach (var item in top.NavigationItemCollection().Where(m => m.Enable(user)))
+                        {
+                            <a href="@item.Url"><span>@item.Name.ToLocal()</span></a>
+                        }
+                    </div>
+                }
+            </div>
+            <!--Code for menu ends here-->
+        </div>
+        <div class="con_right pull-right">
+            <div class="crumbread">@ViewBag.Title</div>
+
+            <div class="main">
+                <div id="sys_message">
+                    @if (ViewContext.TempData[AlertEntity.ALERT_ENTITY] != null)
+                    {
+                        var alertEntity = ViewContext.TempData[AlertEntity.ALERT_ENTITY] as AlertEntity;
+                        @Html.Partial("Alert", new AlertEntity(alertEntity.Message, alertEntity.Type, alertEntity.CanClose))
+                    }
+                </div>
+                @RenderBody()
+            </div>
+
+        </div>
+    </div>
+
+    <!--引入bootstrap-->
+    <script type="text/javascript" src="/Scripts/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/Scripts/json2.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery.validate.min.js"></script>
+    <script type="text/javascript" src="/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script type="text/javascript" src="/Scripts/alertify/alertify.min.js"></script>
+    <script type="text/javascript" src="/Scripts/localization.js"></script>
+    <script type="text/javascript" src="/Scripts/common.js"></script>
+    @RenderSection("foot", false)
+
+</body>
+</html>

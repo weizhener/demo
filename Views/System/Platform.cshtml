@@ -1,0 +1,238 @@
+﻿@model PlatformIndexData
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>会员管理系统</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    <!-- bootstrap -->
+    <link href="@Url.Content("~/Content/bootstrap.min.css")" rel="stylesheet" />
+    <!-- WARNING: Respond.js doesn't work if you view the page via  -->
+    <!--[if lt IE 9]>
+      <script src="@Url.Content("~/Scripts/html5shiv.min.js")"></script>
+      <script src="@Url.Content("~/Scripts/respond.min.js")"></script>
+    <![endif]-->
+    <style type="text/css">
+        body {
+            padding: 0;
+            margin: 0;
+            font-family: 'Microsoft YaHei';
+            font-size: 14px;
+        }
+
+        .head {
+            height: 60px;
+            line-height: 60px;
+            padding-left: 20px;
+            background-color: #463265;
+            color: #fff;
+        }
+
+        .head-sys-title {
+            font-weight: bold;
+            color: #fff;
+            font-size: 28px;
+            display: inline-block;
+        }
+
+        .head-sys-userinfo {
+            color: #fff;
+            font-size: 14px;
+            display: inline-block;
+            margin-left: 20px;
+        }
+
+        .head-btn {
+            top: 24px;
+            right: 60px;
+            position: absolute;
+        }
+
+        .nav {
+            position: absolute;
+            left: 0;
+            top: 60px;
+            bottom: 0;
+            width: 200px;
+            border-right: 2px solid #463265;
+            border-bottom: 2px solid #463265;
+            background-color: #f3eded;
+        }
+
+            .nav .panel {
+                margin-bottom: 5px;
+                cursor: pointer;
+                margin-left: 2px;
+                margin-right: 2px;
+            }
+
+            .nav .panel-heading {
+                padding: 5px 10px;
+                background-color: #EEEAF5;
+            }
+
+            .nav .panel-title {
+                font-size: 16px;
+            }
+
+            .nav .list-group-item {
+                padding: 5px 15px;
+                font-size: 12px;
+            }
+
+        .nav-show {
+            position: absolute;
+            left: 0;
+            top: 60px;
+            bottom: 0;
+            width: 20px;
+            border-right: 2px solid #463265;
+            border-bottom: 2px solid #463265;
+        }
+
+        .content {
+            position: absolute;
+            left: 200px;
+            right: 0;
+            top: 60px;
+            bottom: 0;
+            border-bottom: 2px solid #463265;
+        }
+    </style>
+</head>
+<body>
+    <!--顶部信息，企业名称、logo等-->
+    <div class="head">
+        <span class="head-sys-title">会员管理系统</span>
+        <span class="head-sys-userinfo">管理员 @_User.Current.Code 您好，欢迎光临！ </span>
+    </div>
+
+    <!--返回首页，退出系统-->
+    <div class="head-btn">
+        @if (_User.Current.RightType == RightType.Developer)
+        {
+            <a class="btn btn-info" href="/System/Refresh">
+                <span class="glyphicon glyphicon-refresh"></span>
+                重启网站</a>
+        }
+        <a class="btn btn-info" href="/System/platform">
+            <span class="glyphicon glyphicon-home"></span>
+            返回首页</a>
+        <a class="btn btn-info" href="/System/Logout">
+            <span class="glyphicon glyphicon-log-out"></span>
+            退出系统</a>
+    </div>
+
+    @helper RenderMenu(IEnumerable<T_Menu> menuDataSource)
+{
+    foreach (var item in Model.MenuTypeCollection.Where(m => menuDataSource.Any(n => n.MenuTypeId == m.Id)).OrderBy(m => m.IsSystem).ThenBy(m => m.MenuTypeSequenceNum))
+    {
+        <div class="panel panel-default">
+            <div class="nav-mt panel-heading">
+                <h3 class="panel-title">
+                    <span class="glyphicon glyphicon-list"></span>
+                    <span>@item.MenuTypeName</span></h3>
+            </div>
+            <div class="nav-menu list-group">
+                @foreach (var menuItem in menuDataSource.Where(m => m.MenuTypeId == item.Id).OrderBy(n => n.MenuSequenceNum))
+                {
+                    <a class="nav-menu-item list-group-item" href="@menuItem.MenuUrl" target="ifm">
+                        <span class="glyphicon glyphicon-list-alt"></span>
+                        <span>@menuItem.MenuName</span></a>
+                }
+            </div>
+        </div>
+    }
+    }
+
+    <!--菜单-->
+    <div class="nav-show hidden">
+        <span id="navShow" class="glyphicon glyphicon-arrow-right" title="显示菜单"></span>
+    </div>
+    <div class="nav">
+        <span id="navHide" class="glyphicon glyphicon-arrow-left" title="隐藏菜单"></span>
+        @{
+            IEnumerable<T_Menu> menuDataSource = null;
+            if (_User.Current.RightType == RightType.System)
+            {
+                menuDataSource = Model.AdminMenuCollection;
+            }
+            else if (_User.Current.RightType == RightType.Admin)
+            {
+                menuDataSource = Model.MenuCollection.Where(m => Model.MenuTypeCollection.Any(n => (n.Id == m.MenuTypeId) && (n.IsSystem || n.IsLock)) == false);
+            }
+            else
+            {
+                menuDataSource = Model.MenuCollection.Where(m => Model.MenuTypeCollection.Any(n => n.Id == m.MenuTypeId && n.IsLock) == false);
+            }
+        }
+        @RenderMenu(menuDataSource)
+        @if (_User.Current.RightType == RightType.Developer)
+        {
+            <div class="panel panel-default">
+                <div class="nav-mt panel-heading">
+                    <h3 class="panel-title">
+                        <span class="glyphicon glyphicon-list"></span>
+                        <span>未分组</span></h3>
+                </div>
+                <div class="nav-menu list-group">
+                    @foreach (var menuItem in Model.MenuCollection.Where(m => m.MenuTypeId.HasValue == false).OrderBy(n => n.MenuSequenceNum))
+                    {
+                        <a class="nav-menu-item list-group-item" href="@menuItem.MenuUrl" target="ifm">
+                            <span class="glyphicon glyphicon-list-alt"></span>
+                            <span>@menuItem.MenuName</span></a>
+                    }
+                </div>
+            </div> 
+        }
+    </div>
+
+    <!--菜单-->
+    <div class="content" id="content">
+        <iframe frameborder="0" scrolling="auto" src="/system/Welcome" id="ifm" style="overflow-x: hidden; width: 100%; height: 100%;"></iframe>
+    </div>
+
+    <!--引入bootstrap-->
+    <script src="/Scripts/jquery-1.9.1.min.js"></script>
+    <script src="/Scripts/bootstrap.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $(".nav-menu").removeClass("show").addClass("hidden");
+            $(".nav-menu").eq(0).removeClass("hidden").addClass("show");
+            //切换菜单分类
+            $(".nav-mt").click(function () {
+                $(".nav-menu").removeClass("show").addClass("hidden");
+                $(this).next().removeClass("hidden").addClass("show");
+            });
+            //切换菜单
+            $(".nav-menu-item").click(function () {
+                $(".nav-menu-item").removeClass("active");
+                $(this).addClass("active");
+            });
+            //显示或隐藏菜单
+            $("#navShow").click(function () {
+                $(".nav").removeClass("hidden").addClass("show");
+                $(".nav-show").removeClass("show").addClass("hidden");
+                $("#content").css("left", 200);
+                $("#ifm").prop("src", $("#ifm").prop("src"));
+            });
+            $("#navHide").click(function () {
+                $(".nav-show").removeClass("hidden").addClass("show");
+                $(".nav").removeClass("show").addClass("hidden");
+                $("#content").css("left", 20);
+                $("#ifm").prop("src", $("#ifm").prop("src"));
+            });
+            //打开内容页
+            $(".nav a").click(function (e) {
+                e.preventDefault();
+                $("#ifm").prop("src", $(this).prop("href"));
+            });
+        });
+    </script>
+</body>
+</html>

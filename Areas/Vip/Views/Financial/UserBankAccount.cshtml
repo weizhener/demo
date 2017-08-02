@@ -1,0 +1,15 @@
+﻿@model IEnumerable<T_UserBankAccount>
+@{
+    ViewBag.Title = "NavigationTop.Financial.UserBankAccount".ToLocal();
+}
+
+@Html.Tab(new ListItem { Text = "NavigationTop.Financial.CreateUserBankAccount".ToLocal(), Value = "/vip/financial/CreateUserBankAccount" },
+new ListItem { Text = "NavigationTop.Financial.UserBankAccount".ToLocal(), Value = "/vip/financial/UserBankAccount", Selected = true })
+
+@(Grid.Create<T_UserBankAccount>().SetDataSource(Model)
+.Column(m => m.Bank).Name(Resources.UserBankAccount_Bank).End()
+.Column(m => m.CardCode).Name(Resources.UserBankAccount_CardCode).End()
+.Column(m => m.CardUserName).Name(Resources.UserBankAccount_CardUserName).End()
+.ActionColumn(m => Html.ActionLink(Resources.Edit, "EditUserBankAccount", new { userBankAccountId = m.Id }),
+m => Html.ActionLink(Resources.Delete, "DeleteUserBankAccount", new { userBankAccountId = m.Id }, new { onclick = "return confirm('{0}')".FormatString(Resources.ConfirmDelete) })).End()
+.Render())

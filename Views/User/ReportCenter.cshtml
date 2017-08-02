@@ -1,0 +1,17 @@
+﻿@model Pager<ReportCenterItemData>
+@{
+    ViewBag.Title = "服务中心";
+}
+
+@Html.Tab(new ListItem { Text = "服务中心".ToLocal(), Value = "/user/ReportCenter", Selected = true },
+new ListItem { Text = "审核服务中心".ToLocal(), Value = "/user/ReportCenterRecord" })
+
+@(Grid.Create<ReportCenterItemData>().SetDataSource(Model.Data).Key(m => m.UserId)
+.Column(m => m.UserCode).Name("会员帐号").End()
+.Column(m => m.NickName).Name("真实姓名").End()
+.Column(m => m.Mobile).Name("手机号").End()
+.Column(m => m.UserCount).Name("所属会员").End()
+.ActionColumn(m => Html.ActionLink("取消服务中心", "CancelReportCenter", new { userId = m.UserId }, new { onclick="return confirm('确认取消服务中心?')" })).End()
+.Render())
+
+@Html.Page(Model)

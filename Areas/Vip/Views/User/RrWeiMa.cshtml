@@ -1,0 +1,130 @@
+﻿@{
+    ViewBag.Title = "二维码";
+}
+
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>生成二维码</title>
+   <script src="JavaScript/jquery-1.8.3.min.js"></script>
+    @*<script src="JavaScript/jquery.qrcode.min.js"></script>*@
+    <script type="text/javascript" src="/Scripts/jquery.qrcode.min.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            //没有中文就可以这么简单
+            $('#code').qrcode("http://dnt.dkill.net");
+
+            //普通转换
+            $("#txt_btn").click(function () {
+                outputQRCod($("#inputTxt").val(), 200, 200);
+            });
+
+            //URL演示
+            $("#url_btn").click(function () {
+                var urlTxt = $("#inputUrl").val();
+                if (urlTxt.indexOf("http://") < 0) {
+                    urlTxt = 'http://' + urlTxt;
+                }
+                outputQRCod(urlTxt, 300, 300);
+            });
+
+            //联系人添加演示
+            $("#people_btn").click(function () {
+                var txt = "BIZCARD:N:" + $('#inputName').val() + ";T:" + $('#inputPost').val() + ";C:" + $('#inputCompany').val() + ";A:" + $('#inputAddress').val() + ";B:" + $('#inputMobile').val() + ";E:" + $('#inputEmail').val() + ";;";
+                outputQRCod(txt, 400, 400);
+            });
+
+            //WiFi连接演示
+            $("#wifi_btn").click(function () {
+                var txt = "WIFI:T:" + $('#WiFiType').val() + ";S:" + $('#inputWiFiName').val() + ";P:" + $('#inputWiFiPass').val() + ";;";
+                console.log(txt);
+                outputQRCod(txt, 400, 400);
+            });
+        });
+
+        //中文字符处理
+        function toUtf8(str) {
+            var out, i, len, c;
+            out = "";
+            len = str.length;
+            for (i = 0; i < len; i++) {
+                c = str.charCodeAt(i);
+                if ((c >= 0x0001) && (c <= 0x007F)) {
+                    out += str.charAt(i);
+                } else if (c > 0x07FF) {
+                    out += String.fromCharCode(0xE0 | ((c >> 12) & 0x0F));
+                    out += String.fromCharCode(0x80 | ((c >> 6) & 0x3F));
+                    out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
+                } else {
+                    out += String.fromCharCode(0xC0 | ((c >> 6) & 0x1F));
+                    out += String.fromCharCode(0x80 | ((c >> 0) & 0x3F));
+                }
+            }
+            return out;
+        }
+
+        //生成二维码
+        function outputQRCod(txt, width, height) {
+            //先清空
+            $("#code").empty();
+            //中文格式转换
+            var str = toUtf8(txt);
+            //生成二维码
+            $("#code").qrcode({
+                render: "table",
+                width: width,
+                height: height,
+                text: str
+            });
+        }
+
+    </script>
+</head>
+<body>
+    <div id="main">
+        <div>
+            <p>请输入内容然后点击按钮生成二维码：</p>
+            <div id="code"></div>
+            <h2>演示1:</h2>
+            <p>
+                普通文本：<input type="text" id="inputTxt" value="">
+                <input type="button" id="txt_btn" value="生成二维码">
+            </p>
+            <h2>演示2:</h2>
+            <p>
+                URL 演示：<input type="text" id="inputUrl" value="">
+                <input type="button" id="url_btn" value="生成二维码">
+            </p>
+            <h2>演示3:</h2>
+            <p>加联系人：（选填）<input type="button" id="people_btn" value="生成二维码"></p>
+            <p>
+                姓名：<input type="text" id="inputName" value=""><br />
+                <br />
+                职位：<input type="text" id="inputPost" value=""><br />
+                <br />
+                公司：<input type="text" id="inputCompany" value=""><br />
+                <br />
+                地址：<input type="text" id="inputAddress" value=""><br />
+                <br />
+                手机：<input type="text" id="inputMobile" value=""><br />
+                <br />
+                邮箱：<input type="text" id="inputEmail" value=""><br />
+                <br />
+            </p>
+            <h2>演示4:(现在的wifi一般都是WPA的，WEP的基本上10分钟内就能破解了)</h2>
+            <p>
+                WiFi名称：<input type="text" id="inputWiFiName" value=""><br />
+                <br />
+                WiFi密码：<input type="text" id="inputWiFiPass" value=""><br />
+                <br />
+                WiFi类型：<select id="WiFiType"><option value="WPA">WPA/WPA2</option>
+                    <option value="WEP">WEP</option>
+                    <option value="nopass">无加密</option>
+                </select>
+                <input type="button" id="wifi_btn" value="生成二维码">
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,23 @@
+﻿@model IEnumerable<T_Language>
+@{
+    ViewBag.Title = "Language";
+}
+
+@section buttonGroup{
+    @Html.ActionLinkButton("添加语言", "AddLanguage", "System", iconType: BootstrapIcon.PLUS)
+}
+
+@Html.Tab(new ListItem { Text="添加语言", Value="/system/AddLanguage" },
+new ListItem { Text="语言管理", Value="/system/Language",Selected=true },
+new ListItem { Text="添加语言资源", Value="/system/CreateLocaleStringResource" },
+new ListItem { Text="语言资源管理", Value="/system/LocaleStringResource" })
+
+@(new Grid<T_Language>().SetDataSource(Model)
+.Key(m => m.Id)
+.Column(m => m.Name).Name("名称").End()
+.Column(m => m.Culture).Name("区域信息").End()
+.Column(m=>m.BDCulture).Name("百度编码").End()
+.Column(m => m.SequenceNum).Name("显示顺序").End()
+.Column(m => m.Enable).Name("状态").Value("启用", "禁用").End()
+.ActionColumn(m=>Html.ActionLink("编辑", "EditLanguage", new { langugaeCid = m.Id })).End()
+.Render())

@@ -1,0 +1,11 @@
+﻿@model IEnumerable<Type>
+@{
+    ViewBag.Title = "后台定时任务";
+}
+
+@(Grid.Create<Type>().SetDataSource(Model)
+.Column("CLR", m => m.FullName).End()
+.Column("名称", m => (m.GetCustomAttributes(typeof(SchedulerJobAttribute), false).First() as SchedulerJobAttribute).Name).End()
+.Column("执行间隔", m => { return "{0}秒".FormatString((m.GetCustomAttributes(typeof(SchedulerJobAttribute), false).First() as SchedulerJobAttribute).Interval / 1000); }).End()
+.Column("是否启用", m => (m.GetCustomAttributes(typeof(SchedulerJobAttribute), false).First() as SchedulerJobAttribute).Enable).End()
+.Render())

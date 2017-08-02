@@ -1,0 +1,132 @@
+﻿@model UserLoginData
+@{
+    Layout = null;
+    var lang = new List<T_Language>();
+    using (ZXContext db = new ZXContext())
+    {
+        lang = db.Language.OrderBy(m => m.SequenceNum).ToList();
+    }
+
+    HttpCookie cookie = Request.Cookies[BaseController.CULTURE_COOKIE_NAME];
+}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>开源社区</title>
+<link rel=stylesheet type=text/css href="/Theme/Public/css/login20.css">
+     <script type="text/javascript" src="/Theme/Login/1/js/jquery-1.8.0.min.js"></script>
+    @*<script type="text/javascript" src="/Theme/Login/1/js/jquery.jslides.js"></script>*@
+    <script type="text/javascript" src="/Theme/Login/1/js/curvycorners.js"></script>
+    <script type="text/javascript" src="/Scripts/common.js"></script>
+    <script type="text/JavaScript">
+        addEvent(window, 'load', initCorners);
+        function initCorners() {
+            var setting = {
+                tl: { radius: 5 },
+                tr: { radius: 5 },
+                bl: { radius: 5 },
+                br: { radius: 5 },
+                antiAlias: true
+            }
+            curvyCorners(setting, ".threesnow");
+        }
+
+        $(function () {
+            $("#UserCode").val("会员帐号").focus(function () {
+                if ($(this).val() == "会员帐号") { $(this).val(""); }
+            }).blur(function () {
+                if (!$(this).val()) { $(this).val("会员帐号"); }
+            });
+            $("#Password").val("密码").prop("type", "text").focus(function () {
+                $(this).prop("type", "password");
+                if ($(this).val() == "密码") { $(this).val(""); }
+            }).blur(function () {
+                if (!$(this).val()) { $(this).val("密码"); $(this).prop("type", "text"); }
+            });
+            $("#Captcha").val("验证码").focus(function () {
+                if ($(this).val() == "验证码") { $(this).val(""); }
+            }).blur(function () {
+                if (!$(this).val()) { $(this).val("验证码"); }
+            });
+
+            $("#__captcha").click(function () {
+                $(this).prop("src", "/system/Captcha?timestamp=" + common.getTimestamp());
+            });
+        });
+    </script>
+</head>  
+<body>
+
+        
+
+    <form method="post" action="/vip/user/login" id="frmLogin">
+        <div id="login_layout">
+
+
+            <img src="/theme/Public/logo.png" />
+            <div class="login_01" >
+                 @if (TempData[AlertEntity.ALERT_ENTITY] != null)
+                    {
+                        <div class="alert"style="text-align:center;color:red">
+                            @((TempData[AlertEntity.ALERT_ENTITY] as AlertEntity).Message)
+                        </div>
+                    }
+                <ul>
+
+                    <li>
+                        <span>用户名</span>
+                        <input value="" name="UserCode" id="UserCode" type="text" maxlength="20" class="input_0 ipt_text ipt_style" />
+                    </li>
+                    <li>
+                        <span>密码</span>
+                        <input value="" name="Password" id="Password" type="password" maxlength="20" class="input_0 ipt_text ipt_style" />
+                    </li>
+                    <li>
+                        <span>验证码</span>
+                        <input value="" name="Captcha" id="Captcha" type="text" check="Require" warning="请输入验证码" maxlength="6" class="input_0  ipt_text" style="width:100px;" />
+                         <input type="hidden" name="ajax" value="1" />
+                        <img id="__captcha" src="/system/Captcha?timestamp=@DateTime.Now.ToFileTime()" style="cursor:pointer;" align="absmiddle" width="70" />
+                    </li>
+                    <li>
+                        <input type="submit" name="" value="" class="btn_0" />
+                    </li>
+                </ul>
+                <div class="for_m">
+
+                    @*<a class="forget" href="/UserCenter/Login/GetPwd" target="_blank">忘记密码?</a>*@
+                </div>
+            </div>
+
+
+
+            <div class="error"><span id="result"></span></div>
+
+        </div>
+    </form> 
+
+    
+
+    <script src="/js/jquery.form.js"></script>
+
+    <!-- 市场购买实况 scripts -->
+    <script src="/Scripts/jquery.js"></script>
+    <script src="/Scripts/scroll.js"></script>
+    <script type="text/javascript">
+        //$(document).ready(function () {
+        //    $('.list_lh li:even').addClass('lieven');
+        //})
+        $(function () {
+            $("div.list_lh").myScroll({
+                speed: 40, //数值越大，速度越慢
+                rowHeight: 100 //li的高度
+            });
+        });
+
+    </script>
+
+
+
+</body>
+
+</html>

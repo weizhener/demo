@@ -1,0 +1,31 @@
+﻿@model CreateBalanceData
+@{
+    ViewBag.Title = "添加结算";
+}
+
+@Html.Tab(new ListItem {  Text="添加结算", Value="/financial/createBalance",Selected=true},
+new ListItem {  Text="结算列表", Value="/financial/Balance"})
+
+
+@using (Html.BeginForm("CreateBalance", null, FormMethod.Post, new { @class = "form-horizontal" }))
+{
+    @(Html.HiddenFor(m => m.Type))
+    @(Html.HiddenFor(m => m.Issue))
+    @(Html.HiddenFor(m => m.MinDate))
+    
+    @(Html.RowForDisplay(m => m.Issue))
+    @(Html.RowForDisplay(m => m.MinDate))
+    @(Html.RowForEdit(m => m.MaxDate))
+    @(Html.Row("", m => Html.Submit()))
+}
+
+@section foot{
+    <script src="/Scripts/My97DatePicker/WdatePicker.js"></script>
+    <script type="text/javascript">
+        $(function () {
+            $("#MaxDate").click(function () {
+                WdatePicker({ dateFmt: 'yyyy/MM/dd HH:mm:ss' });
+            });
+        });
+    </script>
+    }

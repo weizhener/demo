@@ -1,0 +1,22 @@
+﻿@model Pager<T_Message>
+@{
+    ViewBag.Title = "我的留言";
+    T_Admin admin = null;
+    using (ZXContext db = new ZXContext())
+    {
+        admin = db.Admin.FirstOrDefault(m => m.AdminCode == Service.ADMIN);
+    }
+}
+
+@Html.Tab(new ListItem { Text = "我参与的留言", Value = "/content/message", Selected = true },
+new ListItem { Text = "未读留言", Value = "/content/UnreadMessage" })
+
+@(Grid.Create<T_Message>().SetDataSource(Model.Data)
+.Column("联系人", m => m.SenderId == admin.Id ? m.ReceiverDisplayName : m.SenderDisplayName).End()
+.Column(m => m.MainTitle).Name("标题").End()
+.Column(m => m.CreateDate).Name("日期").End()
+.ActionColumn(m => Html.ActionLink("查看", "ReplyMessage", new { messageId = m.Id }),
+m => Html.ActionLink("删除", "DelMessage", new { msgId = m.Id }, new { @onclick = "return confirm('确认删除?')" })).End()
+.Render())
+
+@Html.Page(Model)

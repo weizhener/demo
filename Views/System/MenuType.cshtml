@@ -1,0 +1,117 @@
+﻿@model IEnumerable<T_MenuType>
+@{
+    ViewBag.Title = "菜单分类";
+}
+
+@section buttonGroup{
+    <a href="/system/CreateMenuType" class="btn btn-default btn-sm" id="btnAdd">
+        <span class="glyphicon glyphicon-plus"></span>
+        添加分类</a>
+    <div class="btn-group">
+        <button type="button" class="btn btn-default btn-sm" id="btnDown">
+            <span class="glyphicon glyphicon-arrow-down"></span>
+            向下</button>
+        <button type="button" class="btn btn-default btn-sm" id="btnUp">
+            <span class="glyphicon glyphicon-arrow-up"></span>
+            向上</button>
+    </div>
+    <button type="button" class="btn btn-default btn-sm" id="btnSaveSequenceNum">
+        <span class="glyphicon glyphicon-floppy-disk"></span>
+        保存排序</button>
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        查询
+        <div class="pull-right"><span id="caret" class="caret-open"></span></div>
+        <div class="clear"></div>
+    </div>
+    <div id="form_search" class="panel-body">
+        <form class="form-inline" method="get" action="@Html.GenerateUrl()" role="form" >
+            <div class="form-group">
+                @Html.CheckBox("containSystem", "包含系统级别", Request.QueryString["containSystem"].ToBool())
+            </div>
+            <div class="form-group">
+                @Html.CheckBox("containLock", "包含锁定", Request.QueryString["containLock"].ToBool())
+            </div>
+
+            <button class="btn btn-default btn-search" type="submit" id="btnSearch">
+                <span class="glyphicon glyphicon-search"></span>
+                查询</button>
+        </form>
+    </div>
+</div>
+
+@(Grid.Create<T_MenuType>().SetDataSource(Model)
+                    .Column(m => m.MenuTypeName).Name("菜单分类名称").End()
+                    .Column(m => m.IsLock).Name("是否锁定").Value("锁定", "正常").End()
+                    .Column(m => m.IsSystem).Name("类型").Value("系统级", "普通").End()
+                    .ActionColumn(@<div class="grid-action">
+                        <a href="/System/EditMenuType?menuTypeId=@item.Id">编辑</a>
+                        <a href="#" onclick="grid_action_del('@item.Id')" >删除</a>
+                    </div>).End()
+                    .Render())
+
+
+@section foot{
+    <script type="text/javascript">
+        //删除分类
+        function grid_action_del(id) {
+            if (confirm("确认删除？")) {
+                common.loading.open();
+                $.post("/system/DeleteMenuType", { id: id }, function (result) {
+                    if (result.IsSuccess) {
+                        alert("删除成功");
+                        $("#" + id).remove();
+                    }
+                    else {
+                        alert(result.Error);
+                    }
+                    common.loading.close();
+                })
+            }
+        }
+
+        $(function () {
+            var grid = common.grid.get($("table"));
+            grid.init();
+
+            //向下
+            $("#btnDown").click(function () {
+                var row = common.grid.get($("table")).getSelectedRow();
+                if (row.length > 0) {
+                    row.insertAfter(row.next());
+                }
+                else {
+                    common.message.alert("请点击表格，选中一行然后再操作", 2, true);
+                }
+            });
+            //向上
+            $("#btnUp").click(function () {
+                var row = common.grid.get($("table")).getSelectedRow();
+                if (row.length > 0) {
+                    if (row.prev().length) {
+                        row.insertBefore(row.prev());
+                    }
+                }
+                else {
+                    common.message.alert("请点击表格，选中一行然后再操作", 2, true);
+                }
+            });
+
+            //保存排序
+            $("#btnSaveSequenceNum").click(function () {
+                var idSequenceNum = "";
+                $("tr:gt(0)").each(function () {
+                    idSequenceNum += $(this).prop("id");
+                });
+                common.loading.open();
+                $.post("/system/SaveMenuTypeSequenceNum", { idSequenceNum: idSequenceNum }, function () {
+                    alert("保存成功");
+                    common.loading.close();
+                });
+            });
+        });
+    </script>
+}
+

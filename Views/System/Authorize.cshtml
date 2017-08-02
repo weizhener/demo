@@ -1,0 +1,73 @@
+﻿@model AuthorizeData
+@{
+    ViewBag.Title = "权限分配";
+}
+
+@section buttonGroup{
+    @Html.Button("保存","btnSave",BootstrapIcon.FLOPPY_DISK)
+    }
+
+@using (Html.Form())
+{
+    @Html.HiddenFor(m=>m.RoleId)
+    <table class="table table-bordered">
+        <tr>
+            <th rowspan="2">菜单分类</th>
+            <th rowspan="2">菜单名称</th>
+            <th colspan="2">菜单资源</th>
+            <th rowspan="2">
+                <input type="checkbox" id="selectAll" /></th>
+        </tr>
+        <tr>
+            <th >名称</th>
+            <th >编码</th>
+        </tr>
+        @if (Model != null)
+    {
+        Guid? currMenuTypeId = null;
+        Guid? currMenuId = null;
+        for (int i = 0; i < Model.AuthorizeItemCollection.Count; i++)
+        {
+         <tr>
+                @if (Model.AuthorizeItemCollection[i].MenuTypeId != currMenuTypeId)
+                {
+                    currMenuTypeId = Model.AuthorizeItemCollection[i].MenuTypeId;
+                    <td rowspan="@Model.AuthorizeItemCollection.Count(m => m.MenuTypeId == currMenuTypeId)">@Model.AuthorizeItemCollection[i].MenuTypeName</td>
+                }
+                @if (Model.AuthorizeItemCollection[i].MenuId != currMenuId)
+                {
+                    currMenuId = Model.AuthorizeItemCollection[i].MenuId;
+                    <td rowspan="@Model.AuthorizeItemCollection.Count(m => m.MenuId == currMenuId)">@Model.AuthorizeItemCollection[i].MenuName</td>
+                }
+                <td>@Model.AuthorizeItemCollection[i].MenuActionName</td>
+                <td>@Model.AuthorizeItemCollection[i].MenuActionCode</td>
+                <td class="ui-page-tc">@Html.CheckBoxFor(m => m.AuthorizeItemCollection[i].Enable)
+                    @Html.HiddenFor(m => m.AuthorizeItemCollection[i].MenuActionId)
+                </td>
+            </tr>   
+        }
+
+    }
+    </table>
+    
+
+}
+
+@section foot{
+    <script type="text/javascript">
+        $(function () {
+            $("#selectAll").change(function () {
+                if ($(this).prop("checked")) {
+                    $("table input[type='checkbox']:not(#selectAll)").prop("checked", true);
+                }
+                else {
+                    $("table input[type='checkbox']:not(#selectAll)").prop("checked", false);
+                }
+            });
+
+            $("#btnSave").click(function () {
+                $("form").submit();
+            });
+        })
+    </script>
+    }
